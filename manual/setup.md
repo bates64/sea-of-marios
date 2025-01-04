@@ -9,19 +9,6 @@ You will need:
 - A Paper Mario (USA) ROM
 - A computer running Windows 11, Windows 10, macOS, or Linux
 
-### Step 1. Install WSL (Windows only)
-
-1. Open PowerShell in administrator mode by right-clicking and selecting "Run as administrator".
-2. Type `wsl --install` and press Enter.
-3. Restart your computer.
-4. After restarting, an "Ubuntu" installation window will appear. Follow the instructions to set it up.
-
-### Step 2. Install Visual Studio Code
-
-Download and install Visual Studio Code (VSCode), a code editor that works well with DX:
-
-[Download Visual Studio Code](https://code.visualstudio.com/)
-
 <details>
     <summary>I prefer my editor, like neovim. Do I have to use Visual Studio Code?</summary>
     <p>
@@ -63,6 +50,51 @@ Then follow the instructions to set up DX.
     </p>
 </details>
 
+<details>
+    <summary>I prefer my editor, like neovim. Do I have to use Visual Studio Code?</summary>
+    <p>
+        This guide assumes you are using Visual Studio Code.
+        If you are using another editor, you will need to be smart enough to adapt the instructions to your editor.
+    </p>
+    <p>
+        To build the game, use <code>nix develop --profile .nix-profile --command ./run</code>.
+    </p>
+</details>
+
+### Step 1. Install WSL (Windows 10 only)
+
+If you're on Windows 10, please set up Windows Subsystem for Linux:
+
+1. Install or upgrade to **WSL 2** following [these instructions](https://aka.ms/wsl2-install) (Ubuntu is recommended)
+2. Open a WSL terminal (may be called "Ubuntu" or similar)
+3. Run the following command: `sudo apt update && sudo apt upgrade && cd ~`
+
+If you're on Windows 11, you can skip this step. If you're on an earlier version of Windows, you'll need to use a virtual machine or dual-boot Linux.
+
+This step is necessary because DX uses a variety of tools that only work on Linux/macOS that don't work on Windows natively. WSL provides a Linux environment that can run these tools without any performance penalty.
+
+### Step 2. Install Visual Studio Code
+
+Download and install Visual Studio Code (VSCode), a code editor that works well with DX:
+
+[Download Visual Studio Code](https://code.visualstudio.com/)
+
+### Step 3. Run the setup script
+
+Open a terminal:
+
+- On Windows, open the WSL terminal you installed earlier. (Do **not** use the Command Prompt or PowerShell.)
+- On macOS, open Terminal.
+- On Linux, open your terminal emulator of choice.
+
+Copy the following command and paste it into the terminal with Ctrl+Shift+V (Cmd+V on macOS):
+
+```sh
+bash <(curl -Ls https://bates64.com/setup-dx.sh)
+```
+
+Then press Enter and follow the instructions.
+
 When the script finishes successfully, it should open DX in VSCode. You can close the terminal now.
 
 ### Step 4. Build and run the game
@@ -86,7 +118,7 @@ You're _almost_ ready to start making changes to the game. To do that, you need 
 
 You can reopen it by using the 'Recent' menu on the VSCode Welcome screen.
 
-If you can't find it, you can open VSCode from a terminal. Open a terminal and run `code ~/papermario-dx`. Note that you should use WSL if you're on Windows.
+If you can't find it, you can open VSCode from a terminal. Open a terminal and run `code ~/papermario-dx`. Note that you should use a WSL terminal if you're on Windows.
 
 ### Help!!!!
 
