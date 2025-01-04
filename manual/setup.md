@@ -9,6 +9,19 @@ You will need:
 - A Paper Mario (USA) ROM
 - A computer running Windows 11, Windows 10, macOS, or Linux
 
+### Step 1. Install WSL (Windows only)
+
+1. Open PowerShell in administrator mode by right-clicking and selecting "Run as administrator".
+2. Type `wsl --install` and press Enter.
+3. Restart your computer.
+4. After restarting, an "Ubuntu" installation window will appear. Follow the instructions to set it up.
+
+### Step 2. Install Visual Studio Code
+
+Download and install Visual Studio Code (VSCode), a code editor that works well with DX:
+
+[Download Visual Studio Code](https://code.visualstudio.com/)
+
 <details>
     <summary>I prefer my editor, like neovim. Do I have to use Visual Studio Code?</summary>
     <p>
@@ -50,49 +63,6 @@ Then follow the instructions to set up DX.
     </p>
 </details>
 
-<details>
-    <summary>I prefer my editor, like neovim. Do I have to use Visual Studio Code?</summary>
-    <p>
-        This guide assumes you are using Visual Studio Code.
-        If you are using another editor, you will need to be smart enough to adapt the instructions to your editor.
-    </p>
-    <p>
-        To build the game, use <code>nix develop --profile .nix-profile --command ./run</code>.
-    </p>
-</details>
-
-### Step 1. Install WSL (Windows only)
-
-1. Open PowerShell in administrator mode by right-clicking and selecting "Run as administrator".
-2. Type `wsl --install` and press Enter.
-3. Restart your computer.
-
-### Step 2. Install Visual Studio Code
-
-Download and install Visual Studio Code (VSCode), a code editor that works well with DX:
-
-[Download Visual Studio Code](https://code.visualstudio.com/)
-
-### Step 3. Run the setup script
-
-#### Windows
-
-Open PowerShell. Copy the following command and paste it into PowerShell with Ctrl+Shift+V:
-
-```sh
-wsl --exec 'bash <(curl -Ls https://bates64.com/setup-dx.sh)'
-```
-
-#### macOS and Linux
-
-Open a terminal. Copy the following command and paste it into the terminal with Ctrl+Shift+V or Cmd+V:
-
-```sh
-bash <(curl -Ls https://bates64.com/setup-dx.sh)
-```
-
-Then press Enter and follow the instructions.
-
 When the script finishes successfully, it should open DX in VSCode. You can close the terminal now.
 
 ### Step 4. Build and run the game
@@ -116,7 +86,7 @@ You're _almost_ ready to start making changes to the game. To do that, you need 
 
 You can reopen it by using the 'Recent' menu on the VSCode Welcome screen.
 
-If you can't find it, you can open VSCode from a terminal. Open a terminal and run `code ~/papermario-dx`. Note that you should use a WSL terminal if you're on Windows.
+If you can't find it, you can open VSCode from a terminal. Open a terminal and run `code ~/papermario-dx`. Note that you should use WSL if you're on Windows.
 
 ### Help!!!!
 
