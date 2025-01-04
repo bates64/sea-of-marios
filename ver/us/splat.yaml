@@ -73,7 +73,10 @@ vram_classes:
   - [entity_model, 0x0A000000]
   - [entity_model_anim, 0x00000000]
   - { name: dgb_01_smash_bridges, vram: 0x80200000, vram_symbol: D_80200000 }
+
+  - { name: online, vram: 0x80700000 }
 asset_stack:
+  - online
   - dx
   - us
 segments:
@@ -14699,5 +14702,15 @@ segments:
   - [0x1C84D30, bin, unk_1C84D30] # junk(?)
   - [0x1E00000, bin, copy_1E00000] # copy of 0x1943000 - 0x1983000
   - [0x1E40000, pm_map_data, mapfs]
-  - { name: copy_27FEE22, type: bin, start: 0x27FEE22, subalign: 2 } # copy of 0x232EE22 - 0x2330000
+  - dir: online
+    type: code
+    start: auto
+    vram_class: online
+    subsegments:
+    - [auto, cpp, comms] # must be first
+    - [auto, cpp, online]
+    - [auto, cpp, rpc]
+    - [auto, cpp, peers]
+    - [auto, c, mpack/mpack]
+    - [auto, c, mpack/impl]
   - [0x2800000]

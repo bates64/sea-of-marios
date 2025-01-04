@@ -1,0 +1,23 @@
+[package]
+name = "client"
+version = "0.1.0"
+authors = ["Alex Bates <alex@bates64.com>"]
+edition = "2021"
+
+[dependencies]
+matchbox_socket = "0.11"
+futures-timer = "3"
+log = { version = "0.4", default-features = false }
+futures = "0.3"
+tokio = { version = "1.32", features = ["net"] }
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+egui = "0.29"
+eframe = { version = "0.29", default-features = false, features = [
+    "default_fonts",     # Embed the default egui fonts.
+    "wgpu",              # Use the wgpu rendering backend. Alternative: "glow".
+    "wayland", "x11",    # To support Linux.
+] }
+egui_extras = { version = "0.29", features = ["svg"] }
+egui_tracing = "0.2.6"
+thiserror = "2"
+rmp = "0.8"

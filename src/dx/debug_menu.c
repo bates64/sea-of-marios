@@ -2044,6 +2044,14 @@ void dx_hashed_debug_printf(const char* filename, s32 line, const char* fmt, ...
     }
     ASSERT(len < 85);
 
+    // Add a newline if there isn't one
+    if (fmtBuf[len - 1] != '\n') {
+        fmtBuf[len++] = '\n';
+        fmtBuf[len] = '\0';
+    }
+
+    osSyncPrintf("%s:%d: %s", filename, line, fmtBuf);
+
     u32 hash = dx_debug_hash_location(filename, line);
     s32 matchedLine = -1;
     s32 idx;
