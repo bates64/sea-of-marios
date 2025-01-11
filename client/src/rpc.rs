@@ -5,6 +5,7 @@ use rmp::encode::*;
 const PEER_CONNECTED: u8 = 1;
 const PEER_DISCONNECTED: u8 = 2;
 const SET_PEER_ID: u8 = 3;
+const DBG_PRINT: u8 = 4;
 
 #[derive(Debug)]
 pub struct Message {
@@ -43,6 +44,12 @@ impl Message {
         write_uint8(&mut self.buf, SET_PEER_ID).unwrap();
         write_uint(&mut self.buf, most_significant).unwrap();
         write_uint(&mut self.buf, least_significant).unwrap();
+        self
+    }
+
+    pub fn dbg_print(&mut self, message: &str) -> &mut Self {
+        write_uint8(&mut self.buf, DBG_PRINT).unwrap();
+        write_str(&mut self.buf, message).unwrap();
         self
     }
 }

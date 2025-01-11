@@ -2,20 +2,14 @@
 #include "sprite/npc/Bandit.h"
 #include "dx/debug_menu.h"
 
-// Destructor support
-// not handling this properly yet, but we should do it eventually or figure out libc++
-void* __dso_handle = NULL;
-extern "C" int __cxa_atexit(void (*func)(void*), void* arg, void* dso_handle) {
-    // No-op implementation: do nothing and return success
-    return 0;
-}
-
 namespace online::peers {
 
-Vec<Peer> peers;
+Peer peers[MAX_PEERS];
 
-Peer::Peer(PeerId id) : id(id) {
-    debug_printf("creating Peer");
+void Peer::connect(PeerId const& newId) {
+    id = newId;
+    connected = true;
+
     NpcBlueprint bp = {
         .flags = 0,
         .initialAnim = ANIM_Bandit_Idle,
@@ -25,50 +19,76 @@ Peer::Peer(PeerId id) : id(id) {
     npc = get_npc_by_index(create_basic_npc(&bp)); // TODO: when changing map, recreate npc, or add a flag to npcs to persist across maps
 }
 
-void Peer::free() {
-    debug_printf("deleting Peer");
+void Peer::disconnect() {
+    connected = false;
+
     if (npc != nullptr) free_npc(npc);
     npc = nullptr;
 }
 
 void Peer::update() {
-    debug_printf("updating Peer %p", npc);
-    //timeout += 1;
-    if (timeout > 60) {
-        free();
-        peers.remove(*this);
-    }
+    if (!connected) return;
 }
 
 void Peer::move(Vec3f const& pos, f32 yaw, AnimID anim) {
-    timeout = 0;
     npc->pos = pos;
     npc->yaw = yaw;
     npc->curAnim = anim;
 }
 
-Peer& Peer::get_by_id(PeerId id) {
-    for (Peer& p : peers) {
-        if (p.id == id) {
-            return p;
+Peer& Peer::get_mut(PeerId const& id) {
+    for (size_t i = 0; i < MAX_PEERS; i++) {
+        if (peers[i].id == id && peers[i].is_connected()) return peers[i];
+    }
+
+    u64 most, least;
+    id.lld_pair(most, least);
+    PANIC_MSG("peer not found: %016llx-%016llx", most, least);
+}
+
+Peer const& Peer::get(PeerId const& id) {
+    return get_mut(id);
+}
+
+Peer& Peer::upsert_mut(PeerId const& id) {
+    for (size_t i = 0; i < MAX_PEERS; i++) {
+        if (peers[i].id == id && peers[i].is_connected()) return peers[i];
+    }
+
+    // Not found, find a disconnected peer to replace
+    for (size_t i = 0; i < MAX_PEERS; i++) {
+        if (!peers[i].is_connected()) {
+            peers[i].connect(id);
+            return peers[i];
         }
     }
-    return peers.push(Peer(id));
+    PANIC_MSG("max peers connected, refusing to add another");
+}
+
+void Peer::disconnect_all() {
+    for (size_t i = 0; i < MAX_PEERS; i++) {
+        peers[i].disconnect();
+    }
 }
 
 void update() {
     static bool needsInit = true;
     if (needsInit) {
-        peers = Vec<Peer>();
+        bzero(peers, sizeof(peers));
         needsInit = false;
     }
 
     online::rpc::set_player_state(gPlayerStatus.pos, gPlayerStatus.curYaw, gPlayerStatus.anim);
 
-    debug_printf("peers: %d", peers.len());
-    for (Peer& peer : peers) {
-        peer.update();
+    s32 connectedPeers = 0;
+    for (size_t i = 0; i < MAX_PEERS; i++) {
+        if (peers[i].is_connected()) {
+            peers[i].update();
+            connectedPeers++;
+            peers[i].id.print();
+        }
     }
+    debug_printf("connected peers: %d", connectedPeers);
 }
 
 }

@@ -31,7 +31,11 @@ namespace online {
             return !(*this == other);
         }
         void print() const {
-            debug_printf("PeerId(%lld, %lld)", mostSignificant, leastSignificant);
+            debug_printf("PeerId(%016llx-%016llx)", mostSignificant, leastSignificant);
+        }
+        void lld_pair(u64& most, u64& least) const {
+            most = mostSignificant;
+            least = leastSignificant;
         }
         void mpack_write(mpack_writer_t* writer) const {
             mpack_write_u64(writer, mostSignificant);
@@ -43,30 +47,23 @@ namespace online {
 
 
         /// Communication happens via a GDB client that connects to the emulator.
-        /// They talk over @p rawMessage, which is a buffer that is read and written to by both.
         ///
         /// Terminology:
         /// - "client" refers to `../../client/`, the GUI program that interfaces between the network and the emulator.
         /// - "room" refers to the room of the signaling server that the client is connected to.
         /// - "peer" refers to another person in the room, and also ourselves.
         class Message {
-            /// Outgoing length of rawMessage that the GDB client should read. The GDB client will watch this value.
-            volatile u32 length = 0;
-
-            /// The buffer used **both** for reading and writing messages.
-            /// GDB will write this at the start of each frame with the most recent message from the server.
-            /// At the end of each frame, the client will write its message and send it to the server.
-            char rawMessage[0x200];
-
-            /// Note: does not neccessarily mean we are in a room.
-            b32 isGdbConnected = FALSE;
+            u32 framesSinceLastRecv;
 
             /// This client's peer ID.
             PeerId peerId;
-
-            void reset_writer();
         public:
             mpack_writer_t writer;
+
+            char outMessage[128];
+            volatile char inMessage[128];
+            volatile b32 outSignal;
+            volatile b32 inSignal;
 
             Message();
 
@@ -76,10 +73,12 @@ namespace online {
             /// Write outgoing message for this frame to the buffer.
             void encode();
 
+            void reset_writer();
+
             inline PeerId const& peer_id() const { return peerId; };
             inline void set_peer_id(PeerId id) { peerId = id; };
 
-            inline b32 is_connected_to_client() const { return isGdbConnected; }
+            inline b32 is_connected_to_client() const { return framesSinceLastRecv < 60; }
         };
 
         void begin_step();
@@ -95,6 +94,7 @@ namespace online {
             void peer_connected(mpack_reader_t* reader);
             void peer_disconnected(mpack_reader_t* reader);
             void set_peer_id(mpack_reader_t* reader);
+            void dbg_print(mpack_reader_t* reader);
             void set_player_state(mpack_reader_t* reader);
         }
     };
@@ -103,120 +103,23 @@ namespace online {
         constexpr size_t MAX_PEERS = 16;
 
         class Peer {
-            PeerId id;
-            Npc* npc;
-            u32 timeout = 0;
+            bool connected = false;
+            Npc* npc = nullptr;
+            void connect(PeerId const& id);
         public:
-            Peer(PeerId id);
-            void free();
+            PeerId id;
+            void disconnect();
             void update();
             void move(Vec3f const& pos, f32 yaw, AnimID anim);
-            static Peer& get_by_id(PeerId id);
+            bool is_connected() const { return connected; }
 
-            // move ctor
-            Peer(Peer&& other) : id(other.id), npc(other.npc), timeout(other.timeout) {
-                other.npc = nullptr;
-            }
-
-            // move assignment
-            Peer& operator=(Peer&& other) {
-                id = other.id;
-                npc = other.npc;
-                timeout = other.timeout;
-                other.npc = nullptr;
-                return *this;
-            }
+            static Peer& get_mut(PeerId const& id);
+            static Peer const& get(PeerId const& id);
+            static Peer& upsert_mut(PeerId const& id);
+            static void disconnect_all();
         };
 
-        template <typename T>
-        constexpr T&& move(T& t) noexcept
-        {
-            return static_cast<T&&>(t);
-        }
-
-        template <typename T>
-        class Vec {
-            T* data;
-            size_t capacity;
-            size_t size;
-        public:
-            Vec() : data(nullptr), capacity(0), size(0) {}
-            Vec(size_t capacity) : capacity(capacity), size(0) {
-                data = (T*)general_heap_malloc(capacity * sizeof(T));
-            }
-
-            template <size_t N>
-            Vec(T const (&arr)[N]) : capacity(N), size(N) {
-                data = general_heap_malloc(N * sizeof(T));
-                memcpy(data, arr, N * sizeof(T));
-            }
-
-            ~Vec() {
-                general_heap_free(data);
-            }
-
-            T& push(T&& value) {
-                if (size >= capacity) {
-                    if (capacity == 0) {
-                        capacity = 1;
-                        data = (T*)general_heap_malloc(capacity * sizeof(T));
-                    } else {
-                        capacity *= 2;
-                        data = (T*)_heap_realloc(&heap_generalHead, &data, capacity * sizeof(T));
-                    }
-                }
-
-                data[size++] = move(value);
-                return data[size - 1];
-            }
-
-            void remove(T const& value) {
-                for (size_t i = 0; i < size; i++) {
-                    if (&data[i] == &value) {
-                        for (size_t j = i; j < size - 1; j++) {
-                            bcopy(&data[j], &data[j + 1], sizeof(T)); // probably evil
-                        }
-                        size--;
-                        return;
-                    }
-                }
-            }
-
-            T& operator[](size_t index) {
-                return data[index];
-            }
-
-            T const& operator[](size_t index) const {
-                return data[index];
-            }
-
-            size_t len() const {
-                return size;
-            }
-
-            T* begin() {
-                return data;
-            }
-
-            T* end() {
-                return data + size;
-            }
-
-            T const* begin() const {
-                return data;
-            }
-
-            T const* end() const {
-                return data + size;
-            }
-        };
-
-        extern Vec<Peer> peers;
-
-        static inline void remove(Peer const& value) {
-            peers.remove(value);
-        }
-
+        extern Peer peers[MAX_PEERS];
         void update();
     }
 };

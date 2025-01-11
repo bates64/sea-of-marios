@@ -11,18 +11,6 @@ NpcSettings N(NpcSettings_Whale) = {
     .level = ACTOR_LEVEL_NONE,
 };
 
-NpcSettings N(NpcSettings_Kolorado) = {
-    .height = 40,
-    .radius = 24,
-    .level = ACTOR_LEVEL_NONE,
-};
-
-NpcSettings N(NpcSettings_JrTroopa) = {
-    .height = 32,
-    .radius = 24,
-    .level = ACTOR_LEVEL_NONE,
-};
-
 f32 D_80243434_867F74 = 0.0f;
 f32 D_80243438_867F78 = 0.0f;
 s32 D_8024343C_867F7C = 0;
@@ -79,16 +67,6 @@ API_CALLABLE(N(func_80240E80_8659C0)) {
             partner->colliderPos.y = partner->pos.y;
             partner->colliderPos.z = partner->pos.z;
             partner->flags |= NPC_FLAG_DIRTY_SHADOW;
-            break;
-        case 2:
-            kolorado = get_npc_safe(NPC_Kolorado);
-            kolorado->pos.x = x;
-            kolorado->pos.y = y;
-            kolorado->pos.z = z;
-            kolorado->colliderPos.x = kolorado->pos.x;
-            kolorado->colliderPos.y = kolorado->pos.y;
-            kolorado->colliderPos.z = kolorado->pos.z;
-            kolorado->flags |= NPC_FLAG_DIRTY_SHADOW;
             break;
     }
 
@@ -182,41 +160,11 @@ API_CALLABLE(N(func_802412AC_865DEC)) {
 }
 
 EvtScript N(EVS_NpcIdle_Whale) = {
-    Call(GetEntryID, LVar0)
-    IfEq(LVar0, mac_06_ENTRY_0)
-        Call(GetNpcPos, NPC_Whale, LVar0, LVar1, LVar2)
-        Call(NpcFlyTo, NPC_Whale, 50, LVar1, 500, 120, 0, EASING_SIN_OUT)
-        Thread
-            Call(N(func_80241098_865BD8))
-        EndThread
-        Wait(150)
-        Call(SetNpcAnimation, NPC_Whale, ANIM_Kolorado_Idle)
-        Call(NpcFlyTo, NPC_Whale, 500, LVar1, 500, 120, 0, EASING_COS_IN)
-        IfEq(GF_StartedChapter5, FALSE)
-            Set(GF_StartedChapter5, TRUE)
-            Call(FadeOutMusic, 0, 1500)
-            Call(GotoMapSpecial, Ref("kmr_22"), kmr_22_ENTRY_5, TRANSITION_BEGIN_OR_END_CHAPTER)
-        Else
-            Call(GotoMap, Ref("jan_00"), jan_00_ENTRY_0)
-        EndIf
-    Else
-        Call(GetNpcPos, NPC_Whale, LVar0, LVar1, LVar2)
-        IfGe(GB_StoryProgress, STORY_CH5_SUSHIE_JOINED_PARTY)
-            IfEq(GF_MAC01_Defeated_JrTroopa4, FALSE)
-                Call(NpcFlyTo, NPC_Whale, -550, LVar1, 500, 240, 0, EASING_LINEAR)
-                Call(SetNpcVar, NPC_JrTroopa, 0, 1)
-                Return
-            EndIf
-        EndIf
-        Call(NpcFlyTo, NPC_Whale, -70, LVar1, 500, 120, 0, EASING_SIN_OUT)
-        Thread
-            Call(N(func_80241098_865BD8))
-        EndThread
-        Wait(150)
-        Call(SetNpcAnimation, NPC_Whale, ANIM_Kolorado_Idle)
-        Call(NpcFlyTo, NPC_Whale, -500, LVar1, 500, 120, 0, EASING_COS_IN)
-        Call(GotoMap, Ref("mac_05"), mac_05_ENTRY_1)
-    EndIf
+    Call(GetNpcPos, NPC_Whale, LVar0, LVar1, LVar2)
+    Call(NpcFlyTo, NPC_Whale, 50, LVar1, 500, 120, 0, EASING_SIN_OUT)
+    Thread
+        Call(N(func_80241098_865BD8))
+    EndThread
     Return
     End
 };
@@ -264,19 +212,6 @@ API_CALLABLE(N(SeagullYawInterp)) {
     return ApiStatus_DONE2;
 }
 
-API_CALLABLE(N(MakeJrTroopaBubbles)) {
-    Npc* jrTroopa = get_npc_safe(NPC_JrTroopa);
-    f32 x = jrTroopa->pos.x + 10.0f;
-    f32 y = jrTroopa->pos.y;
-    f32 z = jrTroopa->pos.z;
-
-    if (y < 0.0f) {
-        fx_rising_bubble(0, x, y, z, 0.0f);
-        sfx_adjust_env_sound_pos(SOUND_LRAW_JR_TROOPA_SWIM, SOUND_SPACE_DEFAULT, x, y, z);
-    }
-    return ApiStatus_DONE2;
-}
-
 EvtScript N(EVS_NpcInit_Whale) = {
     Call(SetNpcFlagBits, NPC_SELF, NPC_FLAG_HAS_NO_SPRITE, TRUE)
     Call(SetNpcFlagBits, NPC_SELF, NPC_FLAG_HAS_SHADOW, FALSE)
@@ -284,13 +219,11 @@ EvtScript N(EVS_NpcInit_Whale) = {
     IfEq(LVar0, mac_06_ENTRY_0)
         Call(InterpPlayerYaw, 90, 0)
         Call(InterpNpcYaw, NPC_PARTNER, 90, 0)
-        Call(InterpNpcYaw, NPC_Kolorado, 90, 0)
         Call(InterpNpcYaw, NPC_SELF, 90, 0)
         Call(SetNpcPos, NPC_SELF, -300, 0, 500)
     Else
         Call(InterpPlayerYaw, 270, 0)
         Call(InterpNpcYaw, NPC_PARTNER, 270, 0)
-        Call(InterpNpcYaw, NPC_Kolorado, 270, 0)
         Call(InterpNpcYaw, NPC_SELF, 270, 0)
         Call(SetNpcPos, NPC_SELF, 300, 0, 500)
     EndIf
@@ -302,36 +235,13 @@ EvtScript N(EVS_NpcInit_Whale) = {
     Call(SetNpcFlagBits, NPC_PARTNER, NPC_FLAG_FLYING | NPC_FLAG_IGNORE_WORLD_COLLISION | NPC_FLAG_IGNORE_ENTITY_COLLISION, TRUE)
     Call(SetNpcFlagBits, NPC_PARTNER, NPC_FLAG_GRAVITY, FALSE)
     Call(SetNpcAnimation, NPC_PARTNER, PARTNER_ANIM_IDLE)
+    // Player
     Thread
         Call(N(func_80240E80_8659C0), 0)
     EndThread
+    // Partner
     Thread
         Call(N(func_80240E80_8659C0), 1)
-    EndThread
-    Thread
-        Switch(GB_StoryProgress)
-            CaseLt(STORY_CH5_REACHED_LAVA_LAVA_ISLAND)
-                Call(N(func_80240E80_8659C0), 2)
-            CaseEq(STORY_CH5_TRADED_VASE_FOR_SEED)
-                Call(N(func_80240E80_8659C0), 2)
-        EndSwitch
-    EndThread
-    IfLt(GB_StoryProgress, STORY_CH5_REACHED_LAVA_LAVA_ISLAND)
-        Return
-    EndIf
-    IfGe(GB_StoryProgress, STORY_CH5_SUSHIE_JOINED_PARTY)
-        IfEq(GF_MAC01_Defeated_JrTroopa4, FALSE)
-            Return
-        EndIf
-    EndIf
-    Thread
-        Call(N(func_80241290_865DD0))
-        Call(GetEntryID, LVar0)
-        IfEq(LVar0, mac_06_ENTRY_0)
-            Call(GotoMap, Ref("jan_00"), jan_00_ENTRY_0)
-        Else
-            Call(GotoMap, Ref("mac_05"), mac_05_ENTRY_1)
-        EndIf
     EndThread
     Return
     End
@@ -468,47 +378,6 @@ EvtScript N(EVS_UnusedGull) = {
     End
 };
 
-EvtScript N(EVS_NpcIdle_JrTroopa) = {
-    Call(SetSelfVar, 0, 0)
-    Loop(0)
-        Call(GetSelfVar, 0, LVar0)
-        IfNe(LVar0, 0)
-            BreakLoop
-        EndIf
-        Wait(1)
-    EndLoop
-    Wait(60)
-    Call(SetMusicTrack, 0, SONG_JR_TROOPA_THEME, 0, 8)
-    Call(PlaySound, SOUND_LOOP_JR_TROOPA_SWIM)
-    Call(SetNpcAnimation, NPC_SELF, ANIM_JrTroopa_ChargeTripped)
-    Call(SetNpcPos, NPC_SELF, 250, -30, 500)
-    Wait(5)
-    ChildThread
-        Loop(0)
-            Call(N(MakeJrTroopaBubbles))
-            Wait(5)
-        EndLoop
-    EndChildThread
-    Call(SetNpcSpeed, NPC_SELF, Float(2.0))
-    Call(NpcMoveTo, NPC_SELF, -300, 500, 0)
-    Call(GotoMap, Ref("mac_05"), mac_05_ENTRY_1)
-    Wait(100)
-    Return
-    End
-};
-
-EvtScript N(EVS_NpcInit_JrTroopa) = {
-    IfGe(GB_StoryProgress, STORY_CH5_SUSHIE_JOINED_PARTY)
-        IfEq(GF_MAC01_Defeated_JrTroopa4, FALSE)
-            Call(BindNpcIdle, NPC_SELF, Ref(N(EVS_NpcIdle_JrTroopa)))
-            Return
-        EndIf
-    EndIf
-    Call(RemoveNpc, NPC_SELF)
-    Return
-    End
-};
-
 NpcData N(NpcData_Whale) = {
     .id = NPC_Whale,
     .pos = { NPC_DISPOSE_LOCATION },
@@ -537,74 +406,9 @@ NpcData N(NpcData_Whale) = {
     },
 };
 
-NpcData N(NpcData_Kolorado) = {
-    .id = NPC_Kolorado,
-    .pos = { NPC_DISPOSE_LOCATION },
-    .yaw = 270,
-    .init = &N(EVS_NpcInit_Kolorado),
-    .settings = &N(NpcSettings_Kolorado),
-    .flags = COMMON_PASSIVE_FLAGS,
-    .drops = NO_DROPS,
-    .animations = {
-        .idle   = ANIM_Kolorado_Idle,
-        .walk   = ANIM_Kolorado_Walk,
-        .run    = ANIM_Kolorado_Run,
-        .chase  = ANIM_Kolorado_Run,
-        .anim_4 = ANIM_Kolorado_Idle,
-        .anim_5 = ANIM_Kolorado_Idle,
-        .death  = ANIM_Kolorado_Idle,
-        .hit    = ANIM_Kolorado_Idle,
-        .anim_8 = ANIM_Kolorado_Idle,
-        .anim_9 = ANIM_Kolorado_Idle,
-        .anim_A = ANIM_Kolorado_Idle,
-        .anim_B = ANIM_Kolorado_Idle,
-        .anim_C = ANIM_Kolorado_Idle,
-        .anim_D = ANIM_Kolorado_Idle,
-        .anim_E = ANIM_Kolorado_Idle,
-        .anim_F = ANIM_Kolorado_Idle,
-    },
-};
-
-AnimID N(ExtraAnims_JrTroopa)[] = {
-    ANIM_JrTroopa_Still,
-    ANIM_JrTroopa_Idle,
-    ANIM_JrTroopa_ChargeTripped,
-    ANIM_LIST_END
-};
-
-NpcData N(NpcData_JrTroopa) = {
-    .id = NPC_JrTroopa,
-    .pos = { NPC_DISPOSE_LOCATION },
-    .yaw = 270,
-    .init = &N(EVS_NpcInit_JrTroopa),
-    .settings = &N(NpcSettings_JrTroopa),
-    .flags = ENEMY_FLAG_PASSIVE | ENEMY_FLAG_DO_NOT_KILL | ENEMY_FLAG_ENABLE_HIT_SCRIPT | ENEMY_FLAG_IGNORE_WORLD_COLLISION | ENEMY_FLAG_IGNORE_ENTITY_COLLISION | ENEMY_FLAG_FLYING | ENEMY_FLAG_NO_DELAY_AFTER_FLEE | ENEMY_FLAG_DO_NOT_AUTO_FACE_PLAYER,
-    .drops = NO_DROPS,
-    .animations = {
-        .idle   = ANIM_JrTroopa_Idle,
-        .walk   = ANIM_JrTroopa_Walk,
-        .run    = ANIM_JrTroopa_Walk,
-        .chase  = ANIM_JrTroopa_Walk,
-        .anim_4 = ANIM_JrTroopa_Idle,
-        .anim_5 = ANIM_JrTroopa_Idle,
-        .death  = ANIM_JrTroopa_Idle,
-        .hit    = ANIM_JrTroopa_Idle,
-        .anim_8 = ANIM_JrTroopa_Idle,
-        .anim_9 = ANIM_JrTroopa_Idle,
-        .anim_A = ANIM_JrTroopa_Idle,
-        .anim_B = ANIM_JrTroopa_Idle,
-        .anim_C = ANIM_JrTroopa_Idle,
-        .anim_D = ANIM_JrTroopa_Idle,
-        .anim_E = ANIM_JrTroopa_Idle,
-        .anim_F = ANIM_JrTroopa_Idle,
-    },
-    .extraAnimations = N(ExtraAnims_JrTroopa),
-    .tattle = MSG_NpcTattle_JrTroopa,
-};
-
 NpcGroupList N(DefaultNPCs) = {
-    NPC_GROUP(N(NpcData_JrTroopa)),
+    //NPC_GROUP(N(NpcData_JrTroopa)),
     NPC_GROUP(N(NpcData_Whale)),
-    NPC_GROUP(N(NpcData_Kolorado)),
+    //NPC_GROUP(N(NpcData_Kolorado)),
     {}
 };

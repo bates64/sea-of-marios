@@ -16,7 +16,7 @@ fn main() -> eframe::Result {
     tracing_subscriber::registry()
         .with(
             tracing_subscriber::EnvFilter::try_from_default_env()
-                .unwrap_or_else(|_| "client=debug,matchbox_socket=info".into()),
+                .unwrap_or_else(|_| "client=trace,matchbox_socket=info".into()),
         )
         .with(tracing_subscriber::fmt::layer())
         .with(collector.clone())
@@ -26,6 +26,8 @@ fn main() -> eframe::Result {
     let rt = Runtime::new().expect("unable to create async runtime");
     let (gdb_tx, gdb_rx) = mpsc::channel::<gdb::Command>(256);
     let (net_tx, net_rx) = mpsc::channel::<net::Command>(256);
+    let gui_gdb_tx = gdb_tx.clone();
+    let gui_net_tx = net_tx.clone();
     let _enter = rt.enter();
     std::thread::spawn(move || {
         rt.block_on(async {
@@ -48,6 +50,6 @@ fn main() -> eframe::Result {
     eframe::run_native(
         "Paper Mario Online",
         native_options,
-        Box::new(|cc| Ok(Box::new(gui::App::new(cc, collector)))),
+        Box::new(move |cc| Ok(Box::new(gui::App::new(cc, collector, gui_gdb_tx, gui_net_tx)))),
     )
 }

@@ -4,7 +4,7 @@
 /// Creates the version string that appears on the file select menu.
 /// Also used to sign save files created with this mod.
 /// WARNING: name must not exceed 27 characters!
-#define DX_MOD_NAME "New Mod"
+#define DX_MOD_NAME "Online"
 #define DX_MOD_VER_MAJOR 1 /// Increase this when you make breaking changes to the savefile format (like reordering items)
 #define DX_MOD_VER_MINOR 0 /// Increase this when adding new features or other enchancements
 #define DX_MOD_VER_PATCH 0 /// Increase this when fixing bugs
@@ -29,10 +29,10 @@
 #define DX_SKIP_DEMO 1
 
 /// Map to load when starting a new game.
-#define NEW_GAME_MAP_ID "machi"
+#define NEW_GAME_MAP_ID "mac_06"
 
 /// Entry to use when starting a new game.
-#define NEW_GAME_ENTRY_ID machi_ENTRY_0
+#define NEW_GAME_ENTRY_ID mac_06_ENTRY_0
 
 /// Story progress when starting a new game.
 #define NEW_GAME_STORY_PROGRESS STORY_CH8_STAR_SHIP_ACTIVATED

@@ -10,13 +10,10 @@
 #include "mapfs/mac_06_hit.h"
 
 #include "sprite/npc/Kolorado.h"
-#include "sprite/npc/JrTroopa.h"
 
 enum {
     NPC_Whale           = 0,
     NPC_01              = 1,
-    NPC_Kolorado        = 2,
-    NPC_JrTroopa        = 3,
 };
 
 enum {
@@ -30,5 +27,6 @@ enum {
 extern EvtScript N(EVS_Main);
 extern EvtScript N(EVS_FlyingGull);
 extern EvtScript N(EVS_WhaleMain);
+extern EvtScript N(EVS_EstablishOnlineConnection);
 
 extern NpcGroupList N(DefaultNPCs);

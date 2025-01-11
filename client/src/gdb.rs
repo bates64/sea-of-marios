@@ -1,3 +1,5 @@
+#![allow(unused)]
+
 use std::ffi::CString;
 
 use tokio::net::TcpStream;
@@ -8,6 +10,8 @@ use thiserror::Error;
 use log::{trace, debug, warn, info, error};
 
 use crate::net;
+
+const MESSAGE_SIZE: usize = 128;
 
 pub async fn connect_and_retry(mut rx: Receiver<Command>, mut tx: Sender<net::Command>) {
     loop {
@@ -22,6 +26,7 @@ pub async fn connect_and_retry(mut rx: Receiver<Command>, mut tx: Sender<net::Co
                 sleep(Duration::from_secs(1)).await;
             },
         }
+        let _ = tx.send(net::Command::Disconnect).await;
     }
 }
 
@@ -34,87 +39,95 @@ async fn connect(rx: &mut Receiver<Command>, tx: &mut Sender<net::Command>) -> R
     // Read online::comms::header
     let base = 0x80700000;
     let magic = client.read_cstr(base).await?;
-    let write_signal_addr = client.read_u32(base + 0x20).await?;
-    let message_addr = client.read_u32(base + 0x20 + 4).await?;
+    let out_message = client.read_u32(base + 0x20).await?; // Game's outgoing message (game -> client)
+    let in_message = client.read_u32(base + 0x20 + 4).await?; // Game's incoming message (client -> game)
+    let out_signal = client.read_u32(base + 0x20 + 4 * 2).await?; // Whether out_message is ready
+    let in_signal = client.read_u32(base + 0x20 + 4 * 3).await?; // Whether in_message is ready
     debug!("online::comms::header::magic = {:?}", magic);
-    debug!("online::comms::header::message = {:08X}", message_addr);
 
     if magic != c"PAPERMARIO-DX ONLINE".into() {
         return Err(Error::GameNotSupported);
     }
-    if message_addr & 0xFF000000 != 0x80000000 {
-        error!("bad pointer: online::comms::header::message");
+    if out_message & 0xFF000000 != 0x80000000 {
+        error!("bad pointer: online::comms::header::out_message");
+        return Err(Error::GameNotSupported);
+    }
+    if in_message & 0xFF000000 != 0x80000000 {
+        error!("bad pointer: online::comms::header::in_message");
         return Err(Error::GameNotSupported);
     }
 
-    // When the game writes to this address, it is signaling that it's ready to exchange messages
-    client.insert_breakpoint(write_signal_addr, Breakpoint::Write, 4).await?;
+    let frame_duration = Duration::from_millis(1000 / 30);
+    let latency = client.measure_latency().await?;
+    if latency > frame_duration {
+        warn!("high latency: {:?}", latency);
+    }
 
     info!("connection with game established");
     let _ = tx.send(net::Command::Connect).await;
 
+    // Every frame, exchange messages with the game
+    let mut interval = tokio::time::interval(frame_duration);
+    let mut in_signal_failures = 0;
     loop {
-        // Check for breakpoint hit
-        if let Ok(packet) = client.read_packet().await {
-            if packet.starts_with("T05") {
-                let message_length = client.read_u32(message_addr).await?;
-                if message_length > 0 {
-                    // Read message and send it to net
-                    let mut recv_message = vec![0; message_length as usize];
-                    client.read_memory(message_addr + 4, &mut recv_message).await?;
-                    let _ = tx.send(net::Command::NewMessageFromGame(recv_message)).await;
+        interval.tick().await;
 
-                    // Check for messages to be sent, combining them into a single message
-                    let mut composite = vec![0xC0]; // Send a nil if there are no messages, so the game doesn't read its own messages
-                    loop {
-                        match rx.try_recv() {
-                            Ok(Command::SendMesageToGame(msg)) => {
-                                // Remove trailing nil terminator if there is one
-                                if composite.last() == Some(&0xC0) {
-                                    composite.pop();
-                                }
+        trace!("frame");
 
-                                composite.extend_from_slice(&msg);
-                            }
-                            Err(TryRecvError::Disconnected) => return Ok(()), // net thread is gone
-                            Err(TryRecvError::Empty) => break,
-                        }
+        // Try to read message
+        trace!("read out signal");
+        if client.read_u32(out_signal).await? != 0 {
+            trace!("out signal is set, reading message");
+            // Read message and send it to net
+            let mut recv_message = vec![0; MESSAGE_SIZE];
+            client.read_memory(out_message, &mut recv_message).await?;
+            let _ = tx.send(net::Command::NewMessageFromGame(recv_message)).await;
+            client.write_u32(out_signal, 0).await?;
+        } else {
+            trace!("no message from game");
+        }
+
+        trace!("read in signal");
+        if client.read_u32(in_signal).await? != 0 {
+            trace!("in_signal was not cleared. is game dead?");
+            in_signal_failures += 1;
+            if in_signal_failures > 30 * 5 { // 5 seconds
+                error!("in_signal was not cleared for 5 seconds, assuming game is dead");
+                return Err(Error::ConnectionClosed);
+            }
+            continue;
+        }
+        in_signal_failures = 0;
+
+        // Check for messages to be sent, combining them into a single message
+        let mut composite = vec![0xC0];
+        loop {
+            match rx.try_recv() {
+                Ok(Command::SendMesageToGame(msg)) => {
+                    // Remove trailing nil terminator if there is one
+                    if composite.last() == Some(&0xC0) {
+                        composite.pop();
                     }
 
-                    if composite.len() > 1 {
-                        debug!("sending message to game: {:?}", &composite);
-                    }
-
-                    // Align composite to 4 bytes
-                    while composite.len() % 4 != 0 {
-                        composite.push(0);
-                    }
-
-                    // Send message to game
-                    //client.write_memory(message_addr + 4, &composite).await?;
-                    // ares is being buggy(?) so we'll write in 4 byte chunks instead
-                    for (i, chunk) in composite.chunks(4).enumerate() {
-                        client.write_memory(message_addr + 4 + (i as u32 * 4), chunk).await?;
-                    }
-                    #[cfg(debug_assertions)]
-                    {
-                        // Sanity check
-                        let mut sanity_check = vec![0; composite.len()];
-                        client.read_memory(message_addr + 4, &mut sanity_check).await?;
-                        if composite != sanity_check {
-                            error!("message was not written correctly");
-                        }
-                    }
-
-                    // Reset message length to tell game that GDB has read the message
-                    client.write_u32(message_addr, 0).await?;
+                    composite.extend_from_slice(&msg);
                 }
-
-                client.send_str("c").await?; // Continue
+                Err(TryRecvError::Disconnected) => return Ok(()), // net thread is gone
+                Err(TryRecvError::Empty) => break,
             }
         }
 
-        tokio::task::yield_now().await;
+        if composite.len() > 1 {
+            debug!("sending message to game: {:?}", &composite);
+        }
+
+        // Align composite to 4 bytes
+        while composite.len() % 4 != 0 {
+            composite.push(0);
+        }
+
+        // Send message to game
+        client.checked_write_memory(in_message, &composite).await?;
+        client.write_u32(in_signal, 1).await?;
     }
 }
 
@@ -154,6 +167,9 @@ enum Error {
 
     #[error("game is not Paper Mario DX with online support")]
     GameNotSupported,
+
+    #[error("memory write failed")]
+    WriteFailed,
 }
 
 impl Client {
@@ -315,6 +331,29 @@ impl Client {
         self.wait_for_ok().await
     }
 
+    /// Some GDB stubs mess up memory writes sometimes, so we check the written data.
+    pub async fn checked_write_memory(&mut self, address: u32, data: &[u8]) -> Result<()> {
+        let mut attempts = 0;
+        loop {
+            self.write_memory(address, data).await?;
+
+            let mut real = vec![0; data.len()];
+            self.read_memory(address, &mut real).await?;
+
+            if real == data {
+                return Ok(());
+            }
+
+            if attempts >= 3 {
+                error!("memory write failed after 3 attempts");
+                return Err(Error::WriteFailed);
+            }
+
+            trace!("memory write failed, retrying");
+            attempts += 1;
+        }
+    }
+
     pub async fn read_memory(&mut self, address: u32, data: &mut [u8]) -> Result<()> {
         self.send_str(&format!("m{:08X},{}", address, data.len())).await?;
 
@@ -371,6 +410,13 @@ impl Client {
     pub async fn insert_breakpoint(&mut self, address: u32, kind: Breakpoint, size: u32) -> Result<()> {
         self.send_str(&format!("Z{},{:08X},{:X}", kind.as_int(), address, size)).await?;
         self.wait_for_ok().await
+    }
+
+    pub async fn measure_latency(&mut self) -> Result<Duration> {
+        let start = std::time::Instant::now();
+        self.send_str("qSupported").await?;
+        self.read_packet().await?;
+        Ok(start.elapsed())
     }
 }
 

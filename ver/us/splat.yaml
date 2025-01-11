@@ -8205,6 +8205,7 @@ segments:
     - [auto, c, main]
     - [auto, c, whale]
     - [auto, c, npc]
+    - [auto, cpp, online]
   - name: tik_01
     dir: world/area_tik/tik_01
     type: code
@@ -14699,6 +14700,7 @@ segments:
       - 2C_QuizQuestions
       - 2D_QuizChoices
       - 2E_Credits
+      - 2F_Online
   - [0x1C84D30, bin, unk_1C84D30] # junk(?)
   - [0x1E00000, bin, copy_1E00000] # copy of 0x1943000 - 0x1983000
   - [0x1E40000, pm_map_data, mapfs]

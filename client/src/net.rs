@@ -106,9 +106,8 @@ async fn connect(rx: &mut Receiver<Command>, tx: &mut Sender<gdb::Command>) {
                     // Broadcast message to all peers
                     let peers: Vec<PeerId> = socket.connected_peers().collect();
                     let channel = socket.channel_mut(CHANNEL_ID);
-                    debug!("num peers: {}", peers.len());
                     for peer in peers {
-                        //channel.send(message.as_slice().into(), peer);
+                        channel.send(message.as_slice().into(), peer);
                     }
                 }
                 Command::Connect => return Box::pin(connect(rx, tx)).await, // Reconnect
