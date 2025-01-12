@@ -13,4 +13,8 @@ EXTERN_C void online_end_step_game_loop() {
     comms::end_step();
 }
 
-} // namespace online
+EXTERN_C void online_on_clear_npcs() {
+    peers::Peer::clear_npcs();
+}
+
+}; // namespace online

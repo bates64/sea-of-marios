@@ -2,6 +2,7 @@
 
 use std::ffi::CString;
 
+use rmp::encode::{write_nil, write_str};
 use tokio::net::TcpStream;
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
 use tokio::sync::mpsc::{Sender, Receiver, error::TryRecvError};
@@ -76,10 +77,14 @@ async fn connect(rx: &mut Receiver<Command>, tx: &mut Sender<net::Command>) -> R
 
         // Try to read message
         trace!("read out signal");
-        if client.read_u32(out_signal).await? != 0 {
+        let recv_size = client.read_u32(out_signal).await? as usize;
+        if recv_size != 0 {
+            if recv_size > MESSAGE_SIZE {
+                return Err(Error::BadPacket(format!("message too large: {}", recv_size)));
+            }
             trace!("out signal is set, reading message");
             // Read message and send it to net
-            let mut recv_message = vec![0; MESSAGE_SIZE];
+            let mut recv_message = vec![0; recv_size];
             client.read_memory(out_message, &mut recv_message).await?;
             let _ = tx.send(net::Command::NewMessageFromGame(recv_message)).await;
             client.write_u32(out_signal, 0).await?;
@@ -100,7 +105,8 @@ async fn connect(rx: &mut Receiver<Command>, tx: &mut Sender<net::Command>) -> R
         in_signal_failures = 0;
 
         // Check for messages to be sent, combining them into a single message
-        let mut composite = vec![0xC0];
+        let mut composite = vec![0xC0]; // nil
+        let mut msg_count = 0usize;
         loop {
             match rx.try_recv() {
                 Ok(Command::SendMesageToGame(msg)) => {
@@ -110,24 +116,24 @@ async fn connect(rx: &mut Receiver<Command>, tx: &mut Sender<net::Command>) -> R
                     }
 
                     composite.extend_from_slice(&msg);
+                    msg_count += 1;
+                    break; // TEMP: only send one message per frame
                 }
                 Err(TryRecvError::Disconnected) => return Ok(()), // net thread is gone
                 Err(TryRecvError::Empty) => break,
             }
         }
 
-        if composite.len() > 1 {
-            debug!("sending message to game: {:?}", &composite);
-        }
+        assert!(composite.len() <= MESSAGE_SIZE);
+        assert!(composite.last() == Some(&0xC0));
 
-        // Align composite to 4 bytes
-        while composite.len() % 4 != 0 {
-            composite.push(0);
-        }
+        if msg_count > 0 {
+            debug!("sending {} messages to game: {:?}", msg_count, &composite);
 
-        // Send message to game
-        client.checked_write_memory(in_message, &composite).await?;
-        client.write_u32(in_signal, 1).await?;
+            // Send message to game
+            client.checked_write_memory(in_message, &composite).await?;
+            client.write_u32(in_signal, 1).await?;
+        }
     }
 }
 

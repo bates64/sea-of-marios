@@ -12,10 +12,15 @@ enum class Procedure : u8 {
     set_peer_id,
     dbg_print,
     set_player_state,
+    set_map,
 };
 
 void read::mpack_read_rpc(mpack_reader_t* reader) {
     Procedure procedure = (Procedure)mpack_expect_u8(reader);
+    if (mpack_reader_error(reader) != mpack_ok) {
+        debug_printf("error reading RPC procedure");
+        return;
+    }
     switch (procedure) {
         case Procedure::nop: return;
         case Procedure::peer_connected: return peer_connected(reader);
@@ -23,6 +28,7 @@ void read::mpack_read_rpc(mpack_reader_t* reader) {
         case Procedure::set_peer_id: return set_peer_id(reader);
         case Procedure::dbg_print: return dbg_print(reader);
         case Procedure::set_player_state: return set_player_state(reader);
+        case Procedure::set_map: return set_map(reader);
         default: debug_printf("unknown RPC procedure: %d", (u8)procedure);
     }
 }
@@ -100,10 +106,43 @@ void read::set_player_state(mpack_reader_t* reader) {
         debug_printf("error reading set_player_state");
         return;
     }
-    u64 most, least;
-    peer.lld_pair(most, least);
-    debug_printf("peer %016llx-%016llx moved to (%f, %f, %f)", most, least, x, y, z);
-    //Peer::get_mut(peer).move({x, y, z}, yaw, anim);
+
+    auto p = Peer::get_ptr(peer);
+    if (p == NULL) {
+        u64 most, least;
+        peer.lld_pair(most, least);
+        debug_printf("set_player_state: peer not found %llx-%llx", most, least);
+        return;
+    }
+    p->move({x, y, z}, yaw, anim);
+}
+
+void set_map(s16 mapID, s16 areaID) {
+    auto& message = online::comms::get_message();
+    mpack_write_u8(&message.writer, (u8)Procedure::set_map);
+    message.peer_id().mpack_write(&message.writer);
+    mpack_write_i16(&message.writer, mapID);
+    mpack_write_i16(&message.writer, areaID);
+    debug_printf("set_map: %d %d", mapID, areaID);
+}
+
+void read::set_map(mpack_reader_t* reader) {
+    PeerId peer(reader);
+    s16 mapID = mpack_expect_i16(reader);
+    s16 areaID = mpack_expect_i16(reader);
+    if (mpack_reader_error(reader) != mpack_ok) {
+        debug_printf("error reading set_map");
+        return;
+    }
+
+    auto p = Peer::get_ptr(peer);
+    if (p == NULL) {
+        u64 most, least;
+        peer.lld_pair(most, least);
+        debug_printf("set_map: peer not found %llx-%llx", most, least);
+        return;
+    }
+    p->set_map(mapID, areaID);
 }
 
 }; // namespace online::rpc

@@ -9,7 +9,7 @@ struct Header {
     char magic[0x20];
     char* outMessage; // Outgoing message
     volatile char* inMessage; // Incoming message
-    volatile b32* outSignal; // 1 if outgoing message is ready to be read
+    volatile u32* outSignal; // size of outgoing message, 0 if not ready
     volatile b32* inSignal; // 1 if incoming message is ready to be read
 };
 
@@ -37,6 +37,11 @@ void begin_step() {
 
 void end_step() {
     message.encode();
+
+    // Forget peer ID if we've disconnected
+    /*if (!message.is_connected_to_client()) {
+        message.set_peer_id(PeerId());
+    }*/
 }
 
 Message& get_message() {
@@ -46,6 +51,11 @@ Message& get_message() {
 Message::Message() {
     ASSERT_MSG((u32)&header == 0x80700000U, "online::comms::header placed at %p\nbut it should be at %p", &header, (void*)0x80700000);
     framesSinceLastRecv = 0xFFFFFFFFU;
+    bzero(outMessage, sizeof(outMessage));
+    bzero(outMessageSwap, sizeof(outMessageSwap));
+    bzero((void*)inMessage, sizeof(inMessage));
+    outSignal = 0;
+    inSignal = 0;
 }
 
 void Message::decode() {
@@ -56,6 +66,7 @@ void Message::decode() {
     }
     framesSinceLastRecv = 0;
 
+    //osInvalDCache((void*)inMessage, sizeof(inMessage));
     mpack_reader_t reader;
     mpack_reader_init_data(&reader, (const char*)inMessage, sizeof(inMessage));
 
@@ -76,10 +87,7 @@ void Message::decode() {
 }
 
 void Message::reset_writer() {
-    if (outSignal) {
-        debug_printf("warning: resetting writer before previous message was read\n");
-    }
-    mpack_writer_init(&writer, outMessage, sizeof(outMessage));
+    mpack_writer_init(&writer, outMessageSwap, sizeof(outMessageSwap));
     mpack_writer_set_error_handler(&writer, [](mpack_writer_t* writer, mpack_error_t error) {
         debug_printf("MPack write error: %s\n", mpack_error_to_string(error));
     });
@@ -90,11 +98,22 @@ void Message::encode() {
     // End of message marker
     mpack_write_nil(&writer);
 
+    size_t messageSize = mpack_writer_buffer_used(&writer);
+
     mpack_error_t error = mpack_writer_destroy(&writer);
     if (error != mpack_ok) {
         debug_printf("MPack write error: %s\n", mpack_error_to_string(error));
-    } else {
-        outSignal = TRUE;
+        return;
+    }
+
+    // Signal, if there is a message (ie it isn't just nil)
+    if (messageSize > 1) {
+        if (outSignal != 0) {
+            // TODO: better to concat messages?
+            //debug_printf("discarding previous message");
+        }
+        bcopy(outMessageSwap, outMessage, sizeof(outMessage));
+        outSignal = messageSize;
     }
 };
 

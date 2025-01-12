@@ -5,10 +5,9 @@
 
 EXTERN_C void online_begin_step_game_loop();
 EXTERN_C void online_end_step_game_loop();
+EXTERN_C void online_on_clear_npcs();
 
 #ifdef __cplusplus
-
-EXTERN_C HeapNode heap_generalHead;
 
 namespace online {
     /// A PeerId, which is a UUID.
@@ -44,8 +43,6 @@ namespace online {
     };
 
     namespace comms {
-
-
         /// Communication happens via a GDB client that connects to the emulator.
         ///
         /// Terminology:
@@ -60,9 +57,10 @@ namespace online {
         public:
             mpack_writer_t writer;
 
-            char outMessage[128];
+            char outMessage[128]; // actual message being sent
+            char outMessageSwap[128]; // swap buffer for writing
             volatile char inMessage[128];
-            volatile b32 outSignal;
+            volatile u32 outSignal; // size
             volatile b32 inSignal;
 
             Message();
@@ -77,6 +75,7 @@ namespace online {
 
             inline PeerId const& peer_id() const { return peerId; };
             inline void set_peer_id(PeerId id) { peerId = id; };
+            inline b32 has_peer_id() const { return peerId != PeerId(); }
 
             inline b32 is_connected_to_client() const { return framesSinceLastRecv < 60; }
         };
@@ -88,6 +87,7 @@ namespace online {
 
     namespace rpc {
         void set_player_state(Vec3f const& pos, f32 yaw, AnimID anim);
+        void set_map(s16 mapID, s16 areaID);
 
         namespace read {
             void mpack_read_rpc(mpack_reader_t* reader);
@@ -96,6 +96,7 @@ namespace online {
             void set_peer_id(mpack_reader_t* reader);
             void dbg_print(mpack_reader_t* reader);
             void set_player_state(mpack_reader_t* reader);
+            void set_map(mpack_reader_t* reader);
         }
     };
 
@@ -111,12 +112,15 @@ namespace online {
             void disconnect();
             void update();
             void move(Vec3f const& pos, f32 yaw, AnimID anim);
+            void set_map(s16 mapID, s16 areaID);
             bool is_connected() const { return connected; }
 
+            static Peer* get_ptr(PeerId const& id);
             static Peer& get_mut(PeerId const& id);
             static Peer const& get(PeerId const& id);
             static Peer& upsert_mut(PeerId const& id);
             static void disconnect_all();
+            static void clear_npcs();
         };
 
         extern Peer peers[MAX_PEERS];

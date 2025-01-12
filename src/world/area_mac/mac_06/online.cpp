@@ -1,11 +1,36 @@
 #include "mac_06.h"
+#include "online/online.h"
+
+namespace mac_06 {
+
+API_CALLABLE(AwaitGateway) {
+    if (online::comms::get_message().is_connected_to_client()) {
+        return ApiStatus_DONE2;
+    } else {
+        return ApiStatus_BLOCK;
+    }
+}
+
+API_CALLABLE(AwaitServer) {
+    if (online::comms::get_message().has_peer_id()) {
+        return ApiStatus_DONE2;
+    } else {
+        return ApiStatus_BLOCK;
+    }
+}
 
 extern "C" EvtScript mac_06_EVS_EstablishOnlineConnection = {
     Call(ShowMessageAtScreenPos, MSG_Online_SearchingForGateway, 160, 40)
-    WaitSecs(5)
-    Call(SwitchMessage, MSG_Online_ConnectingToInternet)
-    WaitSecs(5)
-    //Call(CloseMessage)
+    Call(AwaitGateway)
+    Call(SwitchMessage, MSG_Online_ConnectingToServer)
+    Call(AwaitServer)
+    Call(SwitchMessage, MSG_Online_Connected)
+    Call(CloseMessage)
+    Wait(20)
+    Call(PlayAmbientSounds, AMBIENT_SILENCE)
+    Call(GotoMapSpecial, Ref("machi"), 0, TRANSITION_MARIO_BLACK)
     Return
     End
 };
+
+}; // namespace mac_06
