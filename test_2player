@@ -2,31 +2,21 @@
 
 set -e
 
-nix develop --profile .nix-profile -c 'n2'
-
 trap 'kill_all' SIGINT
 trap 'kill_all' SIGTERM
 kill_all() {
     echo "Bye"
-    kill $CLIENT_1 $CLIENT_2 $SERVER $GAME_1 $GAME_2
+    kill $CLIENT $GAME
     exit 0
 }
 
-matchbox_server &
-SERVER=$!
+export GDB_PORT="${GDB_PORT:-9123}"
 
-cd client
-GDB_PORT=9123 cargo watch -x "run" &
-CLIENT_1=$!
-GDB_PORT=9124 cargo watch -x "run" &
-CLIENT_2=$!
-cd ..
+client &
+CLIENT=$!
 
-ares --setting DebugServer/Port=9123 ver/us/build/papermario.z64 &
-GAME_1=$!
-ares --setting DebugServer/Port=9124 ver/us/build/papermario.z64 &
-GAME_2=$!
+ares --setting DebugServer/Port=$GDB_PORT ver/us/build/papermario.z64 &
+GAME=$!
 
-wait $GAME_1
-wait $GAME_2
+wait $GAME
 kill_all

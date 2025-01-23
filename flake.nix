@@ -70,6 +70,9 @@
             gcc # for n64crc
             (callPackage ./tools/pigment64.nix {})
             (callPackage ./tools/crunch64.nix {})
+            cargo
+            rustc
+            libiconv # https://discourse.nixos.org/t/nix-shell-rust-hello-world-ld-linkage-issue/17381
           ] ++ (if pkgs.stdenv.isLinux then [ pkgs.flips ] else []); # https://github.com/NixOS/nixpkgs/issues/373508
           shellHook = ''
             rm -f ./ver/us/baserom.z64 && ln -s ${baseRom} ./ver/us/baserom.z64
@@ -80,6 +83,13 @@
             source venv/bin/activate
             pip install -r ${./requirements.txt} --quiet
             pip install -r ${./requirements_extra.txt} --quiet
+
+            # Stop rustc from using mips-linux-gnu-*
+            export CC=gcc
+            export LD=ld
+            export AS=as
+            export AR=ar
+            export CXX=g++
           '';
         };
       }
