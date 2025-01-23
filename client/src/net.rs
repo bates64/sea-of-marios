@@ -26,7 +26,7 @@ pub async fn connect_and_retry(mut rx: Receiver<Command>, mut tx: Sender<gdb::Co
 
 async fn connect(rx: &mut Receiver<Command>, tx: &mut Sender<gdb::Command>) {
     info!("Connecting to signaling server...");
-    let (mut socket, loop_fut) = WebRtcSocket::new_reliable("ws://localhost:3536/");
+    let (mut socket, loop_fut) = WebRtcSocket::new_reliable("ws://match.bates64.com:3536/");
 
     let loop_fut = async {
         match loop_fut.await {
