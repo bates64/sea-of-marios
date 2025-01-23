@@ -13,7 +13,7 @@
 #define DX_DEBUG_MENU 1
 
 /// Loads last used save file.
-#define DX_QUICK_LAUNCH 1
+#define DX_QUICK_LAUNCH 0
 
 /// Quick launch into this battle.
 /// Comment out to disable,
@@ -29,10 +29,10 @@
 #define DX_SKIP_DEMO 1
 
 /// Map to load when starting a new game.
-#define NEW_GAME_MAP_ID "mac_06"
+#define NEW_GAME_MAP_ID "machi"
 
 /// Entry to use when starting a new game.
-#define NEW_GAME_ENTRY_ID mac_06_ENTRY_0
+#define NEW_GAME_ENTRY_ID machi_ENTRY_0
 
 /// Story progress when starting a new game.
 #define NEW_GAME_STORY_PROGRESS STORY_CH8_STAR_SHIP_ACTIVATED

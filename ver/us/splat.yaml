@@ -6053,6 +6053,7 @@ segments:
     subalign: 8
     subsegments:
     - [auto, c, area]
+    - [auto, c, actor/player_goomba]
     - [auto, c, actor/goomba]
     - [auto, c, actor/spiked_goomba]
     - [auto, c, actor/paragoomba]

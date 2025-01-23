@@ -1,5 +1,6 @@
 #include "area.h"
 
+extern ActorBlueprint A(player_goomba);
 extern ActorBlueprint A(goomba);
 extern ActorBlueprint A(paragoomba);
 extern ActorBlueprint A(spiked_goomba);
@@ -10,9 +11,17 @@ extern Stage A(kmr_04);
 extern Stage A(kmr_05);
 extern Stage A(kmr_06);
 
+Vec3i A(PlayerGoomba1Pos) = { -95, 0, 0 };
+Vec3i A(PlayerGoomba2Pos) = { 95, 0, 0 };
+
 Formation A(Formation_00) = {
-    { &A(goomba), .home = { .index = BTL_POS_GROUND_B }, .priority = 10 },
+    ACTOR_BY_POS(A(player_goomba), A(PlayerGoomba1Pos), 10),
+    ACTOR_BY_POS(A(player_goomba), A(PlayerGoomba2Pos), 9),
 };
+
+// Formation A(Formation_00) = {
+//     { &A(goomba), .home = { .index = BTL_POS_GROUND_B }, .priority = 10 },
+// };
 
 Formation A(Formation_01) = {
     { &A(goomba), .home = { .index = BTL_POS_GROUND_B }, .priority = 10 },
