@@ -3,17 +3,38 @@
 #include "ship.h"
 #include "dx/debug_menu.h"
 
-Model* originalModel; // All ships will clone this model
+struct ShipModels {
+    s32 sail;
+    s32 mast;
+    s32 hull;
+
+    void clone_from(const ShipModels& other) {
+        clone_model(other.sail, sail);
+        get_model_from_list_index(get_model_list_index_from_tree_index(sail))->flags &= ~MODEL_FLAG_HIDDEN;
+        clone_model(other.mast, mast);
+        get_model_from_list_index(get_model_list_index_from_tree_index(mast))->flags &= ~MODEL_FLAG_HIDDEN;
+        clone_model(other.hull, hull);
+        get_model_from_list_index(get_model_list_index_from_tree_index(hull))->flags &= ~MODEL_FLAG_HIDDEN;
+    }
+} originalModels;
+
 API_CALLABLE(RegisterShip) {
-    s32 id = evt_get_variable(script, *script->ptrReadPos);
-    originalModel = get_model_from_list_index(get_model_list_index_from_tree_index(id));
-    originalModel->flags |= MODEL_FLAG_HIDDEN;
+    Bytecode* args = script->ptrReadPos;
+    originalModels.sail = evt_get_variable(script, *args++);
+    originalModels.mast = evt_get_variable(script, *args++);
+    originalModels.hull = evt_get_variable(script, *args++);
+
+    s32 ids[] = { originalModels.sail, originalModels.mast, originalModels.hull };
+    for (auto id : ids) {
+        get_model_from_list_index(get_model_list_index_from_tree_index(id))->flags |= MODEL_FLAG_HIDDEN;
+    }
+
     return ApiStatus_DONE2;
 }
 
 struct Ship {
     bool enabled;
-    s32 modelID;
+    ShipModels models;
     s16 areaID;
     s16 mapID;
     Vec3f pos;
@@ -23,20 +44,30 @@ struct Ship {
         return enabled && areaID == gGameStatusPtr->areaID && mapID == gGameStatusPtr->mapID;
     }
 
-    Model* model() {
+    ShipModels* upsert_models() {
         if (!is_on_this_map()) return nullptr;
 
-        s32 treeIndex = get_model_list_index_from_tree_index(modelID);
-        if (treeIndex != 0) {
-            return get_model_from_list_index(treeIndex);
+        s32 treeIndex = get_model_list_index_from_tree_index(models.sail);
+        if (treeIndex == 0) {
+            // Model not found (probably because we just entered this map), create them
+            models.clone_from(originalModels);
         }
+        return &models;
+    }
 
-        // Model not found (probably because we just entered this map), create one
-        clone_model(originalModel->modelID, modelID);
-        Model* model = get_model_from_list_index(get_model_list_index_from_tree_index(modelID));
-        model->flags &= ~MODEL_FLAG_HIDDEN;
-        debug_printf("created ship model %d\n", modelID);
-        return model;
+    Model* sail() {
+        auto* models = upsert_models();
+        return models ? get_model_from_list_index(get_model_list_index_from_tree_index(models->sail)) : nullptr;
+    }
+
+    Model* mast() {
+        auto* models = upsert_models();
+        return models ? get_model_from_list_index(get_model_list_index_from_tree_index(models->mast)) : nullptr;
+    }
+
+    Model* hull() {
+        auto* models = upsert_models();
+        return models ? get_model_from_list_index(get_model_list_index_from_tree_index(models->hull)) : nullptr;
     }
 };
 
@@ -58,11 +89,13 @@ void create_ship() {
         if (ship.enabled) continue;
 
         ship.enabled = true;
-        ship.modelID = CLONED_MODEL(i);
+        ship.models.sail = CLONED_MODEL(i * 3 + 0);
+        ship.models.mast = CLONED_MODEL(i * 3 + 1);
+        ship.models.hull = CLONED_MODEL(i * 3 + 2);
         ship.areaID = gGameStatus.areaID;
         ship.mapID = gGameStatus.mapID;
         ship.pos = gPlayerStatus.pos;
-        ship.rot = { 0.0f, 0.0f, gPlayerStatus.heading };
+        ship.rot = { 0.0f, 0.0f, 0.0f };
 
         gPlayerStatus.pos.y += 100.0f; // TEMP so player can board the ship
 
@@ -78,14 +111,16 @@ void update_ships() {
     }
 
     for (auto& ship : ships) {
-        auto* model = ship.model();
-        if (model == nullptr) continue;
+        if (!ship.is_on_this_map()) continue;
 
-        Matrix4f trans, rot;
-        guTranslateF(trans, ship.pos.x, ship.pos.y, ship.pos.z);
-        guRotateRPYF(rot, ship.rot.x, ship.rot.y, ship.rot.z);
-        guMtxCatF(rot, trans, model->userTransformMtx);
-        model->flags |= (MODEL_FLAG_HAS_TRANSFORM | MODEL_FLAG_MATRIX_DIRTY);
+        Model* models[] = { ship.sail(), ship.mast(), ship.hull() };
+        for (auto* model : models) {
+            Matrix4f trans, rot;
+            guTranslateF(trans, ship.pos.x, ship.pos.y, ship.pos.z);
+            guRotateRPYF(rot, ship.rot.x, ship.rot.y, ship.rot.z);
+            guMtxCatF(rot, trans, model->userTransformMtx);
+            model->flags |= (MODEL_FLAG_HAS_TRANSFORM | MODEL_FLAG_MATRIX_DIRTY);
+        }
 
         ship.rot.x += 1.0f; // rotate 1 degrees per frame
     }

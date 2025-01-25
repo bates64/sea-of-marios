@@ -305,6 +305,12 @@ s32 get_asset_offset(char* assetName, s32* compressedSize) {
     MAP(map), \
     .init = &map##_map_init \
 
+s32 map_init_mac_tex(void) {
+    sprintf(wMapTexName, "mac_tex");
+    return FALSE;
+}
+
+
 /// Toad Town
 #include "area_mac/mac.h"
 MapConfig mac_maps[] = {
@@ -406,7 +412,7 @@ MapConfig sbk_maps[] = {
     { MAP(sbk_10), .bgName = "sbk_bg" },
     { MAP(sbk_11), .bgName = "sbk_bg" },
     { MAP(sbk_12), .bgName = "sbk_bg" },
-    { MAP(sbk_13), .bgName = "sbk_bg" },
+    { MAP(sbk_13), .bgName = "sbk_bg", .init = &map_init_mac_tex },
     { MAP(sbk_14), .bgName = "sbk_bg" },
     { MAP(sbk_15), .bgName = "sbk_bg" },
     { MAP(sbk_16), .bgName = "sbk_bg" },

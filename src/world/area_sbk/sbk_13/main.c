@@ -35,6 +35,16 @@ EvtScript N(EVS_BindExitTriggers) = {
     End
 };
 
+API_CALLABLE(N(SetFog)) {
+    enable_world_fog();
+    set_world_fog_dist(985, 990);
+    set_world_fog_color(1, 50, 75, 239);
+    enable_entity_fog();
+    set_entity_fog_dist(985, 990);
+    set_entity_fog_color(1, 50, 75, 239);
+    return ApiStatus_DONE2;
+}
+
 EvtScript N(EVS_Main) = {
     Set(GB_WorldLocation, LOCATION_DRY_DRY_DESERT)
     Call(SetSpriteShading, SHADING_NONE)
@@ -44,7 +54,8 @@ EvtScript N(EVS_Main) = {
     EVT_SETUP_CAMERA_NO_LEAD(0, 0, 0)
     //Call(MakeNpcs, FALSE, Ref(N(DefaultNPCs)))
     Call(N(SpawnSunEffect))
-    Call(RegisterShip, MODEL_ship)
+    Call(RegisterShip, MODEL_sail, MODEL_mast, MODEL_hull)
+    Call(N(SetFog))
     //Call(SetMusicTrack, 0, SONG_DRY_DRY_DESERT, 0, 8)
     Call(PlayAmbientSounds, AMBIENT_SEA)
     Set(LVar0, Ref(N(EVS_BindExitTriggers)))
