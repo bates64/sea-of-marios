@@ -7,6 +7,10 @@
 #pragma GCC diagnostic warning "-Wreturn-mismatch"
 #endif
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "ultra64.h"
 #include "gbi_custom.h"
 #include "types.h"
@@ -20,5 +24,9 @@
 #include "battle/battle_names.h"
 #include "battle/stage_names.h"
 #include "battle/actor_types.h"
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
