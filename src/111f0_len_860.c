@@ -1,6 +1,7 @@
 #include "common.h"
 #include "nu/nusys.h"
 #include "game_modes.h"
+#include "ship.h"
 
 BSS s16 gMapTransitionAlpha;
 BSS s16 gMapTransitionFadeRate;
@@ -70,6 +71,7 @@ void state_step_enter_world(void) {
             gMapTransitionState++;
             break;
         case ENTER_WORLD_AWAIT_MAIN:
+            update_ships();
             update_encounters();
             update_npcs();
             update_player();
@@ -85,6 +87,7 @@ void state_step_enter_world(void) {
             }
             break;
         case ENTER_WORLD_FADE_IN:
+            update_ships();
             update_npcs();
             update_player();
             update_effects();
@@ -132,6 +135,7 @@ void state_init_change_map(void) {
 void state_step_change_map(void) {
     switch (gMapTransitionState) {
         case CHANGE_MAP_INIT:
+            update_ships();
             update_npcs();
             update_player();
             update_effects();
@@ -169,6 +173,7 @@ void state_step_change_map(void) {
             }
             break;
         case CHANGE_MAP_AWAIT_MAIN:
+            update_ships();
             update_encounters();
             update_npcs();
             update_player();
@@ -182,6 +187,7 @@ void state_step_change_map(void) {
             }
             break;
         case CHANGE_MAP_FADE_IN:
+            update_ships();
             update_npcs();
             update_player();
             update_effects();
@@ -254,6 +260,7 @@ void state_step_game_over(void) {
                 set_screen_overlay_params_front(OVERLAY_NONE, -1.0f);
                 set_game_mode(GAME_MODE_WORLD);
             }
+            update_ships();
             update_npcs();
             update_player();
             update_effects();

@@ -137,6 +137,7 @@ segments:
     - [auto, c, state_title_screen]
     - [auto, c, state_demo]
     - [auto, c, npc]
+    - [auto, cpp, ship]
     - [auto, c, encounter]
     - [auto, c, encounter_api]
     - [auto, c, status_icons]

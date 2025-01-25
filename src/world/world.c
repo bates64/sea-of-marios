@@ -8,6 +8,7 @@
 #include "gcc/string.h"
 #include "dx/debug_menu.h"
 #include "world/surfaces.h"
+#include "ship.h"
 
 #ifdef SHIFT
 #define ASSET_TABLE_ROM_START (s32) mapfs_ROM_START
@@ -155,6 +156,7 @@ void load_map_by_IDs(s16 areaID, s16 mapID, s16 loadType) {
     clear_animator_list();
     clear_entity_models();
     clear_npcs();
+    clear_ships();
     hud_element_clear_cache();
     clear_trigger_data();
     clear_model_data();
