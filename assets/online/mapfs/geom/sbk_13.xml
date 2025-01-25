@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Map desc="N2" background="sbk_bg" textures="sbk_tex">
+<Map desc="N2" background="sbk_bg" textures="mac_tex">
 	<Editor>
-		<Camera pos="235.931229,657.071533,605.812073" pitch="38.880020" yaw="342.240265"/>
+		<Camera pos="926.738220,670.325806,-747.251587" pitch="41.759972" yaw="230.079681"/>
 		<Camera pos="0.000000,65536.000000,0.000000"/>
 		<Camera pos="65536.000000,-28.000000,0.000000"/>
 		<Camera pos="0.000000,-28.000000,65536.000000"/>
@@ -40,7 +40,7 @@
 		</Node>
 	</ModelTree>
 	<ColliderTree>
-		<Node name="Root" id="11">
+		<Node name="Root" id="12">
 			<Node name="g1" id="2">
 				<Node name="stage" id="0"/>
 				<Node name="mawari" id="1"/>
@@ -61,6 +61,7 @@
 				<Node name="tts" id="E"/>
 				<Node name="ttw" id="F"/>
 			</Node>
+			<Node name="ship" id="11"/>
 		</Node>
 	</ColliderTree>
 	<ZoneTree>
@@ -106,7 +107,7 @@
 		</Model>
 		<Model ver="2" type="MODEL" lightset="0">
 			<MapObject name="ship" id="13"/>
-			<ShapeMesh ver="3" texture="sbk_iseki_floortif">
+			<ShapeMesh ver="3" texture="mac_mac_house8tif">
 				<DisplayList>
 					<F3DEX2 cmd="E7000000,0"/>
 					<F3DEX2 cmd="D9FDFFFF,0"/>
@@ -180,7 +181,7 @@
 		</Model>
 		<Model ver="2" type="MODEL" lightset="0">
 			<MapObject name="b_w2" id="F" dumped="true" fileOffset="31C4"/>
-			<ShapeMesh ver="3" texture="sbk_berosaidetif">
+			<ShapeMesh ver="3" texture="mac_berosaidetif">
 				<DisplayList>
 					<F3DEX2 cmd="E7000000,0"/>
 					<F3DEX2 cmd="D9FDFFFF,0"/>
@@ -218,7 +219,7 @@
 		</Model>
 		<Model ver="2" type="MODEL" lightset="0">
 			<MapObject name="b_w" id="E" dumped="true" fileOffset="313C"/>
-			<ShapeMesh ver="3" texture="sbk_suna2tif">
+			<ShapeMesh ver="3" texture="mac_umitif">
 				<DisplayList>
 					<F3DEX2 cmd="E7000000,0"/>
 					<F3DEX2 cmd="D9FDFFFF,0"/>
@@ -252,7 +253,7 @@
 		</Model>
 		<Model ver="2" type="MODEL" lightset="0">
 			<MapObject name="b_s2" id="C" dumped="true" fileOffset="301C"/>
-			<ShapeMesh ver="3" texture="sbk_berosaidetif">
+			<ShapeMesh ver="3" texture="mac_berosaidetif">
 				<DisplayList>
 					<F3DEX2 cmd="E7000000,0"/>
 					<F3DEX2 cmd="D9FDFFFF,0"/>
@@ -290,7 +291,7 @@
 		</Model>
 		<Model ver="2" type="MODEL" lightset="0">
 			<MapObject name="b_s" id="B" dumped="true" fileOffset="2F94"/>
-			<ShapeMesh ver="3" texture="sbk_suna2tif">
+			<ShapeMesh ver="3" texture="mac_umitif">
 				<DisplayList>
 					<F3DEX2 cmd="E7000000,0"/>
 					<F3DEX2 cmd="D9FDFFFF,0"/>
@@ -324,7 +325,7 @@
 		</Model>
 		<Model ver="2" type="MODEL" lightset="0">
 			<MapObject name="b_e2" id="9" dumped="true" fileOffset="2E74"/>
-			<ShapeMesh ver="3" texture="sbk_berosaidetif">
+			<ShapeMesh ver="3" texture="mac_berosaidetif">
 				<DisplayList>
 					<F3DEX2 cmd="E7000000,0"/>
 					<F3DEX2 cmd="D9FDFFFF,0"/>
@@ -362,7 +363,7 @@
 		</Model>
 		<Model ver="2" type="MODEL" lightset="0">
 			<MapObject name="b_e" id="8" dumped="true" fileOffset="2DEC"/>
-			<ShapeMesh ver="3" texture="sbk_suna2tif">
+			<ShapeMesh ver="3" texture="mac_umitif">
 				<DisplayList>
 					<F3DEX2 cmd="E7000000,0"/>
 					<F3DEX2 cmd="D9FDFFFF,0"/>
@@ -396,7 +397,7 @@
 		</Model>
 		<Model ver="2" type="MODEL" lightset="0">
 			<MapObject name="b_n2" id="6" dumped="true" fileOffset="2CCC"/>
-			<ShapeMesh ver="3" texture="sbk_berosaidetif">
+			<ShapeMesh ver="3" texture="mac_berosaidetif">
 				<DisplayList>
 					<F3DEX2 cmd="E7000000,0"/>
 					<F3DEX2 cmd="D9FDFFFF,0"/>
@@ -434,7 +435,7 @@
 		</Model>
 		<Model ver="2" type="MODEL" lightset="0">
 			<MapObject name="b_n" id="5" dumped="true" fileOffset="2C44"/>
-			<ShapeMesh ver="3" texture="sbk_suna2tif">
+			<ShapeMesh ver="3" texture="mac_umitif">
 				<DisplayList>
 					<F3DEX2 cmd="E7000000,0"/>
 					<F3DEX2 cmd="D9FDFFFF,0"/>
@@ -476,7 +477,7 @@
 		</Model>
 		<Model ver="2" type="MODEL" lightset="0">
 			<MapObject name="stage" id="2" dumped="true" fileOffset="2A90"/>
-			<ShapeMesh ver="3" texture="sbk_suna3tif">
+			<ShapeMesh ver="3" texture="mac_umitif">
 				<DisplayList>
 					<F3DEX2 cmd="E7000000,0"/>
 					<F3DEX2 cmd="D9FDFFFF,0"/>
@@ -518,7 +519,7 @@
 		</Model>
 		<Model ver="2" type="MODEL" lightset="0">
 			<MapObject name="o3" id="0" dumped="true" fileOffset="2974"/>
-			<ShapeMesh ver="3" texture="sbk_frametif">
+			<ShapeMesh ver="3" texture="mac_frametif">
 				<DisplayList>
 					<F3DEX2 cmd="E7000000,0"/>
 					<F3DEX2 cmd="D9FDFFFF,0"/>
@@ -573,8 +574,68 @@
 	</Models>
 	<Colliders>
 		<Collider ver="0" flags="0" surface="0">
-			<MapObject name="Root" id="11"/>
+			<MapObject name="Root" id="12"/>
 			<HitObject type="ROOT"/>
+		</Collider>
+		<Collider ver="0" flags="0" surface="0">
+			<MapObject name="ship" id="11"/>
+			<HitObject type="HIT"/>
+			<HitMesh ver="0">
+				<TriangleBatch ver="0">
+					<VertexTable>
+						<Vertex xyz="-100,-100,-100"/>
+						<Vertex xyz="-100,-100,100" uv="1024,0"/>
+						<Vertex xyz="-100,100,-100" uv="0,1024"/>
+						<Vertex xyz="-100,100,-100" uv="0,1024"/>
+						<Vertex xyz="-100,-100,100" uv="1024,0"/>
+						<Vertex xyz="-100,100,100" uv="1024,1024"/>
+						<Vertex xyz="-100,-100,100" uv="1024,0"/>
+						<Vertex xyz="100,-100,100" uv="2048,0"/>
+						<Vertex xyz="-100,100,100" uv="1024,1024"/>
+						<Vertex xyz="-100,100,100" uv="1024,1024"/>
+						<Vertex xyz="100,-100,100" uv="2048,0"/>
+						<Vertex xyz="100,100,100" uv="2048,1024"/>
+						<Vertex xyz="100,-100,100" uv="2048,0"/>
+						<Vertex xyz="100,-100,-100" uv="3072,0"/>
+						<Vertex xyz="100,100,100" uv="2048,1024"/>
+						<Vertex xyz="100,100,100" uv="2048,1024"/>
+						<Vertex xyz="100,-100,-100" uv="3072,0"/>
+						<Vertex xyz="100,100,-100" uv="3072,1024"/>
+						<Vertex xyz="100,-100,-100" uv="3072,0"/>
+						<Vertex xyz="-100,-100,-100" uv="4096,0"/>
+						<Vertex xyz="100,100,-100" uv="3072,1024"/>
+						<Vertex xyz="100,100,-100" uv="3072,1024"/>
+						<Vertex xyz="-100,-100,-100" uv="4096,0"/>
+						<Vertex xyz="-100,100,-100" uv="4096,1024"/>
+						<Vertex xyz="-100,100,-100" uv="0,-2048"/>
+						<Vertex xyz="-100,100,100" uv="0,-1024"/>
+						<Vertex xyz="100,100,-100" uv="1024,-2048"/>
+						<Vertex xyz="100,100,-100" uv="1024,-2048"/>
+						<Vertex xyz="-100,100,100" uv="0,-1024"/>
+						<Vertex xyz="100,100,100" uv="1024,-1024"/>
+						<Vertex xyz="-100,-100,-100" uv="2048,-2048"/>
+						<Vertex xyz="100,-100,-100" uv="3072,-2048"/>
+						<Vertex xyz="-100,-100,100" uv="2048,-1024"/>
+						<Vertex xyz="-100,-100,100" uv="2048,-1024"/>
+						<Vertex xyz="100,-100,-100" uv="3072,-2048"/>
+						<Vertex xyz="100,-100,100" uv="3072,-1024"/>
+					</VertexTable>
+					<TriangleList>
+						<Triangle ijk="0,1,2"/>
+						<Triangle ijk="3,4,5"/>
+						<Triangle ijk="6,7,8"/>
+						<Triangle ijk="9,10,11"/>
+						<Triangle ijk="12,13,14"/>
+						<Triangle ijk="15,16,17"/>
+						<Triangle ijk="18,19,20"/>
+						<Triangle ijk="21,22,23"/>
+						<Triangle ijk="24,25,26"/>
+						<Triangle ijk="27,28,29"/>
+						<Triangle ijk="30,31,32"/>
+						<Triangle ijk="33,34,35"/>
+					</TriangleList>
+				</TriangleBatch>
+			</HitMesh>
 		</Collider>
 		<Collider ver="0" flags="0" surface="0">
 			<MapObject name="tuitate" id="10" dumped="true" fileOffset="59C"/>
