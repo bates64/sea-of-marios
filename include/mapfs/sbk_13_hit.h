@@ -1,7 +1,8 @@
-#define COLLIDER_Root           0x14
-#define COLLIDER_ship           0x13
-#define COLLIDER_hull           0x12
-#define COLLIDER_mast           0x11
+#define COLLIDER_Root           0x15
+#define COLLIDER_ship3          0x14
+#define COLLIDER_ship2          0x13
+#define COLLIDER_ship1          0x12
+#define COLLIDER_ship0          0x11
 #define COLLIDER_tuitate        0x10
 #define COLLIDER_ttw            0xF
 #define COLLIDER_tts            0xE
