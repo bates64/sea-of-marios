@@ -77,6 +77,8 @@ jobs:
             profile: minimal
       - name: Cache Rust build directory
         uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: client
       - name: Build client
         run: cd client && cargo build --release
       - name: Upload binary as artifact
