@@ -3,7 +3,6 @@
 mod net;
 mod gui;
 mod gdb;
-mod rpc;
 
 use tokio::runtime::Runtime;
 use tokio::sync::mpsc;
@@ -16,7 +15,7 @@ fn main() -> eframe::Result {
     tracing_subscriber::registry()
         .with(
             tracing_subscriber::EnvFilter::try_from_default_env()
-                .unwrap_or_else(|_| "client=info,matchbox_socket=info".into()),
+                .unwrap_or_else(|_| "client=debug,matchbox_socket=info".into()),
         )
         .with(tracing_subscriber::fmt::layer())
         .with(collector.clone())

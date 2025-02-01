@@ -1,9 +1,9 @@
 use eframe::CreationContext;
-use egui::{TextEdit, CentralPanel};
+use egui::{CentralPanel};
 use egui_tracing::EventCollector;
 use tokio::sync::mpsc::Sender;
 
-use crate::{gdb, net, rpc};
+use crate::{gdb, net};
 
 pub struct App {
     collector: EventCollector,
@@ -26,19 +26,6 @@ impl eframe::App for App {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
         CentralPanel::default().show(ctx, |ui| {
             ui.add(egui_tracing::Logs::new(self.collector.clone()));
-
-            ui.label("Debug message");
-            ui.add(TextEdit::singleline(&mut self.dbg_print_text).hint_text("Type here..."));
-
-            if ui.button("Send").clicked() {
-                let mut message = rpc::Message::new();
-                message.dbg_print(&self.dbg_print_text);
-                tokio::task::block_in_place(|| {
-                    let rt = tokio::runtime::Handle::current();
-                    let _ = rt.block_on(self.gdb_tx.send(gdb::Command::SendMesageToGame(message.done())));
-                });
-                //self.input_text.clear();
-            }
         });
     }
 }

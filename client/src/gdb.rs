@@ -2,7 +2,6 @@
 
 use std::ffi::CString;
 
-use rmp::encode::{write_nil, write_str};
 use tokio::net::TcpStream;
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
 use tokio::sync::mpsc::{Sender, Receiver, error::TryRecvError};
@@ -40,21 +39,14 @@ async fn connect(rx: &mut Receiver<Command>, tx: &mut Sender<net::Command>) -> R
     // Read online::comms::header
     let base = 0x80700000;
     let magic = client.read_cstr(base).await?;
-    let out_message = client.read_u32(base + 0x20).await?; // Game's outgoing message (game -> client)
-    let in_message = client.read_u32(base + 0x20 + 4).await?; // Game's incoming message (client -> game)
-    let out_signal = client.read_u32(base + 0x20 + 4 * 2).await?; // Whether out_message is ready
-    let in_signal = client.read_u32(base + 0x20 + 4 * 3).await?; // Whether in_message is ready
+    let ptr_me = base + 0x20;
+    let ptr_is_my_sync_data_valid = base + 0x20 + 4;
+    let sizeof_sync_data = client.read_u32(base + 0x20 + 4 * 2).await?;
+    let ptr_sync_data = base + 0x20 + 4 * 3;
     debug!("online::comms::header::magic = {:?}", magic);
+    debug!("sizeof(SyncData) = {}", sizeof_sync_data);
 
     if magic != c"PAPERMARIO-DX ONLINE".into() {
-        return Err(Error::GameNotSupported);
-    }
-    if out_message & 0xFF000000 != 0x80000000 {
-        error!("bad pointer: online::comms::header::out_message");
-        return Err(Error::GameNotSupported);
-    }
-    if in_message & 0xFF000000 != 0x80000000 {
-        error!("bad pointer: online::comms::header::in_message");
         return Err(Error::GameNotSupported);
     }
 
@@ -67,80 +59,55 @@ async fn connect(rx: &mut Receiver<Command>, tx: &mut Sender<net::Command>) -> R
     info!("connection with game established");
     let _ = tx.send(net::Command::Connect).await;
 
+    let mut me = 99u8;
+
     // Every frame, exchange messages with the game
     let mut interval = tokio::time::interval(frame_duration);
-    let mut in_signal_failures = 0;
     loop {
         interval.tick().await;
 
         trace!("frame");
 
-        // Try to read message
-        trace!("read out signal");
-        let recv_size = client.read_u32(out_signal).await? as usize;
-        if recv_size != 0 {
-            if recv_size > MESSAGE_SIZE {
-                return Err(Error::BadPacket(format!("message too large: {}", recv_size)));
+        // Read syncData[me]
+        if (0..16).contains(&me) {
+            let is_valid = client.read_u32(ptr_is_my_sync_data_valid).await? as usize;
+            if is_valid != 0 {
+                // Read syncData and send it to net
+                let mut data = vec![0; sizeof_sync_data as usize];
+                client.read_memory(ptr_sync_data + (me as u32) * sizeof_sync_data, &mut data).await?;
+                let _ = tx.send(net::Command::SyncData(data)).await;
+            } else {
+                trace!("isMySyncDataValid = false");
             }
-            trace!("out signal is set, reading message");
-            // Read message and send it to net
-            let mut recv_message = vec![0; recv_size];
-            client.read_memory(out_message, &mut recv_message).await?;
-            let _ = tx.send(net::Command::NewMessageFromGame(recv_message)).await;
-            client.write_u32(out_signal, 0).await?;
-        } else {
-            trace!("no message from game");
         }
 
-        trace!("read in signal");
-        if client.read_u32(in_signal).await? != 0 {
-            trace!("in_signal was not cleared. is game dead?");
-            in_signal_failures += 1;
-            if in_signal_failures > 30 * 5 { // 5 seconds
-                error!("in_signal was not cleared for 5 seconds, assuming game is dead");
-                return Err(Error::ConnectionClosed);
-            }
-            continue;
-        }
-        in_signal_failures = 0;
-
-        // Check for messages to be sent, combining them into a single message
-        let mut composite = vec![0xC0]; // nil
-        let mut msg_count = 0usize;
         loop {
             match rx.try_recv() {
-                Ok(Command::SendMesageToGame(msg)) => {
-                    // Remove trailing nil terminator if there is one
-                    if composite.last() == Some(&0xC0) {
-                        composite.pop();
+                Ok(Command::SetMe(new_me)) => {
+                    me = new_me;
+                    client.write_u32(ptr_me, new_me as u32).await?;
+                }
+                Ok(Command::SyncData(index, data)) => {
+                    if data.len() != sizeof_sync_data as usize {
+                        warn!("sync data size mismatch");
+                        continue;
                     }
-
-                    composite.extend_from_slice(&msg);
-                    msg_count += 1;
-                    break; // TEMP: only send one message per frame
+                    client.checked_write_memory(ptr_sync_data + (index as u32) * sizeof_sync_data, &data).await?;
                 }
                 Err(TryRecvError::Disconnected) => return Ok(()), // net thread is gone
                 Err(TryRecvError::Empty) => break,
             }
-        }
-
-        assert!(composite.len() <= MESSAGE_SIZE);
-        assert!(composite.last() == Some(&0xC0));
-
-        if msg_count > 0 {
-            debug!("sending {} messages to game: {:?}", msg_count, &composite);
-
-            // Send message to game
-            client.checked_write_memory(in_message, &composite).await?;
-            client.write_u32(in_signal, 1).await?;
         }
     }
 }
 
 #[derive(Debug)]
 pub enum Command {
-    /// Write a msgpack message to the game. Make one of these with crate::rpc::Message::done().
-    SendMesageToGame(Vec<u8>),
+    /// Set Header::me
+    SetMe(u8),
+
+    /// Set Header::syncData[peer]
+    SyncData(u8, Vec<u8>),
 }
 
 type Result<T> = std::result::Result<T, Error>;

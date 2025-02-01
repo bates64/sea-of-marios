@@ -79,7 +79,7 @@
             rm -f ./ver/us/baserom.z64 && ln -s ${baseRom} ./ver/us/baserom.z64
             export PAPERMARIO_LD="${binutils2_39}/bin/mips-linux-gnu-ld"
 
-            # Install python packages (TODO: use derivations)
+            # Install python packages (TODO: use derivations)x
             virtualenv venv --quiet
             source venv/bin/activate
             pip install -r ${./requirements.txt} --quiet

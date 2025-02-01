@@ -14711,10 +14711,5 @@ segments:
     start: auto
     vram_class: online
     subsegments:
-    - [auto, cpp, comms] # must be first
     - [auto, cpp, online]
-    - [auto, cpp, rpc]
-    - [auto, cpp, peers]
-    - [auto, c, mpack/mpack]
-    - [auto, c, mpack/impl]
   - [0x2800000]

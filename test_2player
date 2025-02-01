@@ -8,14 +8,12 @@ trap 'kill_all' SIGINT
 trap 'kill_all' SIGTERM
 kill_all() {
     echo "Bye"
-    kill $CLIENT_1 $CLIENT_2 $SERVER $GAME_1 $GAME_2
+    kill $CLIENT_1 $CLIENT_2 $GAME_1 $GAME_2
     exit 0
 }
 
-matchbox_server &
-SERVER=$!
-
 cd client
+cargo build
 GDB_PORT=9123 cargo watch -x "run" &
 CLIENT_1=$!
 GDB_PORT=9124 cargo watch -x "run" &
