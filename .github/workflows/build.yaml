@@ -25,6 +25,15 @@ jobs:
           nix-store --add-fixed sha256 papermario.us.z64
         env:
           BASEROM_US_URL: ${{ secrets.BASEROM_US_URL }}
+      - name: Cache build and asset directories
+        uses: actions/cache@v4
+        with:
+          key: ${{ runner.os }}-build-${{ hashFiles('flake.nix') }}
+          path: |
+            ver/us/build
+            assets/us
+            .n2_db
+            .ninja_deps
       - name: Build shell
         run: nix develop --command true
       - name: Configure
@@ -52,17 +61,11 @@ jobs:
       matrix:
         include:
           - target: x86_64-pc-windows-msvc
-            suffix: .exe
           - target: aarch64-pc-windows-msvc
-            suffix: .exe
           - target: x86_64-unknown-linux-gnu
-            suffix: ""
           - target: aarch64-unknown-linux-gnu
-            suffix: ""
           - target: x86_64-apple-darwin
-            suffix: ""
           - target: aarch64-apple-darwin
-            suffix: ""
     steps:
       - uses: actions/checkout@v4
       - name: Install latest stable Rust
@@ -72,13 +75,15 @@ jobs:
             override: true
             target: ${{ matrix.target }}
             profile: minimal
+      - name: Cache Rust build directory
+        uses: Swatinem/rust-cache@v2
       - name: Build client
         run: cd client && cargo build --release
       - name: Upload binary as artifact
         uses: actions/upload-artifact@v4
         with:
           name: client-${{ matrix.target }}
-          path: client/target/release/client${{ matrix.suffix }}
+          path: client/target/release/client
   prerelease:
     name: Prerelease
     runs-on: ubuntu-latest
@@ -86,18 +91,24 @@ jobs:
       - game
       - client
     if: github.ref == 'refs/heads/main'
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
       - name: Download artifacts
         uses: actions/download-artifact@v4
         with:
           path: artifacts
-      - uses: marvinpinto/action-automatic-releases@latest
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/')
         with:
-          repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          automatic_release_tag: "latest"
+          files: artifacts/*
+      - uses: softprops/action-gh-release@v2
+        with:
+          tag_name: "latest"
           prerelease: true
-          title: Development build
+          name: Development build
           files: artifacts/*
   release:
     name: Release
@@ -106,6 +117,8 @@ jobs:
       - game
       - client
     if: github.ref == 'refs/tags/v*'
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
       - name: Get repository name
@@ -117,10 +130,8 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           path: artifacts
-      - uses: marvinpinto/action-automatic-releases@latest
+      - uses: softprops/action-gh-release@v2
         with:
-          repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          automatic_release_tag: "latest"
           files: artifacts/*
   darwin-cachix:
     name: Build Nix shell for macOS
