@@ -96,9 +96,44 @@ API_CALLABLE(EndQuiz) {
 #include "world/common/npc/StarSpirit.inc.c"
 
 EvtScript EVS_NpcInit_Muskular = {
-    // TODO: actual quiz
-    Call(ChangeTraitWeight, CREATIVE, 10)
-    Call(EndQuiz)
+    Thread
+        WaitSecs(2)
+
+        Call(SpeakToPlayer, NPC_SELF, ANIM_WorldMuskular_Talk, ANIM_WorldMuskular_Still, 0, MSG_Personality_Start)
+
+        Call(ContinueSpeech, NPC_SELF, ANIM_WorldMuskular_Talk, ANIM_WorldMuskular_Still, 0, MSG_Personality_Question_Opportunistic)
+        Call(ShowChoice, MSG_Personality_Choice_Opportunistic)
+        Switch(LVar0)
+            CaseEq(0) // better offer
+                Call(ChangeTraitWeight, OPPORTUNISTIC, 3)
+                Call(ChangeTraitWeight, IMPULSIVE, 1)
+            CaseEq(1) // convince them it's junk
+                Call(ChangeTraitWeight, STRATEGIC, 1)
+                Call(ChangeTraitWeight, MISCHIEVOUS, 1)
+            CaseEq(2) // walk away
+                Call(ChangeTraitWeight, OPPORTUNISTIC, -1)
+                Call(ChangeTraitWeight, GREEDY, -1)
+        EndSwitch
+
+        Call(ContinueSpeech, NPC_SELF, ANIM_WorldMuskular_Talk, ANIM_WorldMuskular_Still, 0, MSG_Personality_Question_Tenacious)
+        Call(ShowChoice, MSG_Personality_Choice_Tenacious)
+        Switch(LVar0)
+            CaseEq(0) // scared them off
+                Call(ChangeTraitWeight, STRATEGIC, 1)
+                Call(ChangeTraitWeight, TENACIOUS, 1)
+            CaseEq(1) // they ran out of supplies
+                Call(ChangeTraitWeight, TENACIOUS, 3)
+                Call(ChangeTraitWeight, RESILIENT, 1)
+            CaseEq(2) // could be a trap
+                Call(ChangeTraitWeight, CREATIVE, 1)
+                Call(ChangeTraitWeight, IMPULSIVE, -2)
+        EndSwitch
+
+        Call(EndQuiz)
+        // TODO: announce character
+
+        Call(GotoMapSpecial, Ref("mac_05"), 0, TRANSITION_GET_STAR_CARD)
+    EndThread
     Return
     End
 };
