@@ -58,7 +58,7 @@ function sliceBuffer(buffer, offset) {
 
 console.log("Connecting...")
 
-socket.connect(65432, function () {
+socket.connect(65432, "127.0.0.1", function () {
     console.log("Connected to server")
 })
 
