@@ -24,10 +24,11 @@ function handlePacket(command, address, data) {
     switch (command) {
     case COMMAND_READ_MEMORY: {
         console.log("Reading memory at vaddr " + address.hex())
-        var size = data[0] | (data[1] << 8) | (data[2] << 16) | (data[3] << 24)
+        var size = data[3] | (data[2] << 8) | (data[1] << 16) | (data[0] << 24)
+        console.log("Memory size: " + size)
         var data = new Buffer(size)
-        while (size--) {
-            data[size] = mem.u8[vaddr + size]
+        for (var i = 0; i < size; i++) {
+            data[i] = mem.u8[address + i]
         }
         sendPacket(COMMAND_READ_MEMORY, address, data)
         break
@@ -35,7 +36,7 @@ function handlePacket(command, address, data) {
     case COMMAND_WRITE_MEMORY: {
         console.log("Writing memory at vaddr " + address.hex())
         for (var i = 0; i < data.length; i++) {
-            mem.u8[vaddr + i] = data[i]
+            mem.u8[address + i] = data[i]
         }
         break
     }
@@ -62,33 +63,13 @@ socket.connect(65432, "127.0.0.1", function () {
     console.log("Connected to server")
 })
 
-var command, address, dataSize, data, isBuffering = false
+var command, address, dataSize, data
 socket.on("data", function (buffer) {
-    if (!isBuffering) {
-        command = buffer[0]
-        address = buffer[1] | (buffer[2] << 8) | (buffer[3] << 16) | (buffer[4] << 24)
-        dataSize = buffer[5] | (buffer[6] << 8) | (buffer[7] << 16) | (buffer[8] << 24)
-        data = sliceBuffer(buffer, 9)
-
-        isBuffering = true
-    } else {
-        var buf = new Buffer(data.length + buffer.length)
-
-        for (var i = 0; i < data.length; i++) {
-            buf[i] = data[i]
-        }
-
-        for (var i = 0; i < buffer.length; i++) {
-            buf[data.length + i] = buffer[i]
-        }
-
-        data = buf
-    }
-
-    if (data.length >= dataSize) {
-        isBuffering = false
-        handlePacket(command, address, data)
-    }
+    command = buffer[0]
+    address = buffer[4] | (buffer[3] << 8) | (buffer[2] << 16) | (buffer[1] << 24)
+    dataSize = buffer[8] | (buffer[7] << 8) | (buffer[6] << 16) | (buffer[5] << 24)
+    data = sliceBuffer(buffer, 9)
+    handlePacket(command, address, data)
 })
 
 socket.on("close", function () {

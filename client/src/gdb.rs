@@ -19,7 +19,7 @@ pub async fn connect_and_retry(mut rx: Receiver<Command>, mut tx: Sender<net::Co
     let gdb_addr = format!("[::1]:{}", gdb_port);
 
     loop {
-        let result = select! {
+        let result = /*select! {
             client = Gdb::new(&gdb_addr) => {
                 match client {
                     Ok(client) => handle_client(client, &mut rx, &mut tx).await,
@@ -32,6 +32,12 @@ pub async fn connect_and_retry(mut rx: Receiver<Command>, mut tx: Sender<net::Co
                     Err(error) => Err(error),
                 }
             },
+        };*/ {
+            let client = Project64::new("127.0.0.1:65432").await;
+            match client {
+                Ok(client) => handle_client(client, &mut rx, &mut tx).await,
+                Err(error) => Err(error),
+            }
         };
         match result {
             Ok(()) | Err(Error::ConnectionClosed) => info!("connection closed cleanly"),
@@ -45,6 +51,8 @@ pub async fn connect_and_retry(mut rx: Receiver<Command>, mut tx: Sender<net::Co
 }
 
 async fn handle_client<T: Client>(mut client: T, rx: &mut Receiver<Command>, tx: &mut Sender<net::Command>) -> Result<()> {
+    trace!("handle_client");
+
     // Read online::comms::header
     let base = 0x80700000;
     let magic = client.read_cstr(base).await?;
@@ -97,7 +105,7 @@ async fn handle_client<T: Client>(mut client: T, rx: &mut Receiver<Command>, tx:
                         warn!("sync data size mismatch");
                         continue;
                     }
-                    client.checked_write_memory(ptr_sync_data + (index as u32) * sizeof_sync_data, &data).await?;
+                    client.write_memory(ptr_sync_data + (index as u32) * sizeof_sync_data, &data).await?;
                 }
                 Err(TryRecvError::Disconnected) => return Ok(()), // net thread is gone
                 Err(TryRecvError::Empty) => break,
@@ -444,6 +452,7 @@ impl Project64 {
     async fn new(address: &str) -> Result<Self> {
         let listener = TcpListener::bind(address).await?;
         let (stream, _) = listener.accept().await?;
+        trace!("connected to Project64");
         Ok(Self { listener, stream })
     }
 
@@ -456,6 +465,8 @@ impl Project64 {
         buffer.extend_from_slice(&address.to_be_bytes());
         buffer.extend_from_slice(&(data.len() as u32).to_be_bytes());
         buffer.extend_from_slice(data);
+
+        trace!("(pj64) -> command={}, address={:08X}, len={}, data={:?}", command, address, data.len(), data);
 
         self.stream.write_all(&buffer).await?;
         self.stream.flush().await?;
@@ -478,13 +489,16 @@ impl Project64 {
         let mut data = vec![0; len];
         self.stream.read_exact(&mut data).await?;
 
+        trace!("(pj64) <- command={}, address={:08X}, len={}, data={:?}", command, address, len, data);
+
         Ok((command, address, data))
     }
 }
 
 impl Client for Project64 {
     async fn read_memory(&mut self, address: u32, data: &mut [u8]) -> Result<()> {
-        self.send(COMMAND_READ_MEMORY, address, &data.len().to_be_bytes()).await?;
+        trace!("pj64 read_memory");
+        self.send(COMMAND_READ_MEMORY, address, &(data.len() as u32).to_be_bytes()).await?;
         let (command, read_address, read_data) = self.recv().await?;
         if command != COMMAND_READ_MEMORY {
             return Err(Error::BadPacket(format!("expected command {}, got {}", COMMAND_READ_MEMORY, command)));
@@ -497,6 +511,7 @@ impl Client for Project64 {
     }
 
     async fn write_memory(&mut self, address: u32, data: &[u8]) -> Result<()> {
+        trace!("pj64 write_memory");
         self.send(COMMAND_WRITE_MEMORY, address, data).await?;
         Ok(())
     }
