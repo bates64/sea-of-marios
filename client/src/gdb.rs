@@ -2,8 +2,9 @@
 
 use std::ffi::CString;
 
-use tokio::net::TcpStream;
+use tokio::net::{TcpListener, TcpStream};
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
+use tokio::select;
 use tokio::sync::mpsc::{Sender, Receiver, error::TryRecvError};
 use tokio::time::{sleep, Duration};
 use thiserror::Error;
@@ -14,8 +15,25 @@ use crate::net;
 const MESSAGE_SIZE: usize = 128;
 
 pub async fn connect_and_retry(mut rx: Receiver<Command>, mut tx: Sender<net::Command>) {
+    let gdb_port = std::env::var("GDB_PORT").unwrap_or_else(|_| "9123".to_string());
+    let gdb_addr = format!("[::1]:{}", gdb_port);
+
     loop {
-        match connect(&mut rx, &mut tx).await {
+        let result = select! {
+            client = Gdb::new(&gdb_addr) => {
+                match client {
+                    Ok(client) => handle_client(client, &mut rx, &mut tx).await,
+                    Err(error) => Err(error),
+                }
+            },
+            client = Project64::new("[::1]:65432") => {
+                match client {
+                    Ok(client) => handle_client(client, &mut rx, &mut tx).await,
+                    Err(error) => Err(error),
+                }
+            },
+        };
+        match result {
             Ok(()) | Err(Error::ConnectionClosed) => info!("connection closed cleanly"),
             Err(Error::Io(e)) if e.kind() == tokio::io::ErrorKind::ConnectionRefused => {
                 warn!("connection refused, retrying in 5s");
@@ -30,12 +48,7 @@ pub async fn connect_and_retry(mut rx: Receiver<Command>, mut tx: Sender<net::Co
     }
 }
 
-async fn connect(rx: &mut Receiver<Command>, tx: &mut Sender<net::Command>) -> Result<()> {
-    let port = std::env::var("GDB_PORT").unwrap_or_else(|_| "9123".to_string());
-
-    info!("connecting to gdb server on port {port}");
-    let mut client = Client::new(&format!("[::1]:{port}")).await?;
-
+async fn handle_client<T: Client>(mut client: T, rx: &mut Receiver<Command>, tx: &mut Sender<net::Command>) -> Result<()> {
     // Read online::comms::header
     let base = 0x80700000;
     let magic = client.read_cstr(base).await?;
@@ -51,10 +64,6 @@ async fn connect(rx: &mut Receiver<Command>, tx: &mut Sender<net::Command>) -> R
     }
 
     let frame_duration = Duration::from_millis(1000 / 30);
-    let latency = client.measure_latency().await?;
-    if latency > frame_duration {
-        warn!("high latency: {:?}", latency);
-    }
 
     info!("connection with game established");
     let _ = tx.send(net::Command::Connect).await;
@@ -115,7 +124,7 @@ type Result<T> = std::result::Result<T, Error>;
 /// A connection to a GDB server over the GDB Remote Serial Protocol. This is the client.
 ///
 /// See https://sourceware.org/gdb/current/onlinedocs/gdb.html/Remote-Protocol.html
-struct Client {
+struct Gdb {
     stream: TcpStream,
 }
 
@@ -145,10 +154,80 @@ enum Error {
     WriteFailed,
 }
 
-impl Client {
+trait Client {
+    async fn read_memory(&mut self, address: u32, data: &mut [u8]) -> Result<()>;
+
+    async fn write_memory(&mut self, address: u32, data: &[u8]) -> Result<()>;
+
+    /// Some clients (old ares) can mess up memory writes, so we check the written data.
+    async fn checked_write_memory(&mut self, address: u32, data: &[u8]) -> Result<()> {
+        let mut attempts = 0;
+        loop {
+            self.write_memory(address, data).await?;
+
+            let mut real = vec![0; data.len()];
+            self.read_memory(address, &mut real).await?;
+
+            if real == data {
+                return Ok(());
+            }
+
+            if attempts >= 10 {
+                error!("memory write failed after 10 attempts");
+                return Err(Error::WriteFailed);
+            }
+
+            trace!("memory write failed, retrying");
+            attempts += 1;
+        }
+    }
+
+    async fn read_cstr(&mut self, mut address: u32) -> Result<CString> {
+        let mut buffer = Vec::new();
+        loop {
+            match self.read_u8(address).await? {
+                0 => {
+                    buffer.push(0);
+                    break;
+                },
+                ch => buffer.push(ch),
+            }
+            address += 1;
+        }
+        CString::from_vec_with_nul(buffer).map_err(|_| Error::BadCString)
+    }
+
+    async fn read_u8(&mut self, address: u32) -> Result<u8> {
+        let mut data = [0; 1];
+        self.read_memory(address, &mut data).await?;
+        Ok(data[0])
+    }
+
+    async fn read_u32(&mut self, address: u32) -> Result<u32> {
+        let mut data = [0; 4];
+        self.read_memory(address, &mut data).await?;
+        Ok(u32::from_be_bytes(data))
+    }
+
+    async fn write_u32(&mut self, address: u32, value: u32) -> Result<()> {
+        self.write_memory(address, &value.to_be_bytes()).await
+    }
+}
+
+impl Gdb {
     /// Connects to a GDB server at the given address.
     pub async fn new(address: &str) -> Result<Self> {
-        let stream = TcpStream::connect(address).await?;
+        let stream = loop {
+            match TcpStream::connect(address).await {
+                Ok(stream) => break stream,
+                Err(e) if e.kind() == tokio::io::ErrorKind::ConnectionRefused => {
+                    warn!("connection refused, retrying in 5s");
+                    sleep(Duration::from_secs(5)).await;
+                },
+                Err(e) => return Err(e.into()),
+            }
+        };
+
         //stream.set_nonblocking(true)?;
         let mut client = Self { stream };
 
@@ -293,8 +372,22 @@ impl Client {
         self.send(packet.as_bytes()).await
     }
 
+    pub async fn insert_breakpoint(&mut self, address: u32, kind: Breakpoint, size: u32) -> Result<()> {
+        self.send_str(&format!("Z{},{:08X},{:X}", kind.as_int(), address, size)).await?;
+        self.wait_for_ok().await
+    }
+
+    pub async fn measure_latency(&mut self) -> Result<Duration> {
+        let start = std::time::Instant::now();
+        self.send_str("qSupported").await?;
+        self.read_packet().await?;
+        Ok(start.elapsed())
+    }
+}
+
+impl Client for Gdb {
     // M addr,length:XX…
-    pub async fn write_memory(&mut self, address: u32, data: &[u8]) -> Result<()> {
+    async fn write_memory(&mut self, address: u32, data: &[u8]) -> Result<()> {
         let mut data_hex = String::with_capacity(data.len() * 2);
         for byte in data {
             data_hex.push_str(&format!("{:02X}", byte));
@@ -304,30 +397,7 @@ impl Client {
         self.wait_for_ok().await
     }
 
-    /// Some GDB stubs mess up memory writes sometimes, so we check the written data.
-    pub async fn checked_write_memory(&mut self, address: u32, data: &[u8]) -> Result<()> {
-        let mut attempts = 0;
-        loop {
-            self.write_memory(address, data).await?;
-
-            let mut real = vec![0; data.len()];
-            self.read_memory(address, &mut real).await?;
-
-            if real == data {
-                return Ok(());
-            }
-
-            if attempts >= 3 {
-                error!("memory write failed after 3 attempts");
-                return Err(Error::WriteFailed);
-            }
-
-            trace!("memory write failed, retrying");
-            attempts += 1;
-        }
-    }
-
-    pub async fn read_memory(&mut self, address: u32, data: &mut [u8]) -> Result<()> {
+    async fn read_memory(&mut self, address: u32, data: &mut [u8]) -> Result<()> {
         self.send_str(&format!("m{:08X},{}", address, data.len())).await?;
 
         let response = self.read_packet().await?;
@@ -348,49 +418,6 @@ impl Client {
 
         Ok(())
     }
-
-    pub async fn read_cstr(&mut self, mut address: u32) -> Result<CString> {
-        let mut buffer = Vec::new();
-        loop {
-            match self.read_u8(address).await? {
-                0 => {
-                    buffer.push(0);
-                    break;
-                },
-                ch => buffer.push(ch),
-            }
-            address += 1;
-        }
-        CString::from_vec_with_nul(buffer).map_err(|_| Error::BadCString)
-    }
-
-    pub async fn read_u8(&mut self, address: u32) -> Result<u8> {
-        let mut data = [0; 1];
-        self.read_memory(address, &mut data).await?;
-        Ok(data[0])
-    }
-
-    pub async fn read_u32(&mut self, address: u32) -> Result<u32> {
-        let mut data = [0; 4];
-        self.read_memory(address, &mut data).await?;
-        Ok(u32::from_be_bytes(data))
-    }
-
-    pub async fn write_u32(&mut self, address: u32, value: u32) -> Result<()> {
-        self.write_memory(address, &value.to_be_bytes()).await
-    }
-
-    pub async fn insert_breakpoint(&mut self, address: u32, kind: Breakpoint, size: u32) -> Result<()> {
-        self.send_str(&format!("Z{},{:08X},{:X}", kind.as_int(), address, size)).await?;
-        self.wait_for_ok().await
-    }
-
-    pub async fn measure_latency(&mut self) -> Result<Duration> {
-        let start = std::time::Instant::now();
-        self.send_str("qSupported").await?;
-        self.read_packet().await?;
-        Ok(start.elapsed())
-    }
 }
 
 #[allow(unused)]
@@ -407,5 +434,75 @@ impl Breakpoint {
             Breakpoint::Read => 3,
             Breakpoint::Access => 4,
         }
+    }
+}
+
+pub struct Project64 {
+    listener: TcpListener,
+    stream: TcpStream,
+}
+
+const COMMAND_READ_MEMORY: u8 = 0;
+const COMMAND_WRITE_MEMORY: u8 = 1;
+
+impl Project64 {
+    async fn new(address: &str) -> Result<Self> {
+        let listener = TcpListener::bind(address).await?;
+        let (stream, _) = listener.accept().await?;
+        Ok(Self { listener, stream })
+    }
+
+    async fn send(&mut self, command: u8, address: u32, data: &[u8]) -> Result<()> {
+        // We have to write to an in-memory buffer because the client expects the head of the packet to be
+        // send in a single TCP packet, not spread across multiple (which can happen if we don't write in a
+        // single `stream.write_all` operation).
+        let mut buffer = Vec::new();
+        buffer.push(command);
+        buffer.extend_from_slice(&address.to_be_bytes());
+        buffer.extend_from_slice(&(data.len() as u32).to_be_bytes());
+        buffer.extend_from_slice(data);
+
+        self.stream.write_all(&buffer).await?;
+        self.stream.flush().await?;
+        Ok(())
+    }
+
+    async fn recv(&mut self) -> Result<(u8, u32, Vec<u8>)> {
+        let mut command = [0; 1];
+        self.stream.read_exact(&mut command).await?;
+        let command = command[0];
+
+        let mut address = [0; 4];
+        self.stream.read_exact(&mut address).await?;
+        let address = u32::from_be_bytes(address);
+
+        let mut len = [0; 4];
+        self.stream.read_exact(&mut len).await?;
+        let len = u32::from_be_bytes(len) as usize;
+
+        let mut data = vec![0; len];
+        self.stream.read_exact(&mut data).await?;
+
+        Ok((command, address, data))
+    }
+}
+
+impl Client for Project64 {
+    async fn read_memory(&mut self, address: u32, data: &mut [u8]) -> Result<()> {
+        self.send(COMMAND_READ_MEMORY, address, &data.len().to_be_bytes()).await?;
+        let (command, read_address, read_data) = self.recv().await?;
+        if command != COMMAND_READ_MEMORY {
+            return Err(Error::BadPacket(format!("expected command {}, got {}", COMMAND_READ_MEMORY, command)));
+        }
+        if read_address != address {
+            return Err(Error::BadPacket(format!("expected address {:08X}, got {:08X}", address, read_address)));
+        }
+        data.copy_from_slice(&read_data);
+        Ok(())
+    }
+
+    async fn write_memory(&mut self, address: u32, data: &[u8]) -> Result<()> {
+        self.send(COMMAND_WRITE_MEMORY, address, data).await?;
+        Ok(())
     }
 }
