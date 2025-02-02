@@ -73,11 +73,11 @@ void receive_data() {
 
         // Treat frameCounter like a nonce: if it hasn't changed, we don't need to read the data
         if (sync.frameCounter == info.frameCounter) {
-            // no new data
+            debug_printf("no new data for player %d (lagging?)", i);
             continue;
         }
         if (sync.frameCounter < info.frameCounter) {
-            // data is out of order
+            debug_printf("recv data out of order for player %d", i);
             continue;
         }
         info.frameCounter = sync.frameCounter;
