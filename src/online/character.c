@@ -21,10 +21,11 @@ static struct {
     [CHARACTER_BOBOMB] = {ANIM_Bobomb_Idle, ANIM_Bobomb_Run, ANIM_Bobomb_Idle, FALSE},
     [CHARACTER_PARAKOOPA] = {ANIM_ParaTroopa_Idle, ANIM_ParaTroopa_Run, ANIM_ParaTroopa_Walk, TRUE},
     [CHARACTER_BOO] = {ANIM_Boo_Idle, ANIM_Boo_Run, ANIM_Boo_Walk, TRUE},
-    [CHARACTER_LIL_SPARKY] = {ANIM_WorldWatt_Idle, ANIM_WorldWatt_Run, ANIM_WorldWatt_Walk, TRUE},
-    [CHARACTER_CHEEP_CHEEP] = {ANIM_CheepCheep_Idle, ANIM_CheepCheep_Run, ANIM_CheepCheep_Jump, FALSE},
     [CHARACTER_LAKITU] = {ANIM_Lakitu_Anim00, ANIM_Lakitu_Anim02, ANIM_Lakitu_Anim01, TRUE},
-    [CHARACTER_MAGIKOOPA] = {ANIM_Magikoopa_Anim00, ANIM_Magikoopa_Anim02, ANIM_Magikoopa_Anim01, FALSE},
+    [CHARACTER_CHEEP_CHEEP] = {ANIM_CheepCheep_Idle, ANIM_CheepCheep_Run, ANIM_CheepCheep_Jump, FALSE},
+    [CHARACTER_BANDIT] = {ANIM_WorldWatt_Idle, ANIM_WorldWatt_Run, ANIM_WorldWatt_Walk, TRUE},
+    [CHARACTER_DRY_BONES] = {ANIM_Magikoopa_Anim00, ANIM_Magikoopa_Anim02, ANIM_Magikoopa_Anim01, FALSE},
+    [CHARACTER_FUZZY] = {ANIM_Magikoopa_Anim00, ANIM_Magikoopa_Anim02, ANIM_Magikoopa_Anim01, FALSE},
 };
 
 s32 character_idle_anim(s8 character) {

@@ -1,4 +1,5 @@
 #include "net_00.h"
+#include "online/character.h"
 
 namespace net_00 {
 
@@ -20,10 +21,84 @@ EvtScript EVS_TexPan = {
     End
 };
 
+typedef s8 Weights[NUM_TRAITS];
+
+Weights characterToWeights[] = {
+    [CHARACTER_GOOMBA] = {2, 0, 1, -1, 0, 0, 0, 0, 0, 0},
+    [CHARACTER_KOOPA] = {0, 0, 0, -1, 2, 1, 0, 0, 0, 0},
+    [CHARACTER_BOBOMB] = {0, 1, 2, 0, 0, 0, 0, -1, 0, 0},
+    [CHARACTER_PARAKOOPA] = {-1, 0, 0, 0, 0, 2, 1, 0, 0, 0},
+    [CHARACTER_BOO] = {0, 0, 0, 0, -1, 0, 2, 0, 1, 0},
+    [CHARACTER_LAKITU] = {0, 1, 0, 0, 0, 0, 0, 2, 0, -1},
+    [CHARACTER_CHEEP_CHEEP] = {0, 0, 0, 2, 0, 1, 0, -1, 0, 0},
+    [CHARACTER_BANDIT] = {0, 0, 0, 0, 0, 0, -1, 0, 1, 2},
+    [CHARACTER_DRY_BONES] = {0, 2, -1, 0, 1, 0, 0, 0, 0, 0},
+    [CHARACTER_FUZZY] = {1, 0, 0, 0, 0, 0, 0, 0, 2, -1},
+};
+
+Weights quizWeights = {0};
+
+u32 manhattan_distance(s8 a[], s8 b[]) {
+    u32 sum = 0;
+    for (int i = 0; i < NUM_TRAITS; i++) {
+        if (a[i] != 0 || b[i] != 0) { // Ignore traits that are 0 in both
+            sum += abs((s32)a[i] - (s32)b[i]);
+        }
+    }
+    return sum;
+}
+
+PlayerCharacter find_closest_character() {
+    u32 minDist = 0xFFFFFFFF;
+    PlayerCharacter best = CHARACTER_GOOMBA;
+
+    for (int i = 0; i < NUM_CHARACTERS; i++) {
+        u32 dist = manhattan_distance(quizWeights, characterToWeights[i]);
+        if (dist < minDist) {
+            minDist = dist;
+            best = (PlayerCharacter) i;
+        }
+    }
+    return best;
+}
+
+/// Finds the highest quizWeights trait, ignoring the trait that is dominant in the character.
+/// e.g. will never return OPPORTUNISTIC for Goomba
+PlayerTrait best_non_character_trait(PlayerCharacter character) {
+    s8* characterWeights = characterToWeights[character];
+    PlayerTrait bestTrait = OPPORTUNISTIC;
+    s8 bestWeight = -1;
+
+    for (int i = 0; i < NUM_TRAITS; i++) {
+        if (characterWeights[i] == 0 && quizWeights[i] > bestWeight) {
+            bestWeight = quizWeights[i];
+            bestTrait = (PlayerTrait) i;
+        }
+    }
+    return bestTrait;
+}
+
+API_CALLABLE(ChangeTraitWeight) {
+    Bytecode* args = script->ptrReadPos;
+    PlayerTrait trait = (PlayerTrait) evt_get_variable(script, *args++);
+    s32 value = evt_get_variable(script, *args++);
+    quizWeights[trait] += value;
+    return ApiStatus_DONE2;
+}
+
+API_CALLABLE(EndQuiz) {
+    PlayerCharacter character = find_closest_character();
+    gGameStatus.character = character;
+    gGameStatus.bestTrait = best_non_character_trait(character);
+    return ApiStatus_DONE2;
+}
+
 #include "world/common/npc/StarSpirit.inc.c"
 
 EvtScript EVS_NpcInit_Muskular = {
-    // TODO: personality quiz
+    // TODO: actual quiz
+    Call(ChangeTraitWeight, CREATIVE, 10)
+    Call(EndQuiz)
     Return
     End
 };

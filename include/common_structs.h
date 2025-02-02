@@ -1463,8 +1463,9 @@ typedef struct GameStatus {
     /* 0x166 */ u8 saveSlot;
     /* 0x167 */ u8 loadType; /* (0 = from map, 1 = from main menu) */
     /* 0x168 */ u32 saveCount;
-    /* 0x16C */ char unk_16C[11];
-    /* 0x177 */ s8 character;
+    /* 0x16C */ char unk_16C[10];
+    /* 0x176 */ s8 character; // enum PlayerCharacter
+    /* 0x177 */ s8 bestTrait; // enum PlayerTrait
 } GameStatus; // size = 0x178
 
 typedef union PartnerAnimations {

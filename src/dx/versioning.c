@@ -30,6 +30,7 @@ void fio_serialize_state() {
     saveData->debugUnused2 = gGameStatus.debugUnused2;
     saveData->musicEnabled = gGameStatus.musicEnabled;
     saveData->character = gGameStatus.character;
+    saveData->bestTrait = gGameStatus.bestTrait;
 }
 
 /// Load game data from gCurrentSaveFile
