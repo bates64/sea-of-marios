@@ -164,7 +164,7 @@ void phys_update_action_state(void) {
             if ((gPartnerStatus.partnerActionState == PARTNER_ACTION_NONE) && !(playerStatus->flags & PS_FLAG_PAUSED) && cond) {
                 set_action_state(ACTION_STATE_TALK);
             }
-            check_input_spin();
+            //check_input_spin();
         }
 
         Action* action = &PlayerActionsTable[gPlayerStatus.actionState];

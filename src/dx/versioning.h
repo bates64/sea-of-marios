@@ -165,7 +165,8 @@ typedef struct SaveData {
     /* 0x12E0 */ b8 debugUnused1;
     /* 0x12E0 */ b8 debugUnused2;
     /* 0x12E0 */ b8 musicEnabled;
-    /* 0x12E4 */ unsigned char unk_12E4[0x2];
+    /* 0x12E4 */ unsigned char unk_12E4[0x1];
+    /* 0x12E5 */ s8 character;
     /* 0x12E6 */ Vec3s savePos;
     /* 0x12EC */ SaveFileSummary summary;
     /* 0x1304 */ unsigned char unk_1304[0x7C];

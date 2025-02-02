@@ -1,6 +1,7 @@
 #include "common.h"
 #include "world/disguise.h"
 #include "sprite/player.h"
+#include "online/character.h"
 
 AnimID WalkPeachAnims[] = {
     [PEACH_BAKING_NONE]                 ANIM_Peach1_Walk,
@@ -33,7 +34,6 @@ void action_update_walk(void) {
     b32 firstFrame = FALSE;
     f32 moveMag;
     f32 moveAngle;
-    AnimID anim;
 
     if (playerStatus->animFlags & PA_FLAG_USING_PEACH_PHYSICS) {
         action_update_walk_peach();
@@ -49,14 +49,7 @@ void action_update_walk(void) {
             playerStatus->curSpeed = playerStatus->walkSpeed;
         }
 
-        if (playerStatus->animFlags & PA_FLAG_8BIT_MARIO) {
-            anim = ANIM_MarioW3_8bit_Run;
-        } else if (!(playerStatus->animFlags & PA_FLAG_USING_WATT)) {
-            anim = ANIM_Mario1_Walk;
-        } else {
-            anim = ANIM_MarioW1_CarryWalk;
-        }
-        suggest_player_anim_allow_backward(anim);
+        suggest_player_anim_allow_backward(character_run_anim(gGameStatus.character));
     }
 
     if (playerStatus->flags & PS_FLAG_CUTSCENE_MOVEMENT) {
@@ -114,7 +107,6 @@ void action_update_run(void) {
     b32 firstFrame = FALSE;
     f32 moveAngle;
     f32 moveMag;
-    AnimID anim;
     f32 runSpeedModifier;
 
     if (playerStatus->animFlags & PA_FLAG_USING_PEACH_PHYSICS) {
@@ -132,14 +124,7 @@ void action_update_run(void) {
             playerStatus->curSpeed = playerStatus->runSpeed;
         }
 
-        if (playerStatus->animFlags & PA_FLAG_8BIT_MARIO) {
-            anim = ANIM_MarioW3_8bit_Run;
-        } else if (!(playerStatus->animFlags & PA_FLAG_USING_WATT)) {
-            anim = ANIM_Mario1_Run;
-        } else {
-            anim = ANIM_MarioW1_CarryRun;
-        }
-        suggest_player_anim_allow_backward(anim);
+        suggest_player_anim_allow_backward(character_run_anim(gGameStatus.character));
     }
 
     if (playerStatus->flags & PS_FLAG_CUTSCENE_MOVEMENT) {

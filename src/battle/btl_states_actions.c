@@ -390,17 +390,8 @@ void btl_state_update_normal_start(void) {
                 }
             }
 
-            load_player_actor();
-            actor = battleStatus->playerActor;
-            if (gBattleStatus.flags2 & BS_FLAGS2_PEACH_BATTLE) {
-                script = start_script(&EVS_Peach_OnActorCreate, EVT_PRIORITY_A, 0);
-            } else {
-                script = start_script(&EVS_Mario_OnActorCreate, EVT_PRIORITY_A, 0);
-            }
-            actor->takeTurnScript = script;
-            actor->takeTurnScriptID = script->id;
-            script->owner1.actorID = ACTOR_PLAYER;
-            load_partner_actor();
+            gBattleStatus.playerActor = battleStatus->enemyActors[0];
+
             gBattleSubState = BTL_SUBSTATE_NORMAL_START_CHECK_FIRST_STRIKE;
             break;
         case BTL_SUBSTATE_NORMAL_START_CHECK_FIRST_STRIKE:
@@ -453,7 +444,7 @@ void btl_state_update_normal_start(void) {
                     btl_set_state(BATTLE_STATE_ENEMY_FIRST_STRIKE);
                     break;
                 default:
-                    if (!(gGameStatusPtr->demoBattleFlags & DEMO_BTL_FLAG_ENABLED)) {
+                    /*if (!(gGameStatusPtr->demoBattleFlags & DEMO_BTL_FLAG_ENABLED)) {
                         actor = battleStatus->playerActor;
                         if (gBattleStatus.flags2 & BS_FLAGS2_PEACH_BATTLE) {
                             script = start_script(&EVS_PeachEnterStage, EVT_PRIORITY_A, 0);
@@ -463,7 +454,7 @@ void btl_state_update_normal_start(void) {
                         actor->takeTurnScript = script;
                         actor->takeTurnScriptID = script->id;
                         script->owner1.actorID = ACTOR_PLAYER;
-                    }
+                    }*/
 
                     if (currentEncounter->curEnemy != NULL
                         && currentEncounter->curEnemy->encountered == ENCOUNTER_TRIGGER_SPIN
@@ -2112,11 +2103,6 @@ void btl_state_update_end_battle(void) {
                     btl_delete_actor(battleStatus->enemyActors[i]);
                 }
             }
-            if (battleStatus->partnerActor != NULL) {
-                btl_delete_actor(battleStatus->partnerActor);
-            }
-
-            btl_delete_player_actor(battleStatus->playerActor);
 
             if (battleStatus->nextMerleeSpellType == MERLEE_SPELL_COIN_BOOST) {
                 encounterStatus->hasMerleeCoinBonus = TRUE;

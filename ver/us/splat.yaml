@@ -14712,4 +14712,5 @@ segments:
     vram_class: online
     subsegments:
     - [auto, cpp, online]
+    - [auto, c, character]
   - [0x2800000]

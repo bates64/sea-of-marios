@@ -1,5 +1,8 @@
 #include "sprite.h"
 #include "sprite/player.h"
+#include "dx/versioning.h"
+#include "online/character.h"
+#include "dx/debug_menu.h"
 
 #define MAX_SPRITE_ID 0xFF // todo generate this
 
@@ -780,13 +783,15 @@ void spr_init_sprites(s32 playerSpriteSet) {
         playerSpriteSet = PLAYER_SPRITES_PEACH_WORLD;
     }
 
-    loadedFlags = (&spr_playerSpriteSets[playerSpriteSet])->initiallyLoaded;
-    spr_init_player_raster_cache((&spr_playerSpriteSets[playerSpriteSet])->cacheSize,
-                  (&spr_playerSpriteSets[playerSpriteSet])->rasterSize);
+    if (playerSpriteSet >= 0) {
+        loadedFlags = (&spr_playerSpriteSets[playerSpriteSet])->initiallyLoaded;
+        spr_init_player_raster_cache((&spr_playerSpriteSets[playerSpriteSet])->cacheSize,
+                    (&spr_playerSpriteSets[playerSpriteSet])->rasterSize);
 
-    for (i = 1; i <= SPR_Peach3; i++) {
-        if ((loadedFlags >> i) & 1) {
-            spr_load_player_sprite(i);
+        for (i = 1; i <= SPR_Peach3; i++) {
+            if ((loadedFlags >> i) & 1) {
+                spr_load_player_sprite(i);
+            }
         }
     }
 
@@ -809,6 +814,10 @@ void spr_init_sprites(s32 playerSpriteSet) {
     }
 
     spr_init_quad_cache();
+
+    if (playerSpriteSet >= 0) {
+        spr_load_npc_sprite(character_idle_anim(gGameStatus.character), NULL);
+    }
 }
 
 void spr_render_init(void) {
@@ -821,145 +830,18 @@ s32 func_802DDA84(void) {
 }
 
 s32 spr_update_player_sprite(s32 spriteInstanceID, s32 animID, f32 timeScale) {
-    u32* spriteData;
-    SpriteComponent** compList;
-    SpriteComponent* component;
-    SpriteAnimComponent** animList;
-    SpriteRasterCacheEntry** rasterList;
-    s32 spriteId = ((animID >> 16) & 0xFF) - 1;
-    s32 instanceIdx = spriteInstanceID & 0xFF;
-    s32 animIndex = animID & 0xFF;
-    D_802DF57C = spriteId;
+    if (gGameStatus.context == CONTEXT_BATTLE) return;
 
-    if (spr_playerCurrentAnimInfo[instanceIdx].componentList == NULL) {
-        compList = spr_allocate_components(spr_playerMaxComponents);
-        spr_playerCurrentAnimInfo[instanceIdx].componentList = compList;
-        while (*compList != PTR_LIST_END) {
-            component = *compList;
-            component->imgfxIdx = imgfx_get_free_instances(1);
-            compList++;
-        }
-    }
-
-    spriteData = (u32*)spr_playerSprites[spriteId];
-    compList = spr_playerCurrentAnimInfo[instanceIdx].componentList;
-
-    if (spriteData == NULL) {
-        return 0;
-    }
-
-    rasterList = (SpriteRasterCacheEntry**)*spriteData;
-    spriteData += 4 + animIndex;
-    animList = (SpriteAnimComponent**)*spriteData;
-
-    spr_set_anim_timescale(timeScale);
-    if ((spriteInstanceID & DRAW_SPRITE_OVERRIDE_ALPHA) ||
-        (animID & ~SPRITE_ID_BACK_FACING) != (spr_playerCurrentAnimInfo[instanceIdx].animID & ~SPRITE_ID_BACK_FACING))
-    {
-        spr_init_anim_state(compList, animList);
-        spr_playerCurrentAnimInfo[instanceIdx].notifyValue = 0;
-    }
-
-    spr_playerCurrentAnimInfo[instanceIdx].animID = animID;
-
-    if (!(spriteInstanceID & DRAW_SPRITE_OVERRIDE_YAW)) {
-        spr_playerCurrentAnimInfo[instanceIdx].notifyValue = spr_component_update(spr_playerCurrentAnimInfo[instanceIdx].notifyValue,
-                compList, animList, rasterList, 0);
-    }
-    return spr_playerCurrentAnimInfo[instanceIdx].notifyValue;
+    s32 notify = spr_update_sprite(spriteInstanceID, animID, timeScale);
+    spr_playerCurrentAnimInfo[spriteInstanceID].componentList = SpriteInstances[spriteInstanceID].componentList;
+    spr_playerCurrentAnimInfo[spriteInstanceID].animID = animID;
+    spr_playerCurrentAnimInfo[spriteInstanceID].notifyValue = SpriteInstances[spriteInstanceID].notifyValue;
+    return notify;
 }
 
 s32 spr_draw_player_sprite(s32 spriteInstanceID, s32 yaw, s32 alphaIn, PAL_PTR* paletteList, Matrix4f mtx) {
-    s32 instanceIdx = spriteInstanceID & 0xFF;
-    s32 animID = spr_playerCurrentAnimInfo[instanceIdx].animID;
-    SpriteRasterCacheEntry** rasters;
-    PAL_PTR* palettes;
-    SpriteAnimComponent** animComponents;
-    SpriteComponent** components;
-    f32 zscale;
-    u32 alpha;
-    u32* spriteData;
-    s32 spriteId;
-    s32 spriteIdBackFacing;
-
-    if (animID == ANIM_LIST_END) {
-        return FALSE;
-    }
-
-    D_802DF57C = spriteId = ((animID >> 0x10) & 0xFF) - 1;
-    spriteData = (u32*)spr_playerSprites[spriteId];
-    if (spriteData == NULL) {
-        return FALSE;
-    }
-
-    // TODO: fake match or not?
-    rasters = (SpriteRasterCacheEntry**)*spriteData++;
-    palettes = (PAL_PTR*)*spriteData++;
-    spriteData++;
-    spriteData++;
-    animComponents = (SpriteAnimComponent**)spriteData[animID & 0xFF];
-
-    if (animID & SPRITE_ID_BACK_FACING) {
-        switch (spriteId) {
-            case 0:
-            case 5:
-            case 9:
-                spriteIdBackFacing = spriteId + 1;
-                // TODO find better match
-                rasters = (SpriteRasterCacheEntry**)spr_playerSprites[spriteIdBackFacing];
-                D_802DF57C = spriteIdBackFacing;
-                rasters = (SpriteRasterCacheEntry**)*rasters;
-                break;
-        }
-    }
-
-    if (!(spriteInstanceID & DRAW_SPRITE_OVERRIDE_YAW)) {
-        yaw += (s32)-gCameras[gCurrentCamID].curYaw;
-        if (yaw > 360) {
-            yaw -= 360;
-        }
-        if (yaw < -360) {
-            yaw += 360;
-        }
-    }
-
-    if (yaw > 90 && yaw <= 270 || yaw >= -270 && yaw < -90) {
-        zscale = -1.5f;
-    } else {
-        zscale = 1.5f;
-    }
-
-    if (spriteInstanceID & DRAW_SPRITE_UPSIDE_DOWN) {
-        zscale = 0.0f - zscale;
-    }
-
-    D_802DFEA0[0] = 0;
-    D_802DFEA0[1] = yaw;
-    D_802DFEA0[2] = 0;
-
-
-    if (spriteInstanceID & DRAW_SPRITE_OVERRIDE_ALPHA) {
-        alpha = alphaIn & 0xFF;
-        if (alphaIn == 0) {
-            return FALSE;
-        }
-    } else {
-        alpha = 255;
-    }
-
-    components = spr_playerCurrentAnimInfo[instanceIdx].componentList;
-    if (spriteInstanceID & DRAW_SPRITE_OVERRIDE_PALETTES) {
-        palettes = paletteList;
-    }
-
-    while (*components != PTR_LIST_END) {
-        spr_draw_component(alpha | DRAW_SPRITE_USE_PLAYER_RASTERS, *components++, *animComponents, rasters, palettes, zscale, mtx);
-        if (*animComponents != PTR_LIST_END) {
-            animComponents++;
-        }
-    }
-
-    return TRUE;
+    if (gGameStatus.context == CONTEXT_BATTLE) return;
+    return spr_draw_npc_sprite(spriteInstanceID, yaw, alphaIn, paletteList, mtx);
 }
 
 s32 func_802DDEC4(s32 spriteIdx) {
@@ -971,8 +853,8 @@ void set_player_imgfx_comp(s32 spriteIdx, s32 compIdx, ImgFXType imgfx, s32 imgf
     SpriteComponent** componentListIt;
     s32 i;
 
-    if (spr_playerCurrentAnimInfo[spriteIdx].componentList != NULL) {
-        componentListIt = spr_playerCurrentAnimInfo[spriteIdx].componentList;
+    if (SpriteInstances[spriteIdx].componentList != NULL) {
+        componentListIt = SpriteInstances[spriteIdx].componentList;
         i = 0;
 
         while (*componentListIt != PTR_LIST_END) {
@@ -1087,6 +969,12 @@ s32 spr_update_sprite(s32 spriteInstanceID, s32 animID, f32 timeScale) {
     rasterList = (SpriteRasterCacheEntry**)*spriteData;
     spriteData += 4 + animIndex;
     animList = (SpriteAnimComponent**)*spriteData;
+
+    // can happen when anim is set to a player anim
+    if (((u32)animList & 0x80000000U) == 0) {
+        debug_printf("sprite %d has invalid animList %p", i, animList);
+        return SpriteInstances[i].notifyValue;
+    }
 
     palID = (animID >> 8) & 0xFF;
     spr_set_anim_timescale(timeScale);

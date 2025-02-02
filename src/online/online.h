@@ -18,6 +18,7 @@ namespace online {
         Vec4f player;
         u8 area;
         u8 map;
+        s32 anim;
 
         u8 calc_checksum() const volatile {
             u8 sum = 0;

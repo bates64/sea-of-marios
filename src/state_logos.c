@@ -119,7 +119,7 @@ void state_init_logos(void) {
     clear_script_list();
     clear_worker_list();
     clear_render_tasks();
-    spr_init_sprites(PLAYER_SPRITES_MARIO_WORLD);
+    spr_init_sprites(-1);
     clear_animator_list();
     clear_entity_models();
     clear_npcs();

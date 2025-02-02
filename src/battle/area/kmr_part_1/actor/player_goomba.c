@@ -101,6 +101,11 @@ s32 N(DefaultAnims)[] = {
     STATUS_KEY_PARALYZE,  ANIM_Goomba_Still,
     STATUS_KEY_DIZZY,     ANIM_Goomba_Dizzy,
     STATUS_KEY_FEAR,      ANIM_Goomba_Dizzy,
+    STATUS_KEY_INACTIVE,  ANIM_Goomba_Idle,
+    STATUS_KEY_INACTIVE_WEARY, ANIM_Goomba_Idle,
+    STATUS_KEY_DANGER,    ANIM_Goomba_Idle,
+    STATUS_KEY_THINKING,  ANIM_Goomba_Idle,
+    STATUS_KEY_WEARY,     ANIM_Goomba_Idle,
     STATUS_END,
 };
 
@@ -123,7 +128,7 @@ EvtScript N(EVS_Init) = {
     Call(BindIdle, ACTOR_SELF, Ref(N(EVS_Idle)))
     Call(BindHandleEvent, ACTOR_SELF, Ref(N(EVS_HandleEvent)))
     Call(GetActorPos, ACTOR_SELF, LVar0, LVar1, LVar2)
-    IfLt(LVar0, -95)
+    IfGt(LVar0, 0)
         Call(SetActorYaw, ACTOR_SELF, 0)
     Else
         Call(SetActorYaw, ACTOR_SELF, 180)
@@ -304,15 +309,17 @@ EvtScript N(EVS_TakeTurn) = {
     Call(UseIdleAnimation, ACTOR_SELF, FALSE)
     Call(EnableIdleScript, ACTOR_SELF, IDLE_SCRIPT_DISABLE)
     // Decide which attack to use from menu selection
-    // Var = 0: Headbonk
-    ExecWait(N(EVS_Attack_Headbonk))
-    // Var = 1: Multibonk
-    // ExecWait(N(EVS_Attack_Multibonk))
-    // Var = 2: Rally Wink
-    // ExecWait(N(EVS_Move_RallyWink))
-    // Var = 3: Charge
-    // ExecWait(N(EVS_Move_Charge))
-    // EndSwitch?
+    Call(GetMenuSelection, LVar0, LVar1, LVar2)
+    Switch(LVar2)
+        CaseEq(MOVE_HEADBONK1)
+            ExecWait(N(EVS_Attack_Headbonk))
+        CaseEq(MOVE_MULTIBONK)
+            ExecWait(N(EVS_Attack_Multibonk))
+        CaseEq(MOVE_RALLY_WINK)
+            ExecWait(N(EVS_Move_RallyWink))
+        CaseEq(MOVE_CHARGE)
+            ExecWait(N(EVS_Move_Charge))
+    EndSwitch
     Call(EnableIdleScript, ACTOR_SELF, IDLE_SCRIPT_ENABLE)
     Call(UseIdleAnimation, ACTOR_SELF, TRUE)
     Return

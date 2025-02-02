@@ -1663,3 +1663,12 @@
     actionTip: BTL_MSG_ACTION_TIP_MASH_LEFT
     costFP: 5
     costBP: 0
+- RallyWink:
+    nameMsg: MSG_MoveName_RallyWink
+    fullDescMsg: MSG_MoveDesc_RallyWink
+    shortDescMsg: MSG_MoveDesc_RallyWink
+    flags: [ TARGET_FLAG_PARTNER ]
+    category: MOVE_TYPE_PARTNER
+    actionTip: BTL_MSG_ACTION_TIP_MASH_BUTTON
+    costFP: 4
+    costBP: 0

@@ -1,6 +1,7 @@
 #include "common.h"
 #include "effects.h"
 #include "battle/battle.h"
+#include "dx/debug_menu.h"
 
 extern s32 IsGroupHeal;
 extern s8 ApplyingBuff;

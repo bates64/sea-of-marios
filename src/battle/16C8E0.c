@@ -686,6 +686,8 @@ void btl_render_actors(void) {
                     }
                 }
 
+                // Don't rerender the player actor, it's already in enemyActors
+                /*
                 actor = battleStatus->playerActor;
                 if (actor != NULL && !(actor->flags & ACTOR_FLAG_INVISIBLE)) {
                     renderTaskPtr->appendGfxArg = NULL;
@@ -710,6 +712,7 @@ void btl_render_actors(void) {
                         queue_render_task(renderTaskPtr);
                     }
                 }
+                */
             }
         }
     }

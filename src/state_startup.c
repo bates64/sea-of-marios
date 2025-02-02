@@ -38,7 +38,7 @@ void state_step_startup(void) {
     clear_worker_list();
     clear_script_list();
     create_cameras();
-    spr_init_sprites(PLAYER_SPRITES_MARIO_WORLD);
+    spr_init_sprites(-1);
     clear_entity_models();
     clear_animator_list();
     clear_model_data();

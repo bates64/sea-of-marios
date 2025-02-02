@@ -321,7 +321,7 @@ void load_engine_data(void) {
     clear_script_list();
     create_cameras();
     clear_player_status();
-    spr_init_sprites(PLAYER_SPRITES_MARIO_WORLD);
+    spr_init_sprites(-1);
     clear_entity_models();
     clear_animator_list();
     clear_model_data();

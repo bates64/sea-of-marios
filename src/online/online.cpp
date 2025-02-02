@@ -25,8 +25,6 @@ struct Header {
 SyncData* begin_writing_my_sync_data() {
     if (header.me < 0) return nullptr;
 
-    debug_printf("this is player %d", header.me);
-
     header.isMySyncDataValid = false;
     return (SyncData*) &header.syncData[header.me]; // cast required to make non-volatile
 }
@@ -40,6 +38,7 @@ void end_writing_my_sync_data(SyncData* sync) {
 struct PeerInfo {
     u16 frameCounter;
     u16 timeSinceRecv;
+    Vec3f delta;
 
     bool is_connected() const {
         return timeSinceRecv < 60;
@@ -59,7 +58,7 @@ void receive_data() {
             info.timeSinceRecv++;
         }
 
-        if (i == header.me) continue; // skip our own data
+        if (i == (size_t)header.me) continue; // skip our own data
 
         if (sync.frameCounter == 0) continue; // no peer (they disconnected)
 
@@ -74,6 +73,15 @@ void receive_data() {
         // Treat frameCounter like a nonce: if it hasn't changed, we don't need to read the data
         if (sync.frameCounter == info.frameCounter) {
             debug_printf("no new data for player %d (lagging?)", i);
+
+            // Apply prediction
+            if (npcs[i] != nullptr) {
+                npcs[i]->colliderPos.x += info.delta.x;
+                npcs[i]->colliderPos.y += info.delta.y;
+                npcs[i]->colliderPos.z += info.delta.z;
+                npcs[i]->pos = npcs[i]->colliderPos;
+                npcs[i]->flags |= NPC_FLAG_DIRTY_SHADOW;
+            }
             continue;
         }
         if (sync.frameCounter < info.frameCounter) {
@@ -84,12 +92,17 @@ void receive_data() {
         info.frameCounter = sync.frameCounter;
         info.timeSinceRecv = 0;
 
+        // Calculate delta for prediction
+        info.delta.x = sync.player.x - npcs[i]->pos.x;
+        info.delta.y = sync.player.y - npcs[i]->pos.y;
+        info.delta.z = sync.player.z - npcs[i]->pos.z;
+
         // Create NPC if we're in the same map, otherwise free it
         if (sync.area == gGameStatus.areaID && sync.map == gGameStatus.mapID) {
             if (npcs[i] == nullptr) {
                 NpcBlueprint bp = {
                     .flags = 0,
-                    .initialAnim = ANIM_Bandit_Idle,
+                    .initialAnim = sync.anim,
                     .onUpdate = NULL,
                     .onRender = NULL,
                 };
@@ -100,6 +113,7 @@ void receive_data() {
             npcs[i]->colliderPos = npcs[i]->pos = { sync.player.x, sync.player.y, sync.player.z };
             set_npc_yaw(npcs[i], sync.player.yaw);
             npcs[i]->flags |= NPC_FLAG_DIRTY_SHADOW;
+            npcs[i]->curAnim = sync.anim;
         } else if (npcs[i] != nullptr) {
             free_npc(npcs[i]);
             npcs[i] = nullptr;
@@ -128,9 +142,10 @@ EXTERN_C void online_end_step_game_loop() {
     }
 
     sync->frameCounter = gGameStatus.frameCounter;
-    sync->player = { gPlayerStatus.pos.x, gPlayerStatus.pos.y, gPlayerStatus.pos.z, gPlayerStatus.curYaw };
+    sync->player = { gPlayerStatus.pos.x, gPlayerStatus.pos.y, gPlayerStatus.pos.z, gPlayerStatus.heading };
     sync->area = gGameStatus.areaID;
     sync->map = gGameStatus.mapID;
+    sync->anim = gPlayerStatus.trueAnimation;
 
     end_writing_my_sync_data(sync);
 }
@@ -148,7 +163,7 @@ bool is_connected_to_gateway() {
 bool is_connected_to_server() {
     // TODO: make this check for room, not peers
     for (size_t i = 0; i < MAX_PEERS; i++) {
-        if (i == header.me) continue;
+        if (i == (size_t)header.me) continue;
         if (peerInfo[i].is_connected()) {
             return true;
         }

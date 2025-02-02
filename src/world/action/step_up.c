@@ -1,6 +1,7 @@
 #include "common.h"
 #include "world/disguise.h"
 #include "sprite/player.h"
+#include "online/character.h"
 
 AnimID StepUpPeachAnims[] = {
     [PEACH_BAKING_NONE]                 ANIM_Peach1_Walk,
@@ -35,13 +36,7 @@ void action_update_step_up(void) {
     if (playerStatus->flags & PS_FLAG_ACTION_STATE_CHANGED) {
         playerStatus->flags &= ~PS_FLAG_ACTION_STATE_CHANGED;
         phys_adjust_cam_on_landing();
-        if (playerStatus->animFlags & PA_FLAG_USING_PEACH_PHYSICS) {
-            action_update_step_up_set_peach_anim();
-        } else if (playerStatus->animFlags & PA_FLAG_USING_WATT) {
-            suggest_player_anim_allow_backward(ANIM_MarioW1_CarryWalk);
-        } else {
-            suggest_player_anim_allow_backward(ANIM_Mario1_Walk);
-        }
+        suggest_player_anim_allow_backward(character_run_anim(gGameStatus.character));
         playerStatus->actionSubstate = 0;
         playerStatus->timeInAir = 0;
         playerStatus->peakJumpTime = 0;

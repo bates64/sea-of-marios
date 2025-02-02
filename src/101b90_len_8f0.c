@@ -91,7 +91,9 @@ SpriteAnimData* spr_load_sprite(s32 idx, s32 isPlayerSprite, s32 useTailAlloc) {
     nuPiReadRom(base + spr_asset_entry[0], data, compressedSize);
 
     ptr1 = (s32*)data;
-    // skip 4 bytes: 'YAY0' signature
+    // check 'Yay0' signature
+    u32 yay0 = (u32) *ptr1;
+    ASSERT_MSG(yay0 == ASCII_TO_U32('Y', 'a', 'y', '0'), "not a Yay0 file");
     ptr1++;
 
     if (useTailAlloc) {

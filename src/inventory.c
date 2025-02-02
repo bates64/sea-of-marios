@@ -2,6 +2,7 @@
 #include "hud_element.h"
 #include "dx/config.h"
 #include "dx/debug_menu.h"
+#include "online/character.h"
 
 #define FULLY_EXTENDED_Y  18
 #define FULLY_RETRACTED_Y -100
@@ -141,6 +142,8 @@ void clear_player_data(void) {
     playerData->smashGamePlays = 0;
     playerData->smashGameTotal = 0;
     playerData->smashGameRecord = 0;
+
+    gGameStatus.character = CHARACTER_BOO;
 }
 
 s32 add_item(s32 itemID) {
