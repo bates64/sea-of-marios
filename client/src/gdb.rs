@@ -26,7 +26,7 @@ pub async fn connect_and_retry(mut rx: Receiver<Command>, mut tx: Sender<net::Co
                     Err(error) => Err(error),
                 }
             },
-            client = Project64::new("[::1]:65432") => {
+            client = Project64::new("127.0.0.1:65432") => {
                 match client {
                     Ok(client) => handle_client(client, &mut rx, &mut tx).await,
                     Err(error) => Err(error),
@@ -35,10 +35,6 @@ pub async fn connect_and_retry(mut rx: Receiver<Command>, mut tx: Sender<net::Co
         };
         match result {
             Ok(()) | Err(Error::ConnectionClosed) => info!("connection closed cleanly"),
-            Err(Error::Io(e)) if e.kind() == tokio::io::ErrorKind::ConnectionRefused => {
-                warn!("connection refused, retrying in 5s");
-                sleep(Duration::from_secs(5)).await;
-            }
             Err(e) => {
                 error!("{}, retrying in 5s", e);
                 sleep(Duration::from_secs(1)).await;
@@ -221,8 +217,7 @@ impl Gdb {
             match TcpStream::connect(address).await {
                 Ok(stream) => break stream,
                 Err(e) if e.kind() == tokio::io::ErrorKind::ConnectionRefused => {
-                    warn!("connection refused, retrying in 5s");
-                    sleep(Duration::from_secs(5)).await;
+                    sleep(Duration::from_secs(1)).await;
                 },
                 Err(e) => return Err(e.into()),
             }

@@ -58,7 +58,7 @@ function sliceBuffer(buffer, offset) {
 
 console.log("Connecting...")
 
-socket.connect({ port: 65432 }, function () {
+socket.connect(65432, function () {
     console.log("Connected to server")
 })
 
