@@ -78,7 +78,8 @@ void receive_data() {
         }
         if (sync.frameCounter < info.frameCounter) {
             debug_printf("recv data out of order for player %d", i);
-            continue;
+            // commented out because this can cause issues for players that reconnect
+            //continue;
         }
         info.frameCounter = sync.frameCounter;
         info.timeSinceRecv = 0;
