@@ -29,10 +29,10 @@
 #define DX_SKIP_DEMO 1
 
 /// Map to load when starting a new game.
-#define NEW_GAME_MAP_ID "sbk_13"
+#define NEW_GAME_MAP_ID "net_00"
 
 /// Entry to use when starting a new game.
-#define NEW_GAME_ENTRY_ID sbk_13_ENTRY_0
+#define NEW_GAME_ENTRY_ID 0
 
 /// Story progress when starting a new game.
 #define NEW_GAME_STORY_PROGRESS STORY_CH8_STAR_SHIP_ACTIVATED

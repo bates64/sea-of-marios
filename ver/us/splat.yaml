@@ -13288,6 +13288,13 @@ segments:
     subsegments:
     - [auto, c, settings]
     - [auto, c, main]
+  - name: net_00
+    dir: world/area_net/net_00
+    type: code
+    start: auto
+    vram_class: map
+    subsegments:
+    - [auto, cpp, main]
   - name: heaps2
     type: code
     start: 0xE20110

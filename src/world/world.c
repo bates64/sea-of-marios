@@ -867,6 +867,12 @@ MapConfig gv_maps[] = {
     { MAP(gv_01) },
 };
 
+/// Networking
+#include "area_net/net.h"
+MapConfig net_maps[] = {
+    { MAP_WITH_INIT(net_00), .bgName = "sam_bg" },
+};
+
 AreaConfig gAreas[] = {
     AREA(kmr, "クリむら"),  // kuri mura [kuribou village, Goomba Village]
     AREA(mac, "まち"),  // machi [town, Toad Town]
@@ -895,6 +901,6 @@ AreaConfig gAreas[] = {
     AREA(end, "エンディング"),  // endingu [Ending]
     AREA(mgm, "ミニゲーム"),  // minige-mu [Minigames]
     AREA(gv, "ゲームオーバー"),  // ge-mu o-ba- [Game Over]
-    AREA(tst, "テストマップ"),  // tesuto mappu [Test map]
+    AREA(net, "Networking"),
     {},
 };
