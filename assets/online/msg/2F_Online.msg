@@ -248,7 +248,7 @@ the train.[pause 10] Do you pull it?[br]
 #message:2F:(Personality_Result_Opportunistic)
 {
 [Next]
-You’re always on the lookout for[br]
+You're always on the lookout for[br]
 an opening, ready to seize[br]
 opportunities as they appear.[br]
 [wait][next]
