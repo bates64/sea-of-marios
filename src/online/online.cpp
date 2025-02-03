@@ -137,7 +137,6 @@ EXTERN_C void online_begin_step_game_loop() {
 EXTERN_C void online_end_step_game_loop() {
     auto* sync = begin_writing_my_sync_data();
     if (sync == nullptr) {
-        debug_printf("disconnected");
         return;
     }
 

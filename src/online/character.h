@@ -32,8 +32,9 @@ enum PlayerTrait {
     NUM_TRAITS
 };
 
-s32 character_idle_anim(s8 character);
-s32 character_run_anim(s8 character);
-s32 character_jump_anim(s8 character);
-s32 character_hurt_anim(s8 character);
-b32 character_is_flying(s8 character);
+EXTERN_C void change_player_character(enum PlayerCharacter character);
+EXTERN_C s32 character_idle_anim(s8 character);
+EXTERN_C s32 character_run_anim(s8 character);
+EXTERN_C s32 character_jump_anim(s8 character);
+EXTERN_C s32 character_hurt_anim(s8 character);
+EXTERN_C b32 character_is_flying(s8 character);

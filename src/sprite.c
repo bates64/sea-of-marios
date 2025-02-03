@@ -764,6 +764,12 @@ void spr_load_player_sprite(s32 spriteIndex) {
     }
 }
 
+void spr_load_player_character() {
+    // Player's sprite should always be the first NPC sprite
+    spr_free_sprite(0);
+    ASSERT(spr_load_npc_sprite(character_idle_anim(gGameStatus.character), NULL) == 0);
+}
+
 void spr_init_sprites(s32 playerSpriteSet) {
     s32 loadedFlags;
     s32 i;
@@ -816,7 +822,7 @@ void spr_init_sprites(s32 playerSpriteSet) {
     spr_init_quad_cache();
 
     if (playerSpriteSet >= 0) {
-        spr_load_npc_sprite(character_idle_anim(gGameStatus.character), NULL);
+        spr_load_player_character();
     }
 }
 

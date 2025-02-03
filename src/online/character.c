@@ -28,6 +28,13 @@ static struct {
     [CHARACTER_FUZZY] = {ANIM_Magikoopa_Anim00, ANIM_Magikoopa_Anim02, ANIM_Magikoopa_Anim01, FALSE},
 };
 
+void spr_load_player_character();
+
+void change_player_character(enum PlayerCharacter character) {
+    gGameStatus.character = character;
+    spr_load_player_character();
+}
+
 s32 character_idle_anim(s8 character) {
     return characters[character].idle;
 }

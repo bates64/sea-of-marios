@@ -143,7 +143,8 @@ void clear_player_data(void) {
     playerData->smashGameTotal = 0;
     playerData->smashGameRecord = 0;
 
-    gGameStatus.character = CHARACTER_BOO;
+    gGameStatus.character = CHARACTER_GOOMBA;
+    gGameStatus.bestTrait = OPPORTUNISTIC;
 }
 
 s32 add_item(s32 itemID) {
