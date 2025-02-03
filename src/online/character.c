@@ -5,10 +5,11 @@
 #include "sprite/npc/Bobomb.h"
 #include "sprite/npc/ParaTroopa.h"
 #include "sprite/npc/Boo.h"
-#include "sprite/npc/WorldWatt.h"
-#include "sprite/npc/CheepCheep.h"
+#include "sprite/npc/Bandit.h"
+#include "sprite/npc/WorldSushie.h"
 #include "sprite/npc/Lakitu.h"
-#include "sprite/npc/Magikoopa.h"
+#include "sprite/npc/DryBones.h"
+#include "sprite/npc/Fuzzy.h"
 
 static struct {
     s32 idle;
@@ -22,10 +23,10 @@ static struct {
     [CHARACTER_PARAKOOPA] = {ANIM_ParaTroopa_Idle, ANIM_ParaTroopa_Run, ANIM_ParaTroopa_Walk, TRUE},
     [CHARACTER_BOO] = {ANIM_Boo_Idle, ANIM_Boo_Run, ANIM_Boo_Walk, TRUE},
     [CHARACTER_LAKITU] = {ANIM_Lakitu_Anim00, ANIM_Lakitu_Anim02, ANIM_Lakitu_Anim01, TRUE},
-    [CHARACTER_CHEEP_CHEEP] = {ANIM_CheepCheep_Idle, ANIM_CheepCheep_Run, ANIM_CheepCheep_Jump, FALSE},
-    [CHARACTER_BANDIT] = {ANIM_WorldWatt_Idle, ANIM_WorldWatt_Run, ANIM_WorldWatt_Walk, TRUE},
-    [CHARACTER_DRY_BONES] = {ANIM_Magikoopa_Anim00, ANIM_Magikoopa_Anim02, ANIM_Magikoopa_Anim01, FALSE},
-    [CHARACTER_FUZZY] = {ANIM_Magikoopa_Anim00, ANIM_Magikoopa_Anim02, ANIM_Magikoopa_Anim01, FALSE},
+    [CHARACTER_CHEEP_CHEEP] = {ANIM_WorldSushie_Idle, ANIM_WorldSushie_Run, ANIM_WorldSushie_Walk, FALSE},
+    [CHARACTER_BANDIT] = {ANIM_Bandit_Idle, ANIM_Bandit_Run, ANIM_Bandit_Walk, TRUE},
+    [CHARACTER_DRY_BONES] = {ANIM_DryBones_Anim02, ANIM_DryBones_Anim04, ANIM_DryBones_Anim03, FALSE},
+    [CHARACTER_FUZZY] = {ANIM_Fuzzy_Walk, ANIM_Fuzzy_Run, ANIM_Fuzzy_Jump, FALSE},
 };
 
 void spr_load_player_character();
