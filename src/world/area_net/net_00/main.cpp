@@ -64,13 +64,14 @@ PlayerCharacter find_closest_character() {
     return best;
 }
 
-PlayerTrait highest_trait() {
-    s8 max = -1;
+PlayerTrait defining_trait_of_character(PlayerCharacter character) {
+    s8 max = -128;
     PlayerTrait trait = OPPORTUNISTIC;
+    s8* weights = characterToWeights[character];
 
     for (int i = 0; i < NUM_TRAITS; i++) {
-        if (quizWeights[i] > max) {
-            max = quizWeights[i];
+        if (weights[i] > max) {
+            max = weights[i];
             trait = (PlayerTrait) i;
         }
     }
@@ -374,7 +375,7 @@ API_CALLABLE(GetPersonalityResultMessage) {
         MSG_Personality_Result_Mischievous,
         MSG_Personality_Result_Greedy,
     };
-    script->varTable[0] = messages[highest_trait()];
+    script->varTable[0] = messages[defining_trait_of_character(find_closest_character())];
     return ApiStatus_DONE2;
 }
 
