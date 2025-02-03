@@ -410,6 +410,8 @@ EvtScript EVS_NpcInit_Muskular = {
         Call(GetPersonalityResultMessage)
         Call(ContinueSpeech, NPC_SELF, ANIM_WorldMuskular_Talk, ANIM_WorldMuskular_Still, 0, LVar0)
 
+        WaitSecs(1)
+
         Call(PlaySound, SOUND_STAR_SPIRIT_CAST_A)
         PlayEffect(EFFECT_SPARKLES, 0, 0, -50, 200, 10)
         PlayEffect(EFFECT_STARS_SHIMMER, 3, 0, -50, 200, 42, 48, 15, 60, 0)
