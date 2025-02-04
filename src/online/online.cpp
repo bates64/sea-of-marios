@@ -87,6 +87,8 @@ struct PeerInfo {
 
 Npc* npcs[MAX_PEERS] = {0};
 
+extern "C" s32 create_npc_with_index(NpcBlueprint* blueprint, AnimID* animList, s32 isPeachNpc, s32 i);
+
 void receive_data() {
     osInvalDCache(&header, sizeof(header)); // possibly unnecessary
 
@@ -110,6 +112,7 @@ void receive_data() {
 
             // Prediction
             if (npcs[i] != nullptr) {
+                // TODO: use collision detection to prevent clipping through walls or the floor
                 npcs[i]->colliderPos.x += info.x.velocity();
                 npcs[i]->colliderPos.y += info.y.velocity();
                 npcs[i]->colliderPos.z += info.z.velocity();
@@ -139,16 +142,24 @@ void receive_data() {
             info.z.push(sync.player.z);
         }
 
+        if (info.droppedPackets > 0) info.droppedPackets--;
+
         // Create NPC if we're in the same map, otherwise free it
         if (sync.area == gGameStatus.areaID && sync.map == gGameStatus.mapID) {
             if (npcs[i] == nullptr) {
+                // Wait until we're in the world to create NPCs
+                if (gGameStatusPtr->context != CONTEXT_WORLD) {
+                    continue;
+                }
+
                 NpcBlueprint bp = {
                     .flags = 0,
                     .initialAnim = sync.anim,
                     .onUpdate = NULL,
                     .onRender = NULL,
                 };
-                npcs[i] = get_npc_by_index(create_basic_npc(&bp));
+                npcs[i] = get_npc_by_index(create_npc_with_index(&bp, NULL, FALSE, MAX_NPCS - 1 - i));
+                npcs[i]->pos = { sync.player.x, sync.player.y, sync.player.z };
 
                 // They just entered the map, discard position history
                 info.x.set(sync.player.x);
@@ -159,9 +170,9 @@ void receive_data() {
             // Update NPC state to match
             if (info.droppedPackets > 0) {
                 // Packets were dropped - smoothly interpolate to the correct position
-                npcs[i]->pos.x += (sync.player.x - npcs[i]->pos.x) / (f32)info.droppedPackets;
-                npcs[i]->pos.y += (sync.player.y - npcs[i]->pos.y) / (f32)info.droppedPackets;
-                npcs[i]->pos.z += (sync.player.z - npcs[i]->pos.z) / (f32)info.droppedPackets;
+                npcs[i]->pos.x += (sync.player.x - npcs[i]->pos.x) / 3.0f;
+                npcs[i]->pos.y += (sync.player.y - npcs[i]->pos.y) / 3.0f;
+                npcs[i]->pos.z += (sync.player.z - npcs[i]->pos.z) / 3.0f;
             } else {
                 npcs[i]->pos = { sync.player.x, sync.player.y, sync.player.z };
             }
@@ -173,8 +184,6 @@ void receive_data() {
             free_npc(npcs[i]);
             npcs[i] = nullptr;
         }
-
-        if (info.droppedPackets > 0) info.droppedPackets--;
     }
 
     // Update peers regardless of sync data
