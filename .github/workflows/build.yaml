@@ -55,7 +55,7 @@ jobs:
           path: ver/us/build/papermario.bps
   client:
     name: Client
-    runs-on:
+    runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
