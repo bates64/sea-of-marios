@@ -871,6 +871,7 @@ MapConfig gv_maps[] = {
 #include "area_net/net.h"
 MapConfig net_maps[] = {
     { MAP_WITH_INIT(net_00), .bgName = "sam_bg" },
+    { MAP(net_01), .bgName = "net_bg" },
 };
 
 AreaConfig gAreas[] = {

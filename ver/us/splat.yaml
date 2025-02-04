@@ -13295,6 +13295,13 @@ segments:
     vram_class: map
     subsegments:
     - [auto, cpp, main]
+  - name: net_01
+    dir: world/area_net/net_01
+    type: code
+    start: auto
+    vram_class: map
+    subsegments:
+    - [auto, cpp, main]
   - name: heaps2
     type: code
     start: 0xE20110

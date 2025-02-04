@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Map background="net_bg" textures="net_tex">
+<Map desc="Ship Exterior" background="net_bg" textures="net_tex">
 	<Editor>
-		<Camera pos="15.300955,116.468567,624.997559" pitch="9.000000" yaw="0.000000"/>
+		<Camera pos="-4.220870,151.234848,382.912567" pitch="34.879951" yaw="357.280060"/>
 		<Camera pos="478.794403,65536.000000,-181.281693"/>
 		<Camera pos="65536.000000,226.338028,-227.200775"/>
 		<Camera pos="482.586670,84.874657,65536.000000"/>
@@ -73,7 +73,9 @@
 		</Node>
 	</ZoneTree>
 	<MarkerTree>
-		<Node name="Root" id="FFFFFFFF"/>
+		<Node name="Root" id="0">
+			<Node name="Entry" id="FFFFFFFF"/>
+		</Node>
 	</MarkerTree>
 	<LightSets>
 		<LightSet name="Lights_None" a="0">
@@ -8506,7 +8508,10 @@
 	</Zones>
 	<Markers>
 		<Marker ver="4" type="Root">
-			<MapObject name="Root" id="FFFFFFFF"/>
+			<MapObject name="Root" id="0"/>
+		</Marker>
+		<Marker ver="4" type="Entry" pos="0,0,220" yaw="0.000000">
+			<MapObject name="Entry" id="FFFFFFFF"/>
 		</Marker>
 	</Markers>
 	<ScriptData>
