@@ -155,7 +155,7 @@ EvtScript N(EVS_Main) = {
     EndSwitch
     Call(MakeNpcs, FALSE, LVar0)
     ExecWait(N(EVS_MakeEntities))
-    Exec(N(EVS_SetupWhale))
+    //Exec(N(EVS_SetupWhale))
     Call(GetEntryID, LVar0)
     Exec(N(EVS_SetupRooms))
     Exec(N(EVS_SetupMusic))
