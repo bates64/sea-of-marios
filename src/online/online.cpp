@@ -35,10 +35,50 @@ void end_writing_my_sync_data(SyncData* sync) {
     header.isMySyncDataValid = true;
 }
 
+class MovingAverage {
+    size_t index = 0;
+    f32 values[6]; // 200ms @ 30fps
+
+public:
+    void set(f32 value) {
+        for (size_t i = 0; i < ARRAY_COUNT(values); i++) {
+            values[i] = value;
+        }
+        index = 0;
+    }
+
+    void push(f32 value) {
+        values[index] = value;
+        index = (index + 1) % ARRAY_COUNT(values);
+    }
+
+    f32 average() const {
+        f32 sum = 0.0f;
+        for (size_t i = 0; i < ARRAY_COUNT(values); i++) {
+            sum += values[i];
+        }
+        return sum / (f32)ARRAY_COUNT(values);
+    }
+
+    f32 velocity() const {
+        f32 diff = 0.0f;
+        for (size_t i = 1; i < ARRAY_COUNT(values); i++) {
+            diff += values[i] - values[i-1];
+        }
+        return diff / (f32)(ARRAY_COUNT(values) - 1);
+    }
+};
+
 struct PeerInfo {
-    u16 frameCounter;
+    u16 frameCounter; // TODO: detect save state cheating by massive changes in frameCounter
     u16 timeSinceRecv;
-    Vec3f delta;
+    u16 droppedPackets;
+    u32 connectionTime;
+
+    // Prediction data
+    MovingAverage x;
+    MovingAverage y;
+    MovingAverage z;
 
     bool is_connected() const {
         return timeSinceRecv < 60;
@@ -62,40 +102,42 @@ void receive_data() {
 
         if (sync.frameCounter == 0) continue; // no peer (they disconnected)
 
-        if (!sync.is_checksum_valid()) {
-            // either:
-            // - data was corrupted during transmission
-            // - gdb is in the middle of writing to this data
-            debug_printf("checksum invalid for player %d", i);
-            continue;
-        }
-
+        // Check for dropped/corrupted packet
         // Treat frameCounter like a nonce: if it hasn't changed, we don't need to read the data
-        if (sync.frameCounter == info.frameCounter) {
-            debug_printf("no new data for player %d (lagging?)", i);
+        if (!sync.is_checksum_valid() || sync.frameCounter == info.frameCounter) {
+            dropped:
+            info.droppedPackets++;
 
-            // Apply prediction
+            // Prediction
             if (npcs[i] != nullptr) {
-                npcs[i]->colliderPos.x += info.delta.x;
-                npcs[i]->colliderPos.y += info.delta.y;
-                npcs[i]->colliderPos.z += info.delta.z;
-                npcs[i]->pos = npcs[i]->colliderPos;
+                npcs[i]->colliderPos.x += info.x.velocity();
+                npcs[i]->colliderPos.y += info.y.velocity();
+                npcs[i]->colliderPos.z += info.z.velocity();
+                npcs[i]->colliderPos = npcs[i]->pos;
                 npcs[i]->flags |= NPC_FLAG_DIRTY_SHADOW;
             }
             continue;
         }
+
+        // Enforce strict ordering (UDP does not)
         if (sync.frameCounter < info.frameCounter) {
             debug_printf("recv data out of order for player %d", i);
-            // commented out because this can cause issues for players that reconnect
-            //continue;
+            goto dropped;
         }
         info.frameCounter = sync.frameCounter;
         info.timeSinceRecv = 0;
 
-        // Calculate delta for prediction
-        info.delta.x = sync.player.x - npcs[i]->pos.x;
-        info.delta.y = sync.player.y - npcs[i]->pos.y;
-        info.delta.z = sync.player.z - npcs[i]->pos.z;
+        if (info.connectionTime == 0) {
+            debug_printf("player %d connected", i);
+            info.droppedPackets = 0;
+            info.x.set(sync.player.x);
+            info.y.set(sync.player.y);
+            info.z.set(sync.player.z);
+        } else {
+            info.x.push(sync.player.x);
+            info.y.push(sync.player.y);
+            info.z.push(sync.player.z);
+        }
 
         // Create NPC if we're in the same map, otherwise free it
         if (sync.area == gGameStatus.areaID && sync.map == gGameStatus.mapID) {
@@ -107,24 +149,51 @@ void receive_data() {
                     .onRender = NULL,
                 };
                 npcs[i] = get_npc_by_index(create_basic_npc(&bp));
+
+                // They just entered the map, discard position history
+                info.x.set(sync.player.x);
+                info.y.set(sync.player.y);
+                info.z.set(sync.player.z);
             }
 
             // Update NPC state to match
-            npcs[i]->colliderPos = npcs[i]->pos = { sync.player.x, sync.player.y, sync.player.z };
-            set_npc_yaw(npcs[i], sync.player.yaw);
+            if (info.droppedPackets > 0) {
+                // Packets were dropped - smoothly interpolate to the correct position
+                npcs[i]->pos.x += (sync.player.x - npcs[i]->pos.x) / (f32)info.droppedPackets;
+                npcs[i]->pos.y += (sync.player.y - npcs[i]->pos.y) / (f32)info.droppedPackets;
+                npcs[i]->pos.z += (sync.player.z - npcs[i]->pos.z) / (f32)info.droppedPackets;
+            } else {
+                npcs[i]->pos = { sync.player.x, sync.player.y, sync.player.z };
+            }
+            npcs[i]->colliderPos = npcs[i]->pos;
+            npcs[i]->yaw = sync.player.yaw;
             npcs[i]->flags |= NPC_FLAG_DIRTY_SHADOW;
             npcs[i]->curAnim = sync.anim;
         } else if (npcs[i] != nullptr) {
             free_npc(npcs[i]);
             npcs[i] = nullptr;
         }
+
+        if (info.droppedPackets > 0) info.droppedPackets--;
     }
 
-    // Free NPCs of disconnected peers
+    // Update peers regardless of sync data
     for (size_t i = 0; i < MAX_PEERS; i++) {
-        if (!peerInfo[i].is_connected() && npcs[i] != nullptr) {
-            free_npc(npcs[i]);
-            npcs[i] = nullptr;
+        auto& info = peerInfo[i];
+
+        if (info.is_connected()) {
+            info.connectionTime++;
+        } else {
+            if (npcs[i] != nullptr) {
+                free_npc(npcs[i]);
+                npcs[i] = nullptr;
+            }
+            info.frameCounter = 0; // avoid 'out of order' on new connection in this slot
+            if (info.connectionTime != 0) {
+                debug_printf("player %d disconnected", i);
+                info.connectionTime = 0;
+                bzero((void*) &header.syncData[i], sizeof(SyncData));
+            }
         }
     }
 }
@@ -141,7 +210,7 @@ EXTERN_C void online_end_step_game_loop() {
     }
 
     sync->frameCounter = gGameStatus.frameCounter;
-    sync->player = { gPlayerStatus.pos.x, gPlayerStatus.pos.y, gPlayerStatus.pos.z, gPlayerStatus.heading };
+    sync->player = { gPlayerStatus.pos.x, gPlayerStatus.pos.y, gPlayerStatus.pos.z, gPlayerStatus.curYaw };
     sync->area = gGameStatus.areaID;
     sync->map = gGameStatus.mapID;
     sync->anim = gPlayerStatus.trueAnimation;

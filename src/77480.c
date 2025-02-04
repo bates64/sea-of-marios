@@ -1567,8 +1567,8 @@ void appendGfx_player(void* data) {
         guMtxCatF(sp60, sp20, sp20);
         guRotateF(spA0, temp_f0, 0.0f, 1.0f, 0.0f);
         guMtxCatF(sp20, spA0, sp20);
-        guRotateF(spA0, playerStatus->spriteFacingAngle, 0.0f, 1.0f, 0.0f);
-        guMtxCatF(sp20, spA0, sp20);
+        // guRotateF(spA0, playerStatus->spriteFacingAngle, 0.0f, 1.0f, 0.0f);
+        // guMtxCatF(sp20, spA0, sp20);
         guTranslateF(sp60, 0.0f, playerStatus->colliderHeight * 0.5f, 0.0f);
         guMtxCatF(sp20, sp60, sp20);
         guScaleF(spE0, SPRITE_WORLD_SCALE_D, SPRITE_WORLD_SCALE_D, SPRITE_WORLD_SCALE_D);
@@ -1596,7 +1596,21 @@ void appendGfx_player(void* data) {
             spriteIdx = PLAYER_SPRITE_MAIN;
         }
 
-        spr_draw_player_sprite(spriteIdx, 0, 0, 0, sp20);
+        // same logic as npc_get_render_yaw
+        static f32 oldYaw;
+        f32 camRelativeYaw = get_clamped_angle_diff(gCameras[gCurrentCamID].curYaw, playerStatus->curYaw);
+        if (camRelativeYaw < -5.0f && camRelativeYaw > -175.0f) {
+            camRelativeYaw = 0.0f;
+        } else if (camRelativeYaw > 5.0f && camRelativeYaw < 175.0f) {
+            camRelativeYaw = 180.0f;
+        } else {
+            // direction is close to flipping, use saved value
+            camRelativeYaw = oldYaw;
+        }
+        oldYaw = camRelativeYaw;
+
+        f32 renderYaw = clamp_angle(clamp_angle(playerStatus->flipYaw[gCurrentCameraID] + camRelativeYaw) - gCameras[gCurrentCameraID].curYaw);
+        spr_draw_player_sprite(spriteIdx, renderYaw, 0, 0, sp20);
     }
 }
 
