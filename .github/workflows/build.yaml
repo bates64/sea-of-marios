@@ -54,18 +54,15 @@ jobs:
           name: ${{ steps.repo-name.outputs.repository-name }}.bps
           path: ver/us/build/papermario.bps
   client:
-    name: Client (${{ matrix.target }})
-    runs-on: ubuntu-latest
+    name: Client
+    runs-on:
     strategy:
       fail-fast: false
       matrix:
         include:
-          - target: x86_64-pc-windows-msvc
-          - target: aarch64-pc-windows-msvc
-          - target: x86_64-unknown-linux-gnu
-          - target: aarch64-unknown-linux-gnu
-          - target: x86_64-apple-darwin
-          - target: aarch64-apple-darwin
+          - os: ubuntu-latest
+          - os: macos-latest
+          - os: windows-latest
     steps:
       - uses: actions/checkout@v4
       - name: Install latest stable Rust
@@ -73,19 +70,20 @@ jobs:
         with:
             toolchain: stable
             override: true
-            target: ${{ matrix.target }}
             profile: minimal
       - name: Cache Rust build directory
         uses: Swatinem/rust-cache@v2
         with:
           workspaces: client
       - name: Build client
-        run: cd client && cargo build --release
+        run: |
+          cd client
+          cargo build --release
       - name: Upload binary as artifact
         uses: actions/upload-artifact@v4
         with:
-          name: client-${{ matrix.target }}
-          path: client/target/release/client
+          name: client-${{ matrix.os }}
+          path: client/target/release/client${{ matrix.os == 'windows-latest' && '.exe' || '' }}
   prerelease:
     name: Prerelease
     runs-on: ubuntu-latest
