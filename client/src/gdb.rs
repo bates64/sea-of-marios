@@ -89,6 +89,8 @@ async fn handle_client<T: Client>(mut client: T, rx: &mut Receiver<Command>, tx:
             }
         }
 
+        // TODO: read some keepalive address to see if the game has crashed, if so, disconnect
+
         loop {
             match rx.try_recv() {
                 Ok(Command::SetMe(new_me)) => {
