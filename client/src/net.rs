@@ -1,12 +1,13 @@
 use futures::{select, FutureExt};
 use futures_timer::Delay;
-use log::{debug, info, warn};
-use matchbox_socket::{ChannelConfig, Error as SocketError, PeerId, PeerState, WebRtcSocketBuilder};
+use log::{debug, info, warn, error};
+use matchbox_socket::{ChannelConfig, Error as SocketError, PeerId, PeerState, WebRtcSocket, WebRtcSocketBuilder};
 use std::time::Duration;
 use tokio::sync::mpsc::{Sender, Receiver};
+use serde::{Serialize, Deserialize};
 use crate::gdb;
 
-const PROTOCOL_CHANNEL: usize = 0; // reliable
+const PLAYER_REGISTRY_CHANNEL: usize = 0; // reliable
 const SYNC_DATA_CHANNEL: usize = 1; // unreliable
 
 /// Commands from gdb to net
@@ -24,31 +25,138 @@ pub async fn connect_and_retry(mut rx: Receiver<Command>, mut tx: Sender<gdb::Co
     }
 }
 
-struct PeerRegistry {
-    everyone: Vec<PeerId>, // including me
+/// A PlayerRegistry maps connected PeerIds to player indices (0..=16).
+///
+/// There is exactly one host, and all other peers are clients.
+///
+/// The host is responsible for manging the registry and syncs it to all clients over PROTOCOL_CHANNEL. Specifically,
+/// when a new peer connects, the host assigns it a player index and sends the updated registry to all peers. When
+/// a peer disconnects, the host removes it from the registry and sends the updated registry to all peers.
+///
+/// The first peer to connect becomes the host.
+/// If the current host disconnects, the peer with the lowest player index becomes the new host.
+#[derive(Debug, Serialize, Deserialize)]
+struct PlayerRegistry {
+    host: PeerId,
+    players: [Option<PeerId>; 16],
 }
 
-impl PeerRegistry {
-    pub fn new() -> Self {
-        Self {
-            everyone: Vec::new(),
+impl PlayerRegistry {
+    pub async fn initial_connect(socket: &mut WebRtcSocket) -> Self {
+        if let Some((_, data)) = socket.channel_mut(PLAYER_REGISTRY_CHANNEL).receive().first() {
+            // We are not the host. We are a client.
+            info!("I am a client");
+            serde_json::from_slice(data).unwrap()
+        } else {
+            // No host. We are the host.
+            info!("I am the host");
+            let host = socket.id().unwrap();
+            PlayerRegistry {
+                host,
+                players: [
+                    Some(host),
+                    None, None, None, None, None, None, None, None, None, None, None, None, None, None, None,
+                ],
+            }
         }
     }
 
-    pub fn connect(&mut self, peer: PeerId) {
-        self.everyone.push(peer);
-        self.everyone.sort_unstable();
+    pub fn broadcast(&self, socket: &mut WebRtcSocket) {
+        if !self.is_host(socket) {
+            return;
+        }
+
+        let data = serde_json::to_vec(self).unwrap();
+        let peers = socket.connected_peers().collect::<Vec<_>>();
+        for peer in peers {
+            socket.channel_mut(PLAYER_REGISTRY_CHANNEL).send(data.as_slice().into(), peer);
+        }
+        debug!("bcast registry {:?}", &self);
+    }
+
+    pub fn is_host(&self, socket: &mut WebRtcSocket) -> bool {
+        self.host == socket.id().unwrap()
+    }
+
+    pub fn check_for_updates(&mut self, socket: &mut WebRtcSocket) {
+        for (_, data) in socket.channel_mut(PLAYER_REGISTRY_CHANNEL).receive() {
+            let registry: PlayerRegistry = serde_json::from_slice(&data).unwrap();
+
+            if self.is_host(socket) && registry.host != self.host {
+                // Someone else is trying to coup us!
+                // Allow them if their uuid is higher than ours
+                if registry.host < self.host {
+                    warn!("disallowing host coup attempt");
+                    self.broadcast(socket); // Send them the correct registry
+                    continue;
+                }
+                warn!("coup successful, we are no longer host");
+            }
+
+            *self = registry;
+            debug!("recv registry {:?}", &self);
+        }
+    }
+
+    pub fn update_peers(&mut self, socket: &mut WebRtcSocket) {
+        if self.is_host(socket) {
+            let mut change = false;
+            for (peer, state) in socket.update_peers() {
+                match state {
+                    PeerState::Connected => {
+                        if let Some(index) = self.players.iter().position(|&p| p.is_none()) {
+                            self.players[index] = Some(peer);
+                            change = true;
+                        } else {
+                            warn!("room is full, ignoring new joiner {peer}");
+                        }
+                    }
+                    PeerState::Disconnected => {
+                        for id in self.players.iter_mut() {
+                            if let Some(p) = id {
+                                if *p == peer {
+                                    *id = None;
+                                    change = true;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            if change {
+                self.broadcast(socket);
+            }
+        } else {
+            // Check for host disconnect
+            for (peer, state) in socket.update_peers() {
+                if state == PeerState::Disconnected && peer == self.host {
+                    info!("Host disconnected");
+
+                    // Remove host from registry
+                    for id in self.players.iter_mut() {
+                        if let Some(p) = id {
+                            if *p == self.host {
+                                *id = None;
+                                break;
+                            }
+                        }
+                    }
+
+                    // Make the connected player with the lowest index the new host
+                    let new_host = self.players.iter().filter_map(|&p| p).min().unwrap();
+                    if new_host == socket.id().unwrap() {
+                        info!("I am the new host");
+                        self.host = new_host;
+                        self.broadcast(socket); // Clients need to learn about the new host
+                    }
+                }
+            }
+        }
     }
 
     pub fn find(&self, peer: PeerId) -> Option<usize> {
-        self.everyone.iter().position(|&p| p == peer)
-    }
-
-    pub fn disconnect(&mut self, peer: PeerId) {
-        if let Some(index) = self.find(peer) {
-            self.everyone.remove(index);
-            self.everyone.sort_unstable();
-        }
+        self.players.iter().position(|&p| p == Some(peer))
     }
 }
 
@@ -93,33 +201,27 @@ async fn connect(rx: &mut Receiver<Command>, tx: &mut Sender<gdb::Command>) {
     };
     info!("Connected! Assigned id: {my_id}");
 
-    let mut registry = PeerRegistry::new();
-    let mut registry_changed = true;
-    registry.connect(my_id);
+    // Wait a bit to make sure we learn about all peers
+    let timeout = Delay::new(Duration::from_secs(2));
+    futures::pin_mut!(timeout);
+    select! {
+        _ = (&mut timeout).fuse() => (),
+        _ = &mut loop_fut => return,
+    };
+
+    let mut registry = PlayerRegistry::initial_connect(&mut socket).await;
+    let mut known_me = -1;
 
     'main: loop {
-        // Handle any new peers
-        for (peer, state) in socket.update_peers() {
-            match state {
-                PeerState::Connected => {
-                    registry.connect(peer);
-                    registry_changed = true;
-                    info!("Peer connected ({peer})");
-                }
-                PeerState::Disconnected => {
-                    registry.disconnect(peer);
-                    registry_changed = true;
-                    info!("Peer disconnected ({peer})");
-                }
-            }
-        }
+        registry.update_peers(&mut socket);
+        registry.check_for_updates(&mut socket);
 
-        // Update Header::me if the registry has changed
-        // We could have moved to a different index
-        if registry_changed {
-            let me_index = registry.find(my_id).unwrap();
-            let _ = tx.send(gdb::Command::SetMe(me_index as u8)).await;
-            registry_changed = false;
+        // Let game know our player index
+        let me = registry.find(my_id).map(|idx| idx as i32).unwrap_or(-1);
+        if me != known_me {
+            known_me = me;
+            let _ = tx.send(gdb::Command::SetMe(me)).await;
+            info!("I am player {me}");
         }
 
         // Accept any messages incoming from peers

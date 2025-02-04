@@ -19,7 +19,8 @@ pub async fn connect_and_retry(mut rx: Receiver<Command>, mut tx: Sender<net::Co
     let gdb_addr = format!("[::1]:{}", gdb_port);
 
     loop {
-        let result = /*select! {
+        // TODO: have user decide method in ui
+        let result = select! {
             client = Gdb::new(&gdb_addr) => {
                 match client {
                     Ok(client) => handle_client(client, &mut rx, &mut tx).await,
@@ -32,12 +33,6 @@ pub async fn connect_and_retry(mut rx: Receiver<Command>, mut tx: Sender<net::Co
                     Err(error) => Err(error),
                 }
             },
-        };*/ {
-            let client = Project64::new("127.0.0.1:65432").await;
-            match client {
-                Ok(client) => handle_client(client, &mut rx, &mut tx).await,
-                Err(error) => Err(error),
-            }
         };
         match result {
             Ok(()) | Err(Error::ConnectionClosed) => info!("connection closed cleanly"),
@@ -72,7 +67,7 @@ async fn handle_client<T: Client>(mut client: T, rx: &mut Receiver<Command>, tx:
     info!("connection with game established");
     let _ = tx.send(net::Command::Connect).await;
 
-    let mut me = 99u8;
+    let mut me = -1;
 
     // Every frame, exchange messages with the game
     let mut interval = tokio::time::interval(frame_duration);
@@ -98,7 +93,7 @@ async fn handle_client<T: Client>(mut client: T, rx: &mut Receiver<Command>, tx:
             match rx.try_recv() {
                 Ok(Command::SetMe(new_me)) => {
                     me = new_me;
-                    client.write_u32(ptr_me, new_me as u32).await?;
+                    client.write_i32(ptr_me, new_me).await?;
                 }
                 Ok(Command::SyncData(index, data)) => {
                     if data.len() != sizeof_sync_data as usize {
@@ -117,7 +112,7 @@ async fn handle_client<T: Client>(mut client: T, rx: &mut Receiver<Command>, tx:
 #[derive(Debug)]
 pub enum Command {
     /// Set Header::me
-    SetMe(u8),
+    SetMe(i32),
 
     /// Set Header::syncData[peer]
     SyncData(u8, Vec<u8>),
@@ -214,6 +209,10 @@ trait Client {
     }
 
     async fn write_u32(&mut self, address: u32, value: u32) -> Result<()> {
+        self.write_memory(address, &value.to_be_bytes()).await
+    }
+
+    async fn write_i32(&mut self, address: u32, value: i32) -> Result<()> {
         self.write_memory(address, &value.to_be_bytes()).await
     }
 }
