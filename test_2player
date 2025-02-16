@@ -8,16 +8,15 @@ trap 'kill_all' SIGINT
 trap 'kill_all' SIGTERM
 kill_all() {
     echo "Bye"
-    kill $CLIENT_1 $CLIENT_2 $GAME_1 $GAME_2
+    kill $BRIDGE_1 $BRIDGE_2 $GAME_1 $GAME_2
     exit 0
 }
 
-cd client
-cargo build
-GDB_PORT=9123 cargo watch -x "run" &
-CLIENT_1=$!
-GDB_PORT=9124 cargo watch -x "run" &
-CLIENT_2=$!
+cd bridge
+GDB_PORT=9123 nix develop .#bridge -c cargo watch -x "run" &
+BRIDGE_1=$!
+GDB_PORT=9124 nix develop .#bridge -c cargo watch -x "run" &
+BRIDGE_2=$!
 cd ..
 
 ares --setting DebugServer/Port=9123 ver/us/build/papermario.z64 &

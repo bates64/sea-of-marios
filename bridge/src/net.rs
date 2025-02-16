@@ -5,22 +5,22 @@ use matchbox_socket::{ChannelConfig, Error as SocketError, PeerId, PeerState, We
 use std::time::Duration;
 use tokio::sync::mpsc::{Sender, Receiver};
 use serde::{Serialize, Deserialize};
-use crate::gdb;
+use crate::{gdb, gui};
 
 const PLAYER_REGISTRY_CHANNEL: usize = 0; // reliable
 const SYNC_DATA_CHANNEL: usize = 1; // unreliable
 
 /// Commands from gdb to net
 pub enum Command {
-    Connect,
+    Connect { room: String },
     Disconnect,
     SyncData(Vec<u8>),
 }
 
-pub async fn connect_and_retry(mut rx: Receiver<Command>, mut tx: Sender<gdb::Command>) {
+pub async fn connect_and_retry(mut rx: Receiver<Command>, mut gdb: Sender<gdb::Command>, mut gui: Sender<gui::Command>) {
     while let Some(command) = rx.recv().await {
-        if let Command::Connect = command {
-            connect(&mut rx, &mut tx).await;
+        if let Command::Connect { room } = command {
+            connect(&room, &mut rx, &mut gdb, &mut gui).await;
         }
     }
 }
@@ -109,6 +109,7 @@ impl PlayerRegistry {
                             change = true;
                         } else {
                             warn!("room is full, ignoring new joiner {peer}");
+                            // TODO: tell joiner to leave
                         }
                     }
                     PeerState::Disconnected => {
@@ -160,9 +161,9 @@ impl PlayerRegistry {
     }
 }
 
-async fn connect(rx: &mut Receiver<Command>, tx: &mut Sender<gdb::Command>) {
+async fn connect(room: &str, rx: &mut Receiver<Command>, gdb: &mut Sender<gdb::Command>, gui: &mut Sender<gui::Command>) {
     info!("Connecting to signaling server...");
-    let (mut socket, loop_fut) = WebRtcSocketBuilder::new("ws://match.bates64.com:3536/")
+    let (mut socket, loop_fut) = WebRtcSocketBuilder::new(format!("ws://match.bates64.com:3536/{room}"))
         .reconnect_attempts(None) // keep trying to reconnect
         .add_channel(ChannelConfig { ordered: false, max_retransmits: None }) // PROTOCOL_CHANNEL | reliable but not ordered
         .add_channel(ChannelConfig::unreliable()) // SYNC_DATA_CHANNEL
@@ -170,11 +171,10 @@ async fn connect(rx: &mut Receiver<Command>, tx: &mut Sender<gdb::Command>) {
 
     let loop_fut = async {
         match loop_fut.await {
-            Ok(()) => info!("Exited cleanly :)"),
+            Ok(()) => info!("connection closed"),
             Err(e) => match e {
                 SocketError::ConnectionFailed(e) => {
                     warn!("couldn't connect to signaling server, please check your connection: {e}");
-                    // todo: show prompt and reconnect?
                 }
                 SocketError::Disconnected(e)  => {
                     warn!("you were kicked, or your connection went down, or the signaling server stopped: {e}");
@@ -220,7 +220,7 @@ async fn connect(rx: &mut Receiver<Command>, tx: &mut Sender<gdb::Command>) {
         let me = registry.find(my_id).map(|idx| idx as i32).unwrap_or(-1);
         if me != known_me {
             known_me = me;
-            let _ = tx.send(gdb::Command::SetMe(me)).await;
+            let _ = gdb.send(gdb::Command::SetMe(me)).await;
             info!("I am player {me}");
         }
 
@@ -235,7 +235,7 @@ async fn connect(rx: &mut Receiver<Command>, tx: &mut Sender<gdb::Command>) {
             };
 
             if check_checksum(&sync_data) {
-                let _ = tx.send(gdb::Command::SyncData(index as u8, sync_data.into())).await;
+                let _ = gdb.send(gdb::Command::SyncData(index as u8, sync_data.into())).await;
             } else {
                 warn!("Invalid checksum from peer {peer}");
             }
@@ -257,7 +257,7 @@ async fn connect(rx: &mut Receiver<Command>, tx: &mut Sender<gdb::Command>) {
                         channel.send(sync_data.as_slice().into(), peer);
                     }
                 }
-                Command::Connect => return Box::pin(connect(rx, tx)).await, // Reconnect
+                Command::Connect { room } => return Box::pin(connect(&room, rx, &mut gdb.clone(), gui)).await, // Reconnect
                 Command::Disconnect => break 'main,
             }
         }
@@ -274,6 +274,8 @@ async fn connect(rx: &mut Receiver<Command>, tx: &mut Sender<gdb::Command>) {
             }
         }
     }
+
+    let _ = gdb.send(gdb::Command::SetMe(-1)).await; // TODO: use error codes for room full, clean disconnect, network error, etc.
 
     info!("connection closed");
 }

@@ -10,42 +10,30 @@ use tokio::time::{sleep, Duration};
 use thiserror::Error;
 use log::{trace, debug, warn, info, error};
 
-use crate::net;
+use crate::{net, gdb, gui};
 
 const MESSAGE_SIZE: usize = 128;
 
-pub async fn connect_and_retry(mut rx: Receiver<Command>, mut tx: Sender<net::Command>) {
-    let gdb_port = std::env::var("GDB_PORT").unwrap_or_else(|_| "9123".to_string());
-    let gdb_addr = format!("[::1]:{}", gdb_port);
-
-    loop {
-        // TODO: have user decide method in ui
-        let result = select! {
-            client = Gdb::new(&gdb_addr) => {
-                match client {
-                    Ok(client) => handle_client(client, &mut rx, &mut tx).await,
-                    Err(error) => Err(error),
-                }
-            },
-            client = Project64::new("127.0.0.1:65432") => {
-                match client {
-                    Ok(client) => handle_client(client, &mut rx, &mut tx).await,
-                    Err(error) => Err(error),
-                }
-            },
+pub async fn connect_and_retry(mut rx: Receiver<Command>, mut net: Sender<net::Command>, mut gui: Sender<gui::Command>) {
+    while let Some(command) = rx.recv().await {
+        let result = match command {
+            Command::ConnectGdb(addr) => {
+                handle_client(Gdb::new(&addr).await.unwrap(), &mut rx, &mut net, &mut gui).await
+            }
+            Command::ConnectProject64 => {
+                handle_client(Project64::new("127.0.0.1:65432").await.unwrap(), &mut rx, &mut net, &mut gui).await
+            }
+            cmd => {
+                warn!("unexpected command {:?}", cmd);
+                continue;
+            }
         };
-        match result {
-            Ok(()) | Err(Error::ConnectionClosed) => info!("connection closed cleanly"),
-            Err(e) => {
-                error!("{}, retrying in 5s", e);
-                sleep(Duration::from_secs(1)).await;
-            },
-        }
-        let _ = tx.send(net::Command::Disconnect).await;
+        let _ = net.send(net::Command::Disconnect).await;
+        let _ = gui.send(gui::Command::GdbDisconnected(result.err())).await;
     }
 }
 
-async fn handle_client<T: Client>(mut client: T, rx: &mut Receiver<Command>, tx: &mut Sender<net::Command>) -> Result<()> {
+async fn handle_client<T: Client>(mut client: T, rx: &mut Receiver<Command>, net: &mut Sender<net::Command>, gui: &mut Sender<gui::Command>) -> Result<()> {
     trace!("handle_client");
 
     // Read online::comms::header
@@ -65,7 +53,8 @@ async fn handle_client<T: Client>(mut client: T, rx: &mut Receiver<Command>, tx:
     let frame_duration = Duration::from_millis(1000 / 30);
 
     info!("connection with game established");
-    let _ = tx.send(net::Command::Connect).await;
+    let _ = gui.send(gui::Command::GdbConnected).await;
+    let _ = net.send(net::Command::Connect { room: "".to_string() }).await; // TODO: do so only when game asks
 
     let mut me = -1;
 
@@ -83,7 +72,7 @@ async fn handle_client<T: Client>(mut client: T, rx: &mut Receiver<Command>, tx:
                 // Read syncData and send it to net
                 let mut data = vec![0; sizeof_sync_data as usize];
                 client.read_memory(ptr_sync_data + (me as u32) * sizeof_sync_data, &mut data).await?;
-                let _ = tx.send(net::Command::SyncData(data)).await;
+                let _ = net.send(net::Command::SyncData(data)).await;
             } else {
                 trace!("isMySyncDataValid = false");
             }
@@ -106,6 +95,7 @@ async fn handle_client<T: Client>(mut client: T, rx: &mut Receiver<Command>, tx:
                 }
                 Err(TryRecvError::Disconnected) => return Ok(()), // net thread is gone
                 Err(TryRecvError::Empty) => break,
+                Ok(Command::ConnectGdb(_) | Command::ConnectProject64) => break, // ui is trying to change connection
             }
         }
     }
@@ -113,6 +103,9 @@ async fn handle_client<T: Client>(mut client: T, rx: &mut Receiver<Command>, tx:
 
 #[derive(Debug)]
 pub enum Command {
+    ConnectGdb(String),
+    ConnectProject64,
+
     /// Set Header::me
     SetMe(i32),
 
@@ -132,7 +125,7 @@ struct Gdb {
 // For an example of a GDB server, see https://github.com/ares-emulator/ares/tree/master/nall/gdb
 
 #[derive(Error, Debug)]
-enum Error {
+pub enum Error {
     #[error(transparent)]
     Io(#[from] std::io::Error),
 
@@ -145,10 +138,10 @@ enum Error {
     #[error("bad cstring")]
     BadCString,
 
-    #[error("connection closed")]
+    #[error("Connection closed")]
     ConnectionClosed,
 
-    #[error("game is not Paper Mario DX with online support")]
+    #[error("Game not supported")]
     GameNotSupported,
 
     #[error("memory write failed")]
