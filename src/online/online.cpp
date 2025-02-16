@@ -112,11 +112,18 @@ void receive_data() {
 
             // Prediction
             if (npcs[i] != nullptr) {
-                // TODO: use collision detection to prevent clipping through walls or the floor
-                npcs[i]->colliderPos.x += info.x.velocity();
-                npcs[i]->colliderPos.y += info.y.velocity();
-                npcs[i]->colliderPos.z += info.z.velocity();
-                npcs[i]->colliderPos = npcs[i]->pos;
+                npcs[i]->pos.x += info.x.velocity();
+                npcs[i]->pos.y += info.y.velocity();
+                npcs[i]->pos.z += info.z.velocity();
+
+                npc_test_move_simple_with_slipping(npcs[i]->collisionChannel, &npcs[i]->pos.x, &npcs[i]->pos.y, &npcs[i]->pos.z, 0, npcs[i]->yaw, npcs[i]->collisionHeight, npcs[i]->collisionDiameter);
+
+                if (npc_try_snap_to_ground(npcs[i], info.y.velocity())) {
+                    info.y.set(npcs[i]->pos.y);
+                }
+
+                // don't set colliderPos because we want npc_do_world_collision to run
+
                 npcs[i]->flags |= NPC_FLAG_DIRTY_SHADOW;
             }
             continue;
