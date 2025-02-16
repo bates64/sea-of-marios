@@ -143,6 +143,7 @@
               cargo
               rustc
               cargo-watch
+              clippy
             ] ++ lib.optionals stdenv.isLinux [
               mold-wrapped
               xorg.libX11

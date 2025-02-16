@@ -25,12 +25,13 @@ fn main() -> eframe::Result {
     let rt = Runtime::new().expect("unable to create async runtime");
     let (gdb_tx, gdb_rx) = mpsc::channel::<gdb::Command>(256);
     let (net_tx, net_rx) = mpsc::channel::<net::Command>(256);
+    let (gui_tx, gui_rx) = mpsc::channel::<gui::Command>(256);
     let gui_gdb_tx = gdb_tx.clone();
     let gui_net_tx = net_tx.clone();
     let _enter = rt.enter();
     std::thread::spawn(move || {
         rt.block_on(async {
-            join!(net::connect_and_retry(net_rx, gdb_tx), gdb::connect_and_retry(gdb_rx, net_tx));
+            join!(net::connect_and_retry(net_rx, gdb_tx, gui_tx.clone()), gdb::connect_and_retry(gdb_rx, net_tx, gui_tx));
         })
     });
 
@@ -49,6 +50,6 @@ fn main() -> eframe::Result {
     eframe::run_native(
         "Paper Mario DX Network Bridge",
         native_options,
-        Box::new(move |cc| Ok(Box::new(gui::App::new(cc, collector, gui_gdb_tx, gui_net_tx)))),
+        Box::new(move |cc| Ok(Box::new(gui::App::new(cc, collector, gui_rx, gui_gdb_tx, gui_net_tx)))),
     )
 }
