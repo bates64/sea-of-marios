@@ -1,5 +1,6 @@
 [package]
-name = "client"
+name = "papermario-dx-net-bridge"
+description = "Provides a synced memory bridge between Paper Mario DX games over a P2P network"
 version = "0.1.0"
 authors = ["Alex Bates <alex@bates64.com>"]
 edition = "2021"

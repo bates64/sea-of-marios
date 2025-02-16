@@ -689,25 +689,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "client"
-version = "0.1.0"
-dependencies = [
- "eframe",
- "egui",
- "egui_extras",
- "egui_tracing",
- "futures",
- "futures-timer",
- "log",
- "matchbox_socket",
- "serde",
- "serde_json",
- "thiserror 2.0.11",
- "tokio",
- "tracing-subscriber",
-]
-
-[[package]]
 name = "clipboard-win"
 version = "5.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2807,6 +2788,25 @@ dependencies = [
  "elliptic-curve",
  "primeorder",
  "sha2",
+]
+
+[[package]]
+name = "papermario-dx-net-bridge"
+version = "0.1.0"
+dependencies = [
+ "eframe",
+ "egui",
+ "egui_extras",
+ "egui_tracing",
+ "futures",
+ "futures-timer",
+ "log",
+ "matchbox_socket",
+ "serde",
+ "serde_json",
+ "thiserror 2.0.11",
+ "tokio",
+ "tracing-subscriber",
 ]
 
 [[package]]

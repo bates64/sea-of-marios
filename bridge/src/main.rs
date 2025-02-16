@@ -36,18 +36,18 @@ fn main() -> eframe::Result {
 
     let native_options = eframe::NativeOptions {
         viewport: egui::ViewportBuilder::default()
-            .with_inner_size([600.0, 200.0])
+            .with_inner_size([600.0, 400.0])
             .with_min_inner_size([400.0, 200.0])
             /*.with_icon(
                 // NOTE: Adding an icon is optional
                 eframe::icon_data::from_png_bytes(&include_bytes!("../assets/macos_icon.png")[..])
                     .expect("Failed to load icon"),
             )*/
-            .with_title("Paper Mario Online"),
+            .with_title("Paper Mario DX Network Bridge"),
         ..Default::default()
     };
     eframe::run_native(
-        "Paper Mario Online",
+        "Paper Mario DX Network Bridge",
         native_options,
         Box::new(move |cc| Ok(Box::new(gui::App::new(cc, collector, gui_gdb_tx, gui_net_tx)))),
     )
