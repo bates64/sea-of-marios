@@ -95,11 +95,19 @@ impl App {
                 }
             });
         }
+
+        if ui.button("Back").clicked() {
+            self.state = State::Welcome;
+        }
     }
 
     fn project64(&mut self, ui: &mut Ui) {
         ui.label("Not recommended");
         // TODO: walk through, or script, project64.js setup
+
+        if ui.button("Back").clicked() {
+            self.state = State::Welcome;
+        }
     }
 
     fn nintendo64(&mut self, ui: &mut Ui) {
