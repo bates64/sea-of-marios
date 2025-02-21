@@ -480,7 +480,7 @@ MapSettings net_00_settings = {
     .background = &gBackgroundImage,
 };
 
- s32 net_00_map_init(void) {
+s32 net_00_map_init(void) {
     sprintf(wMapTexName, "hos_tex");
     return FALSE;
- }
+}

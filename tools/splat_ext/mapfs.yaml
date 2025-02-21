@@ -980,6 +980,8 @@
 - net_00_hit
 - net_01_shape
 - net_01_hit
+- trp_00_shape
+- trp_00_hit
 - mac_tex
 - tik_tex
 - kgr_tex
@@ -1009,6 +1011,7 @@
 - mgm_tex
 - gv__tex
 - net_tex
+- trp_tex
 - kmr_bg
 - nok_bg
 - name: sbk_bg

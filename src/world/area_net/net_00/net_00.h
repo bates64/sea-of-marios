@@ -9,6 +9,10 @@
 
 #include "sprite/npc/WorldMuskular.h"
 
+namespace net_00 {
+
 enum {
     NPC_Muskular,
 };
+
+}; // namespace net_00

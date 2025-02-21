@@ -4,6 +4,10 @@
 #include "types.h"
 #include "common_structs.h"
 
+#ifdef _LANGUAGE_C_PLUS_PLUS
+extern "C" {
+#endif
+
 typedef struct BigSmokePuffFXData {
     /* 0x00 */ s16 unk_00;
     /* 0x02 */ s16 unk_02;
@@ -2686,5 +2690,9 @@ void remove_effect(EffectInstance*);
 s32 load_effect(s32 effectIndex);
 
 #include "effects/effect_defs.h"
+
+#ifdef _LANGUAGE_C_PLUS_PLUS
+}
+#endif
 
 #endif

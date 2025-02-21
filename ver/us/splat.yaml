@@ -143,6 +143,7 @@ segments:
     - [auto, c, status_icons]
     - [auto, c, 23680]
     - [auto, c, 25AF0]
+    - [auto, cpp, foliage]
     - [auto, c, audio/25f00_len_940]
     - [auto, c, audio/sfx_player]
     - [auto, c, audio/28910_len_5090]
@@ -13294,6 +13295,15 @@ segments:
     vram_class: map
     subsegments:
     - [auto, cpp, main]
+  - name: trp_00
+    dir: world/area_trp/trp_00
+    type: code
+    start: auto
+    vram_class: map
+    subsegments:
+    - [auto, cpp, main]
+    - [auto, cpp, foliage]
+    - [auto, cpp, entity]
   - name: heaps2
     type: code
     start: 0xE20110

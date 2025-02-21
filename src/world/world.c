@@ -880,6 +880,12 @@ MapConfig net_maps[] = {
     { MAP(net_01), .bgName = "net_bg" },
 };
 
+/// Tropical
+#include "area_trp/trp.h"
+MapConfig trp_maps[] = {
+    { MAP_WITH_INIT(trp_00), .bgName = "net_bg" },
+};
+
 AreaConfig gAreas[] = {
     AREA(kmr, "クリむら"),  // kuri mura [kuribou village, Goomba Village]
     AREA(mac, "まち"),  // machi [town, Toad Town]
@@ -909,5 +915,6 @@ AreaConfig gAreas[] = {
     AREA(mgm, "ミニゲーム"),  // minige-mu [Minigames]
     AREA(gv, "ゲームオーバー"),  // ge-mu o-ba- [Game Over]
     AREA(net, "Networking"),
+    AREA(trp, "Tropical"),
     {},
 };
