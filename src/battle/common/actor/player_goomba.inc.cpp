@@ -1,34 +1,38 @@
-#include "../area.h"
+#include "battle/battle.h"
+#include "script_api/battle.h"
+#include "effects.h"
 #include "sprite/npc/Goomba.h"
 
-#define NAMESPACE A(player_goomba)
+namespace battle::actor {
+
+namespace player_goomba {
 
 
-extern EvtScript N(EVS_Init);
-extern s32 N(DefaultAnims)[];
-extern EvtScript N(EVS_Idle);
-extern EvtScript N(EVS_TakeTurn);
-extern EvtScript N(EVS_HandleEvent);
-extern EvtScript N(EVS_Attack_Headbonk);
-extern EvtScript N(EVS_Attack_Multibonk);
-extern EvtScript N(EVS_Move_RallyWink);
-extern EvtScript N(EVS_Move_Charge);
+extern EvtScript EVS_Init;
+extern s32 DefaultAnims[];
+extern EvtScript EVS_Idle;
+extern EvtScript EVS_TakeTurn;
+extern EvtScript EVS_HandleEvent;
+extern EvtScript EVS_Attack_Headbonk;
+extern EvtScript EVS_Attack_Multibonk;
+extern EvtScript EVS_Move_RallyWink;
+extern EvtScript EVS_Move_Charge;
 
-enum N(ActorParams) {
+enum ActorParams {
     DMG_HEADBONK         = 1,
     DMG_MULTIBONK        = 1,
 };
 
-enum N(ActorPartIDs) {
+enum ActorPartIDs {
     PRT_MAIN            = 1,
 };
 
-s32 N(DefenseTable)[] = {
+s32 DefenseTable[] = {
     ELEMENT_NORMAL,   0,
     ELEMENT_END,
 };
 
-s32 N(StatusTable)[] = {
+s32 StatusTable[] = {
     STATUS_KEY_NORMAL,              0,
     STATUS_KEY_DEFAULT,             0,
     STATUS_KEY_SLEEP,             100,
@@ -53,45 +57,22 @@ s32 N(StatusTable)[] = {
     STATUS_END,
 };
 
-ActorPartBlueprint N(ActorParts)[] = {
+ActorPartBlueprint ActorParts[] = {
     {
         .flags = ACTOR_PART_FLAG_PRIMARY_TARGET,
         .index = PRT_MAIN,
         .posOffset = { 0, 0, 0 },
         .targetOffset = { 0, 20 },
         .opacity = 255,
-        .idleAnimations = N(DefaultAnims),
-        .defenseTable = N(DefenseTable),
+        .idleAnimations = DefaultAnims,
+        .defenseTable = DefenseTable,
         .eventFlags = ACTOR_EVENT_FLAGS_NONE,
         .elementImmunityFlags = 0,
         .projectileTargetOffset = { 0, -10 },
     },
 };
 
-ActorBlueprint NAMESPACE = {
-    .flags = 0,
-    .type = ACTOR_TYPE_GOOMBA,
-    .level = ACTOR_LEVEL_GOOMBA,
-    .maxHP = 2,
-    .partCount = ARRAY_COUNT(N(ActorParts)),
-    .partsData = N(ActorParts),
-    .initScript = &N(EVS_Init),
-    .statusTable = N(StatusTable),
-    .escapeChance = 90,
-    .airLiftChance = 100,
-    .hurricaneChance = 90,
-    .spookChance = 100,
-    .upAndAwayChance = 95,
-    .spinSmashReq = 0,
-    .powerBounceChance = 100,
-    .coinReward = 1,
-    .size = { 24, 24 },
-    .healthBarOffset = { 0, 0 },
-    .statusIconOffset = { -10, 20 },
-    .statusTextOffset = { 10, 20 },
-};
-
-s32 N(DefaultAnims)[] = {
+s32 DefaultAnims[] = {
     STATUS_KEY_NORMAL,    ANIM_Goomba_Idle,
     STATUS_KEY_STONE,     ANIM_Goomba_Still,
     STATUS_KEY_SLEEP,     ANIM_Goomba_Sleep,
@@ -110,7 +91,7 @@ s32 N(DefaultAnims)[] = {
 };
 
 // while shuffling around during idle
-s32 N(ShuffleAnims)[] = {
+s32 ShuffleAnims[] = {
     STATUS_KEY_NORMAL,    ANIM_Goomba_Run,
     STATUS_KEY_STONE,     ANIM_Goomba_Still,
     STATUS_KEY_SLEEP,     ANIM_Goomba_Sleep,
@@ -123,10 +104,10 @@ s32 N(ShuffleAnims)[] = {
     STATUS_END,
 };
 
-EvtScript N(EVS_Init) = {
-    Call(BindTakeTurn, ACTOR_SELF, Ref(N(EVS_TakeTurn)))
-    Call(BindIdle, ACTOR_SELF, Ref(N(EVS_Idle)))
-    Call(BindHandleEvent, ACTOR_SELF, Ref(N(EVS_HandleEvent)))
+EvtScript EVS_Init = {
+    Call(BindTakeTurn, ACTOR_SELF, Ref(EVS_TakeTurn))
+    Call(BindIdle, ACTOR_SELF, Ref(EVS_Idle))
+    Call(BindHandleEvent, ACTOR_SELF, Ref(EVS_HandleEvent))
     Call(GetActorPos, ACTOR_SELF, LVar0, LVar1, LVar2)
     IfGt(LVar0, 0)
         Call(SetActorYaw, ACTOR_SELF, 0)
@@ -137,7 +118,7 @@ EvtScript N(EVS_Init) = {
     End
 };
 
-EvtScript N(EVS_Idle) = {
+EvtScript EVS_Idle = {
     Label(10)
         Call(RandInt, 80, LVar0)
         Add(LVar0, 80)
@@ -153,10 +134,10 @@ EvtScript N(EVS_Idle) = {
         Call(GetActorPos, ACTOR_SELF, LVar0, LVar1, LVar2)
         Add(LVar0, 5)
         Call(SetActorIdleSpeed, ACTOR_SELF, Float(1.0))
-        Call(SetIdleAnimations, ACTOR_SELF, PRT_MAIN, Ref(N(ShuffleAnims)))
+        Call(SetIdleAnimations, ACTOR_SELF, PRT_MAIN, Ref(ShuffleAnims))
         Call(SetIdleGoal, ACTOR_SELF, LVar0, LVar1, LVar2)
         Call(IdleRunToGoal, ACTOR_SELF, 0)
-        Call(SetIdleAnimations, ACTOR_SELF, PRT_MAIN, Ref(N(DefaultAnims)))
+        Call(SetIdleAnimations, ACTOR_SELF, PRT_MAIN, Ref(DefaultAnims))
         Loop(20)
             Label(1)
                 Call(GetStatusFlags, ACTOR_SELF, LVar1)
@@ -169,10 +150,10 @@ EvtScript N(EVS_Idle) = {
         Call(GetActorPos, ACTOR_SELF, LVar0, LVar1, LVar2)
         Sub(LVar0, 5)
         Call(SetActorIdleSpeed, ACTOR_SELF, Float(1.0))
-        Call(SetIdleAnimations, ACTOR_SELF, PRT_MAIN, Ref(N(ShuffleAnims)))
+        Call(SetIdleAnimations, ACTOR_SELF, PRT_MAIN, Ref(ShuffleAnims))
         Call(SetIdleGoal, ACTOR_SELF, LVar0, LVar1, LVar2)
         Call(IdleRunToGoal, ACTOR_SELF, 0)
-        Call(SetIdleAnimations, ACTOR_SELF, PRT_MAIN, Ref(N(DefaultAnims)))
+        Call(SetIdleAnimations, ACTOR_SELF, PRT_MAIN, Ref(DefaultAnims))
         Loop(80)
             Label(2)
                 Call(GetStatusFlags, ACTOR_SELF, LVar1)
@@ -187,7 +168,7 @@ EvtScript N(EVS_Idle) = {
     End
 };
 
-EvtScript N(EVS_HandleEvent) = {
+EvtScript EVS_HandleEvent = {
     Call(UseIdleAnimation, ACTOR_SELF, FALSE)
     Call(EnableIdleScript, ACTOR_SELF, IDLE_SCRIPT_DISABLE)
     Call(SetActorScale, ACTOR_SELF, Float(1.0), Float(1.0), Float(1.0))
@@ -305,20 +286,20 @@ EvtScript N(EVS_HandleEvent) = {
     End
 };
 
-EvtScript N(EVS_TakeTurn) = {
+EvtScript EVS_TakeTurn = {
     Call(UseIdleAnimation, ACTOR_SELF, FALSE)
     Call(EnableIdleScript, ACTOR_SELF, IDLE_SCRIPT_DISABLE)
     // Decide which attack to use from menu selection
     Call(GetMenuSelection, LVar0, LVar1, LVar2)
     Switch(LVar2)
         CaseEq(MOVE_HEADBONK1)
-            ExecWait(N(EVS_Attack_Headbonk))
+            ExecWait(EVS_Attack_Headbonk)
         CaseEq(MOVE_MULTIBONK)
-            ExecWait(N(EVS_Attack_Multibonk))
+            ExecWait(EVS_Attack_Multibonk)
         CaseEq(MOVE_RALLY_WINK)
-            ExecWait(N(EVS_Move_RallyWink))
+            ExecWait(EVS_Move_RallyWink)
         CaseEq(MOVE_CHARGE)
-            ExecWait(N(EVS_Move_Charge))
+            ExecWait(EVS_Move_Charge)
     EndSwitch
     Call(EnableIdleScript, ACTOR_SELF, IDLE_SCRIPT_ENABLE)
     Call(UseIdleAnimation, ACTOR_SELF, TRUE)
@@ -328,7 +309,7 @@ EvtScript N(EVS_TakeTurn) = {
 
 #include "common/CalculateArcsinDeg.inc.c"
 
-EvtScript N(EVS_Attack_Headbonk) = {
+EvtScript EVS_Attack_Headbonk = {
     Call(UseIdleAnimation, ACTOR_SELF, FALSE)
     Call(EnableIdleScript, ACTOR_SELF, IDLE_SCRIPT_DISABLE)
     Call(SetTargetActor, ACTOR_SELF, ACTOR_PLAYER)
@@ -365,7 +346,7 @@ EvtScript N(EVS_Attack_Headbonk) = {
                     Set(LVar0, 0)
                     Loop(16)
                         Call(GetActorPos, ACTOR_SELF, LVar4, LVar5, LVar6)
-                        Call(N(CalculateArcsinDeg), LVar1, LVar2, LVar4, LVar5, LVar0)
+                        Call(CalculateArcsinDeg, LVar1, LVar2, LVar4, LVar5, LVar0)
                         Call(SetActorRotation, ACTOR_SELF, 0, 0, LVar0)
                         Set(LVar1, LVar4)
                         Set(LVar2, LVar5)
@@ -441,7 +422,7 @@ EvtScript N(EVS_Attack_Headbonk) = {
                     Set(LVar0, 0)
                     Loop(16)
                         Call(GetActorPos, ACTOR_SELF, LVar4, LVar5, LVar6)
-                        Call(N(CalculateArcsinDeg), LVar1, LVar2, LVar4, LVar5, LVar0)
+                        Call(CalculateArcsinDeg, LVar1, LVar2, LVar4, LVar5, LVar0)
                         Call(SetActorRotation, ACTOR_SELF, 0, 0, LVar0)
                         Set(LVar1, LVar4)
                         Set(LVar2, LVar5)
@@ -502,7 +483,7 @@ EvtScript N(EVS_Attack_Headbonk) = {
     End
 };
 
-EvtScript N(EVS_Attack_Multibonk) = {
+EvtScript EVS_Attack_Multibonk = {
     Call(UseIdleAnimation, ACTOR_SELF, FALSE)
     Call(EnableIdleScript, ACTOR_SELF, IDLE_SCRIPT_DISABLE)
     // Attack Code here
@@ -512,7 +493,7 @@ EvtScript N(EVS_Attack_Multibonk) = {
     End
 };
 
-EvtScript N(EVS_Move_RallyWink) = {
+EvtScript EVS_Move_RallyWink = {
     Call(UseIdleAnimation, ACTOR_SELF, FALSE)
     Call(EnableIdleScript, ACTOR_SELF, IDLE_SCRIPT_DISABLE)
     // Move Code here
@@ -522,7 +503,7 @@ EvtScript N(EVS_Move_RallyWink) = {
     End
 };
 
-EvtScript N(EVS_Move_Charge) = {
+EvtScript EVS_Move_Charge = {
     Call(UseIdleAnimation, ACTOR_SELF, FALSE)
     Call(EnableIdleScript, ACTOR_SELF, IDLE_SCRIPT_DISABLE)
     // Move Code here
@@ -531,3 +512,30 @@ EvtScript N(EVS_Move_Charge) = {
     Return
     End
 };
+
+}; // namespace player_goomba
+
+ActorBlueprint PlayerGoomba = {
+    .flags = 0,
+    .maxHP = 2,
+    .type = ACTOR_TYPE_GOOMBA,
+    .level = ACTOR_LEVEL_GOOMBA,
+    .partCount = ARRAY_COUNT(player_goomba::ActorParts),
+    .partsData = player_goomba::ActorParts,
+    .initScript = &player_goomba::EVS_Init,
+    .statusTable = player_goomba::StatusTable,
+    .escapeChance = 90,
+    .airLiftChance = 100,
+    .hurricaneChance = 90,
+    .spookChance = 100,
+    .upAndAwayChance = 95,
+    .spinSmashReq = 0,
+    .powerBounceChance = 100,
+    .coinReward = 1,
+    .size = { 24, 24 },
+    .healthBarOffset = { 0, 0 },
+    .statusIconOffset = { -10, 20 },
+    .statusTextOffset = { 10, 20 },
+};
+
+}; // namespace battle::actor

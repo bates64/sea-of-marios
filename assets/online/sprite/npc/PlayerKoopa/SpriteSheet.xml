@@ -53,7 +53,6 @@
 		<Raster id="22" name="ToppleStill" palette="0" src="ToppleStill.png"/>
 		<Raster id="23" name="Jump1" palette="0" src="Jump1.png"/>
 		<Raster id="24" name="Jump2" palette="0" src="Jump2.png"/>
-		<Raster id="25" name="Scramble3" palette="0" src="Scramble3.png"/>
 		<Raster id="26" name="ToppleStunned1" palette="0" src="ToppleStunned1.png"/>
 		<Raster id="27" name="ToppleStunned2" palette="0" src="ToppleStunned2.png"/>
 		<Raster id="28" name="ToppleStunned3" palette="0" src="ToppleStunned3.png"/>
