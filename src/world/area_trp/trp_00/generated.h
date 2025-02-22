@@ -63,14 +63,14 @@
 #define GEN_ENEMY1_TERRITORY \
 { \
     .wander = { \
-        .isFlying = FALSE, \
-        .moveSpeedOverride = NO_OVERRIDE_MOVEMENT_SPEED, \
-        .wanderShape = SHAPE_CYLINDER, \
         .centerPos   = { 124, 0, 55 }, \
         .wanderSize  = { 20 }, \
-        .detectShape = SHAPE_CYLINDER, \
+        .moveSpeedOverride = NO_OVERRIDE_MOVEMENT_SPEED, \
+        .wanderShape = SHAPE_CYLINDER, \
         .detectPos   = { 124, 0, 55 }, \
         .detectSize  = { 100 }, \
+        .detectShape = SHAPE_CYLINDER, \
+        .isFlying = FALSE, \
     }, \
 }
 

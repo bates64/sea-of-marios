@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Map desc="Beach" background="net_bg" textures="trp_tex">
 	<Editor>
-		<Camera pos="-165.065750,163.982513,51.153004" pitch="32.639988" yaw="26.723192"/>
+		<Camera pos="-9.952522,81.162926,163.683990" pitch="20.959980" yaw="15.843259"/>
 		<Camera pos="-120.042770,65536.000000,-105.011848"/>
 		<Camera pos="65536.000000,-77.484764,38.100845"/>
-		<Camera pos="-159.199799,-53.078026,65536.000000"/>
+		<Camera pos="-472.054169,242.906982,65536.000000"/>
 	</Editor>
 	<ModelTree>
 		<Node name="Root" id="15">
