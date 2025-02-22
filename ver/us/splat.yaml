@@ -131,7 +131,7 @@ segments:
     - [auto, c, state_logos]
     - [auto, c, state_pause]
     - [auto, c, state_file_select]
-    - [auto, c, state_world]
+    - [auto, cpp, state_world]
     - [auto, c, 111f0_len_860] # possibly still state_world
     - [auto, c, state_intro]
     - [auto, c, state_title_screen]
@@ -14729,4 +14729,11 @@ segments:
     subsegments:
     - [auto, cpp, online]
     - [auto, c, character]
+    - [auto, cpp, seachart]
+    - [auto, ci8, seachart/background, 320, 240]
+    - [auto, palette, seachart/background]
+    - [auto, ci4, seachart/islands, 16, 16]
+    - [auto, palette, seachart/islands]
+    - [auto, ci4, seachart/hub, 32, 32]
+    - [auto, palette, seachart/hub]
   - [0x2800000]

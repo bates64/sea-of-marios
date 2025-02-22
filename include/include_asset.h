@@ -1,5 +1,7 @@
 #ifndef _H_INCLUDE_ASSET
 
+#include "macros.h"
+
 #define ASTRINGIFY_(x) #x
 #define ASTRINGIFY(x) ASTRINGIFY_(x)
 
@@ -12,7 +14,7 @@
 #endif
 
 #define _INCLUDE_IMG(FILENAME, SYMBOLNAME) \
-    extern unsigned char SYMBOLNAME[]; \
+    EXTERN_C unsigned char SYMBOLNAME[]; \
     __asm__( \
         ".globl " #SYMBOLNAME"\n" \
         PUSHSECTION(".data") \
@@ -28,7 +30,7 @@
     _INCLUDE_IMG(FILENAME, SYMBOLNAME)
 
 #define INCLUDE_PAL(FILENAME, SYMBOLNAME) \
-    extern unsigned short SYMBOLNAME[]; \
+    EXTERN_C unsigned short SYMBOLNAME[]; \
     __asm__( \
         ".globl " #SYMBOLNAME"\n" \
         PUSHSECTION(".data") \
@@ -40,7 +42,7 @@
     )
 
 #define INCLUDE_RAW(FILENAME, SYMBOLNAME) \
-    extern unsigned char SYMBOLNAME[]; \
+    EXTERN_C unsigned char SYMBOLNAME[]; \
     __asm__( \
         ".globl " #SYMBOLNAME"\n" \
         PUSHSECTION(".data") \

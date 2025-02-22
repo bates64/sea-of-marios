@@ -397,6 +397,7 @@ API_CALLABLE(GetPersonalityCharacterResultMessage) {
 }
 
 EvtScript EVS_NpcInit_Muskular = {
+    Return // TEMP
     Thread
         ExecWait(EVS_Muskular_Appear)
         ExecWait(EVS_Muskular_Quiz)

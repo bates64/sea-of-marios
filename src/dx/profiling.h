@@ -6,6 +6,10 @@
 #include "common.h"
 #include "dx/config.h"
 
+#ifdef _LANGUAGE_C_PLUS_PLUS
+extern "C" {
+#endif
+
 #if defined(USE_PROFILER) && defined(PUPPYPRINT_DEBUG)
 /**
  * Toggle this define to enable verbose audio profiling with Pupprprint Debug.
@@ -194,8 +198,8 @@ static ALWAYS_INLINE void profiler_gfx_subset_complete_and_switch_func(enum Prof
     gfx_subset_starts[start] = time;
 }
 
-static ALWAYS_INLINE void profiler_gfx_subset_start_shared_func(enum ProfilerTime first, enum ProfilerTime new) {
-    gfx_subset_starts[new] = gfx_subset_starts[first];
+static ALWAYS_INLINE void profiler_gfx_subset_start_shared_func(enum ProfilerTime first, enum ProfilerTime newTime) {
+    gfx_subset_starts[newTime] = gfx_subset_starts[first];
 }
 
 static ALWAYS_INLINE void profiler_gfx_subset_start_func(enum ProfilerTime index) {
@@ -283,5 +287,9 @@ enum ProfilerTimeAudioUnused {
 #define AUDIO_PROFILER_START(which)
 #define AUDIO_PROFILER_COMPLETE(which)
 #endif // AUDIO_PROFILING
+
+#ifdef _LANGUAGE_C_PLUS_PLUS
+}
+#endif
 
 #endif
