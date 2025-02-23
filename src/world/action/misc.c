@@ -103,11 +103,7 @@ void action_update_state_23(void) {
         playerStatus->pos.y = outY;
     }
 
-    if (gGameStatusPtr->areaID == AREA_SBK) {
-        miscTempVariable = 30.0f;
-    } else {
-        miscTempVariable = 60.0f;
-    }
+    miscTempVariable = 60.0f;
 
     if (PlayerNormalPitch < miscTempVariable) {
         set_action_state(ACTION_STATE_FALLING);

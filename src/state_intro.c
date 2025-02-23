@@ -24,6 +24,11 @@ BSS s32 IntroOverlayType;
 BSS s32 D_800A0964; // related to skipping the intro
 
 void state_init_intro(void) {
+    #if !DX_SKIP_STORY
+    #error Need to actually make a story
+    #endif
+
+    /*
     gGameStatusPtr->startupState = INTRO_INIT;
 
     set_curtain_scale_goal(1.0f);
@@ -87,6 +92,7 @@ void state_init_intro(void) {
     set_screen_overlay_color(SCREEN_LAYER_BACK, IntroFadeColorR, IntroFadeColorG, IntroFadeColorB);
 
     startup_fade_screen_update();
+    */
 }
 
 void state_step_intro(void) {

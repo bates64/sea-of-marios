@@ -2957,34 +2957,11 @@ enum PartnerStates {
 
 /// @see gAreas
 enum Areas {
-    AREA_KMR,
     AREA_MAC,
-    AREA_TIK,
-    AREA_KGR,
-    AREA_KKJ,
-    AREA_HOS,
-    AREA_NOK,
-    AREA_TRD,
-    AREA_IWA,
-    AREA_DRO,
-    AREA_SBK,
-    AREA_ISK,
-    AREA_MIM,
-    AREA_OBK,
-    AREA_ARN,
-    AREA_DGB,
-    AREA_OMO,
-    AREA_JAN,
-    AREA_KZN,
-    AREA_FLO,
-    AREA_SAM,
-    AREA_PRA,
-    AREA_KPA,
-    AREA_OSR,
     AREA_END,
-    AREA_MGM,
     AREA_GV,
-    AREA_TST,
+    AREA_NET,
+    AREA_TRP,
 };
 
 enum NpcPalSwapState {

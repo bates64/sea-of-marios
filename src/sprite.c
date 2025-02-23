@@ -836,7 +836,7 @@ s32 func_802DDA84(void) {
 }
 
 s32 spr_update_player_sprite(s32 spriteInstanceID, s32 animID, f32 timeScale) {
-    if (gGameStatus.context == CONTEXT_BATTLE) return;
+    if (gGameStatus.context == CONTEXT_BATTLE) return FALSE;
 
     s32 notify = spr_update_sprite(spriteInstanceID, animID, timeScale);
     spr_playerCurrentAnimInfo[spriteInstanceID].componentList = SpriteInstances[spriteInstanceID].componentList;
