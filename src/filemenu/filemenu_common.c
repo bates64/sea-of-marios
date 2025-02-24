@@ -900,7 +900,7 @@ void filemenu_init(s32 mode) {
     menu->state = FM_MAIN_SELECT_FILE;
 
     if (menu->state == FM_MAIN_SELECT_FILE) {
-        for (i = 0; i < ARRAY_COUNT(filemenu_menus); i++) {
+        for (i = 0; i < 4; i += 2) { // We only display slots 0 and 2
             if (fio_load_game(i)) {
                 gSaveSlotSummary[i] = gCurrentSaveFile.summary;
                 gSaveSlotMetadata[i].hasData = TRUE;
@@ -909,13 +909,16 @@ void filemenu_init(s32 mode) {
             } else {
                 gSaveSlotMetadata[i].hasData = FALSE;
                 gSaveSlotMetadata[i].validData = FALSE;
-                memset(gSaveSlotMetadata[i].modName, ARRAY_COUNT(gSaveSlotMetadata[i].modName), 0);
+                memset(gSaveSlotMetadata[i].modName, 0, ARRAY_COUNT(gSaveSlotMetadata[i].modName));
             }
         }
 
         fio_load_globals();
         if (gSaveGlobals.lastFileSelected >= 4) {
             gSaveGlobals.lastFileSelected = 0;
+        }
+        if (gSaveGlobals.lastFileSelected % 2 != 0) { // We only display slots 0 and 2
+            gSaveGlobals.lastFileSelected--;
         }
         gGameStatusPtr->saveSlot = gSaveGlobals.lastFileSelected;
     }
