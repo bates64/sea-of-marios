@@ -235,7 +235,7 @@ void filemenu_yesno_handle_input(MenuPanel* menu) {
                     case FM_CONFIRM_DELETE:
                         filemenu_currentMenu = FILE_MENU_MESSAGE;
                         filemenu_menus[FILE_MENU_MESSAGE]->state = FM_MESSAGE_DELETED;
-                        gWindows[WIN_FILES_MESSAGE].width = 182;
+                        gWindows[WIN_FILES_MESSAGE].width = 220;
                         gWindows[WIN_FILES_MESSAGE].height = 25;
                         gWindows[WIN_FILES_MESSAGE].pos.x = CENTER_WINDOW_X(WIN_FILES_MESSAGE);
                         gWindows[WIN_FILES_MESSAGE].pos.y = CENTER_WINDOW_Y(WIN_FILES_MESSAGE);
