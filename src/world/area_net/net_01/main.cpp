@@ -1,4 +1,4 @@
-#include "net_01.h"
+#include "net_01.hpp"
 #include "effects.h"
 #include "dx/debug_menu.h"
 

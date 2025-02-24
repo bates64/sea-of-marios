@@ -1,4 +1,4 @@
-#include "net_00.h"
+#include "net_00.hpp"
 #include "online/character.h"
 #include "effects.h"
 #include "dx/debug_menu.h"

@@ -6,6 +6,7 @@
 #define COLLIDER_WallIsland     0x1
 #define COLLIDER_FloorIsland    0x0
 
-#define ZONE_Root               0x1
+#define ZONE_Root               0x2
+#define ZONE_FloorIsland        0x1
 #define ZONE_Entrance           0x0
 
