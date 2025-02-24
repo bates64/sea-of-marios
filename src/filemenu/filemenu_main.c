@@ -177,8 +177,8 @@ MenuWindowBP filemenu_main_windowBPs[] = {
     {
         .windowID = WIN_FILES_OPTION_LEFT,
         .unk_01 = 0,
-        .pos = { .x = (SCREEN_WIDTH - 150) / 2, .y = 171 },
-        .width = 150,
+        .pos = { .x = (288 - 160) / 2, .y = 171 },
+        .width = 160,
         .height = 16,
         .priority = WINDOW_PRIORITY_0,
         .fpDrawContents = &filemenu_draw_contents_option_left,
@@ -433,6 +433,7 @@ void filemenu_draw_contents_option_left(
         filemenu_set_cursor_goal_pos(WIN_FILES_OPTION_LEFT, baseX, baseY + 8);
     }
     s32 centerX = baseX + (width / 2);
+    centerX += 4; // don't ask
     filemenu_draw_message_centered(filemenu_get_menu_message(FILE_MESSAGE_DELETE_FILE), centerX, baseY + 2, 255, 0, 1);
 }
 
