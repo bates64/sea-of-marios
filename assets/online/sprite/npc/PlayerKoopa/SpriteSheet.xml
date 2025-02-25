@@ -53,21 +53,21 @@
 		<Raster id="22" name="ToppleStill" palette="0" src="ToppleStill.png"/>
 		<Raster id="23" name="Jump1" palette="0" src="Jump1.png"/>
 		<Raster id="24" name="Jump2" palette="0" src="Jump2.png"/>
-		<Raster id="26" name="ToppleStunned1" palette="0" src="ToppleStunned1.png"/>
-		<Raster id="27" name="ToppleStunned2" palette="0" src="ToppleStunned2.png"/>
-		<Raster id="28" name="ToppleStunned3" palette="0" src="ToppleStunned3.png"/>
-		<Raster id="29" name="ToppleStunned4" palette="0" src="ToppleStunned4.png"/>
+		<Raster id="25" name="ToppleStunned1" palette="0" src="ToppleStunned1.png"/>
+		<Raster id="26" name="ToppleStunned2" palette="0" src="ToppleStunned2.png"/>
+		<Raster id="27" name="ToppleStunned3" palette="0" src="ToppleStunned3.png"/>
+		<Raster id="28" name="ToppleStunned4" palette="0" src="ToppleStunned4.png"/>
 	</RasterList>
 	<AnimationList>
 		<Animation name="Still">
-			<Component name="Comp_0" xyz="0,0,0">
+			<Component name="Body" xyz="0,0,0">
 				<Command val="1003"/>
 				<Command val="2"/>
 				<Command val="2000"/>
 			</Component>
 		</Animation>
 		<Animation name="Idle">
-			<Component name="Comp_0" xyz="0,0,0">
+			<Component name="Body" xyz="0,0,0">
 				<Command val="1003"/>
 				<Command val="E"/>
 				<Command val="1004"/>
@@ -76,7 +76,7 @@
 			</Component>
 		</Animation>
 		<Animation name="Walk">
-			<Component name="Comp_0" xyz="0,0,0">
+			<Component name="Body" xyz="0,0,0">
 				<Command val="1000"/>
 				<Command val="8"/>
 				<Command val="1001"/>
@@ -89,7 +89,7 @@
 			</Component>
 		</Animation>
 		<Animation name="Run">
-			<Component name="Comp_0" xyz="0,0,0">
+			<Component name="Body" xyz="0,0,0">
 				<Command val="1000"/>
 				<Command val="4"/>
 				<Command val="1001"/>
@@ -102,28 +102,28 @@
 			</Component>
 		</Animation>
 		<Animation name="Jump">
-			<Component name="Comp_0" xyz="0,0,0">
+			<Component name="Body" xyz="0,0,0">
 				<Command val="1023"/>
 				<Command val="2"/>
 				<Command val="2000"/>
 			</Component>
 		</Animation>
 		<Animation name="Midair">
-			<Component name="Comp_0" xyz="0,1,0">
+			<Component name="Body" xyz="0,1,0">
 				<Command val="1024"/>
 				<Command val="2"/>
 				<Command val="2000"/>
 			</Component>
 		</Animation>
 		<Animation name="HurtStill">
-			<Component name="Comp_0" xyz="0,0,0">
+			<Component name="Body" xyz="0,0,0">
 				<Command val="1006"/>
 				<Command val="6"/>
 				<Command val="2000"/>
 			</Component>
 		</Animation>
 		<Animation name="Hurt">
-			<Component name="Comp_0" xyz="-1,-2,0">
+			<Component name="Body" xyz="-1,-2,0">
 				<Command val="1007"/>
 				<Command val="6"/>
 				<Command val="1008"/>
@@ -132,14 +132,14 @@
 			</Component>
 		</Animation>
 		<Animation name="BurnStill">
-			<Component name="Comp_0" xyz="0,0,0">
+			<Component name="Body" xyz="0,0,0">
 				<Command val="1009"/>
 				<Command val="2"/>
 				<Command val="2000"/>
 			</Component>
 		</Animation>
 		<Animation name="BurnHurt">
-			<Component name="Comp_0" xyz="-1,-2,0">
+			<Component name="Body" xyz="-1,-2,0">
 				<Command val="1012"/>
 				<Command val="6"/>
 				<Command val="1013"/>
@@ -148,7 +148,7 @@
 			</Component>
 		</Animation>
 		<Animation name="Dizzy">
-			<Component name="Comp_0" xyz="0,0,0">
+			<Component name="Body" xyz="0,0,0">
 				<Command val="1026"/>
 				<Command val="4"/>
 				<Command val="1027"/>
@@ -161,7 +161,7 @@
 			</Component>
 		</Animation>
 		<Animation name="Sleep">
-			<Component name="Comp_0" xyz="0,0,0">
+			<Component name="Body" xyz="0,0,0">
 				<Command val="1015"/>
 				<Command val="E"/>
 				<Command val="1016"/>
@@ -174,14 +174,14 @@
 			</Component>
 		</Animation>
 		<Animation name="Think">
-			<Component name="Comp_0" xyz="0,0,0">
+			<Component name="Body" xyz="0,0,0">
 				<Command val="101A"/>
 				<Command val="6"/>
 				<Command val="2000"/>
 			</Component>
 		</Animation>
 		<Animation name="CelebrateLoop">
-			<Component name="Comp_0" xyz="0,0,0">
+			<Component name="Body" xyz="0,0,0">
 				<Command val="101B"/>
 				<Command val="4"/>
 				<Command val="101C"/>
@@ -198,14 +198,14 @@
 			</Component>
 		</Animation>
 		<Animation name="Celebrate">
-			<Component name="Comp_0" xyz="0,0,0">
+			<Component name="Body" xyz="0,0,0">
 				<Command val="101B"/>
 				<Command val="2"/>
 				<Command val="2000"/>
 			</Component>
 		</Animation>
 		<Animation name="Block">
-			<Component name="Comp_0" xyz="0,0,0">
+			<Component name="Body" xyz="0,0,0">
 				<Command val="1017"/>
 				<Command val="4"/>
 				<Command val="1018"/>
@@ -218,14 +218,14 @@
 			</Component>
 		</Animation>
 		<Animation name="ShellStill">
-			<Component name="Comp_0" xyz="0,0,0">
+			<Component name="Body" xyz="0,0,0">
 				<Command val="100D"/>
 				<Command val="2"/>
 				<Command val="2000"/>
 			</Component>
 		</Animation>
 		<Animation name="ShellSpin">
-			<Component name="Comp_0" xyz="0,0,0">
+			<Component name="Body" xyz="0,0,0">
 				<Command val="3001"/>
 				<Command val="FFFF"/>
 				<Command val="0"/>
@@ -266,7 +266,7 @@
 			</Component>
 		</Animation>
 		<Animation name="ShellEnter">
-			<Component name="Comp_0" xyz="0,-1,0">
+			<Component name="Body" xyz="0,-1,0">
 				<Command val="3001"/>
 				<Command val="5"/>
 				<Command val="0"/>
@@ -333,7 +333,7 @@
 			</Component>
 		</Animation>
 		<Animation name="ShellExit">
-			<Component name="Comp_0" xyz="0,-1,0">
+			<Component name="Body" xyz="0,-1,0">
 				<Command val="100D"/>
 				<Command val="2"/>
 				<Command val="5000"/>
@@ -382,7 +382,7 @@
 			</Component>
 		</Animation>
 		<Animation name="Floating">
-			<Component name="Comp_0" xyz="0,0,0">
+			<Component name="Body" xyz="0,0,0">
 				<Command val="100D"/>
 				<Command val="2"/>
 				<Command val="2000"/>

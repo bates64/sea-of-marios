@@ -33,14 +33,14 @@
 	</RasterList>
 	<AnimationList>
 		<Animation name="Still">
-			<Component name="Comp_0" xyz="0,0,0">
+			<Component name="Body" xyz="0,0,0">
 				<Command val="1000"/>
 				<Command val="2"/>
 				<Command val="2000"/>
 			</Component>
 		</Animation>
 		<Animation name="Idle">
-			<Component name="Comp_0" xyz="0,0,0">
+			<Component name="Body" xyz="0,0,0">
 				<Command val="1000"/>
 				<Command val="8"/>
 				<Command val="1007"/>
@@ -65,7 +65,7 @@
 			</Component>
 		</Animation>
 		<Animation name="Walk">
-			<Component name="Comp_0" xyz="0,0,0">
+			<Component name="Body" xyz="0,0,0">
 				<Command val="1000"/>
 				<Command val="8"/>
 				<Command val="1001"/>
@@ -78,7 +78,7 @@
 			</Component>
 		</Animation>
 		<Animation name="Run">
-			<Component name="Comp_0" xyz="0,0,0">
+			<Component name="Body" xyz="0,0,0">
 				<Command val="1000"/>
 				<Command val="2"/>
 				<Command val="1001"/>
@@ -91,28 +91,28 @@
 			</Component>
 		</Animation>
 		<Animation name="Jump">
-			<Component xyz="0,-2,0">
+			<Component name="Body" xyz="0,-2,0">
 				<Command val="1005"/>
 				<Command val="2"/>
 				<Command val="2000"/>
 			</Component>
 		</Animation>
 		<Animation name="Midair">
-			<Component name="Comp_0" xyz="0,-3,0">
+			<Component name="Body" xyz="0,-3,0">
 				<Command val="1006"/>
 				<Command val="2"/>
 				<Command val="2000"/>
 			</Component>
 		</Animation>
 		<Animation name="HurtStill">
-			<Component name="Comp_0" xyz="0,0,0">
+			<Component name="Body" xyz="0,0,0">
 				<Command val="1004"/>
 				<Command val="2"/>
 				<Command val="2000"/>
 			</Component>
 		</Animation>
 		<Animation name="Hurt">
-			<Component name="Comp_0" xyz="0,0,0">
+			<Component name="Body" xyz="0,0,0">
 				<Command val="1003"/>
 				<Command val="4"/>
 				<Command val="1004"/>
@@ -121,14 +121,14 @@
 			</Component>
 		</Animation>
 		<Animation name="BurnStill">
-			<Component name="Comp_0" xyz="0,0,0">
+			<Component name="Body" xyz="0,0,0">
 				<Command val="100F"/>
 				<Command val="2"/>
 				<Command val="2000"/>
 			</Component>
 		</Animation>
 		<Animation name="BurnHurt">
-			<Component name="Comp_0" xyz="0,0,0">
+			<Component name="Body" xyz="0,0,0">
 				<Command val="100E"/>
 				<Command val="8"/>
 				<Command val="100F"/>
@@ -137,7 +137,7 @@
 			</Component>
 		</Animation>
 		<Animation name="Dizzy">
-			<Component name="Comp_0" xyz="0,0,0">
+			<Component name="Body" xyz="0,0,0">
 				<Command val="100A"/>
 				<Command val="8"/>
 				<Command val="100B"/>
@@ -150,7 +150,7 @@
 			</Component>
 		</Animation>
 		<Animation name="Sleep">
-			<Component name="Comp_0" xyz="0,0,0">
+			<Component name="Body" xyz="0,0,0">
 				<Command val="1011"/>
 				<Command val="40"/>
 				<Command val="1011"/>
@@ -161,14 +161,14 @@
 			</Component>
 		</Animation>
 		<Animation name="Think">
-			<Component name="Comp_0" xyz="0,0,0">
+			<Component name="Body" xyz="0,0,0">
 				<Command val="1015"/>
 				<Command val="2"/>
 				<Command val="2000"/>
 			</Component>
 		</Animation>
 		<Animation name="CelebrateLoop">
-			<Component name="Comp_0" xyz="0,0,0">
+			<Component name="Body" xyz="0,0,0">
 				<Command val="1013"/>
 				<Command val="4"/>
 				<Command val="1014"/>
@@ -177,21 +177,28 @@
 			</Component>
 		</Animation>
 		<Animation name="Celebrate">
-			<Component name="Comp_0" xyz="0,-8,0">
+			<Component name="Body" xyz="0,-8,0">
 				<Command val="1014"/>
 				<Command val="4"/>
 				<Command val="2000"/>
 			</Component>
 		</Animation>
+		<Animation name="Tense">
+			<Component name="Body" xyz="0,0,0">
+				<Command val="1011"/>
+				<Command val="2"/>
+				<Command val="2000"/>
+			</Component>
+		</Animation>
 		<Animation name="Block">
-			<Component name="Comp_0" xyz="0,0,0">
+			<Component name="Body" xyz="0,0,0">
 				<Command val="1012"/>
 				<Command val="2"/>
 				<Command val="2000"/>
 			</Component>
 		</Animation>
 		<Animation name="Bonk">
-			<Component name="Comp_0" xyz="0,-20,0">
+			<Component name="Body" xyz="0,-20,0">
 				<Command val="1005"/>
 				<Command val="2"/>
 				<Command val="2000"/>

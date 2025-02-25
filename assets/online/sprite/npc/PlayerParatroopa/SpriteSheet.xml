@@ -58,24 +58,24 @@
 	</RasterList>
 	<AnimationList>
 		<Animation name="Still">
-			<Component name="Comp_0" xyz="16,29,2">
+			<Component name="FrontWing" xyz="16,29,2">
 				<Command val="1001"/>
 				<Command val="2"/>
 				<Command val="2000"/>
 			</Component>
-			<Component name="Comp_1" xyz="0,0,0">
+			<Component name="Body" xyz="0,0,0">
 				<Command val="100E"/>
 				<Command val="2"/>
 				<Command val="2000"/>
 			</Component>
-			<Component name="Comp_2" xyz="-11,29,-2">
+			<Component name="BackWing" xyz="-11,29,-2">
 				<Command val="1000"/>
 				<Command val="2"/>
 				<Command val="2000"/>
 			</Component>
 		</Animation>
 		<Animation name="Idle">
-			<Component name="Comp_0" xyz="16,29,2">
+			<Component name="FrontWing" xyz="16,29,2">
 				<Command val="8103"/>
 				<Command val="1001"/>
 				<Command val="8"/>
@@ -99,7 +99,7 @@
 				<Command val="6"/>
 				<Command val="2000"/>
 			</Component>
-			<Component name="Comp_1" xyz="0,0,0">
+			<Component name="Body" xyz="0,0,0">
 				<Command val="8103"/>
 				<Command val="3000"/>
 				<Command val="FFFF"/>
@@ -109,7 +109,7 @@
 				<Command val="2"/>
 				<Command val="2000"/>
 			</Component>
-			<Component name="Comp_2" xyz="-11,29,-2">
+			<Component name="BackWing" xyz="-11,29,-2">
 				<Command val="8103"/>
 				<Command val="3000"/>
 				<Command val="6"/>
@@ -137,7 +137,7 @@
 				<Command val="6"/>
 				<Command val="2000"/>
 			</Component>
-			<Component name="Comp_3" xyz="0,0,0">
+			<Component name="Hover" xyz="0,0,0">
 				<Command val="3000"/>
 				<Command val="0"/>
 				<Command val="FFFF"/>
@@ -172,7 +172,7 @@
 			</Component>
 		</Animation>
 		<Animation name="Walk">
-			<Component name="Comp_0" xyz="16,29,2">
+			<Component name="FrontWing" xyz="16,29,2">
 				<Command val="8103"/>
 				<Command val="1001"/>
 				<Command val="8"/>
@@ -196,13 +196,13 @@
 				<Command val="6"/>
 				<Command val="2000"/>
 			</Component>
-			<Component name="Comp_1" xyz="0,0,0">
+			<Component name="Body" xyz="0,0,0">
 				<Command val="8103"/>
 				<Command val="100E"/>
 				<Command val="2"/>
 				<Command val="2000"/>
 			</Component>
-			<Component name="Comp_2" xyz="-11,29,-2">
+			<Component name="BackWing" xyz="-11,29,-2">
 				<Command val="8103"/>
 				<Command val="3000"/>
 				<Command val="6"/>
@@ -230,7 +230,7 @@
 				<Command val="6"/>
 				<Command val="2000"/>
 			</Component>
-			<Component name="Comp_3" xyz="0,0,0">
+			<Component name="Hover" xyz="0,0,0">
 				<Command val="3000"/>
 				<Command val="0"/>
 				<Command val="FFFF"/>
@@ -265,7 +265,7 @@
 			</Component>
 		</Animation>
 		<Animation name="Run">
-			<Component name="Comp_0" xyz="17,29,2">
+			<Component name="FrontWing" xyz="17,29,2">
 				<Command val="8103"/>
 				<Command val="1001"/>
 				<Command val="4"/>
@@ -289,13 +289,13 @@
 				<Command val="2"/>
 				<Command val="2000"/>
 			</Component>
-			<Component name="Comp_1" xyz="0,0,0">
+			<Component name="Body" xyz="0,0,0">
 				<Command val="8103"/>
 				<Command val="100E"/>
 				<Command val="2"/>
 				<Command val="2000"/>
 			</Component>
-			<Component name="Comp_2" xyz="-11,29,-2">
+			<Component name="BackWing" xyz="-11,29,-2">
 				<Command val="8103"/>
 				<Command val="3000"/>
 				<Command val="6"/>
@@ -323,7 +323,7 @@
 				<Command val="2"/>
 				<Command val="2000"/>
 			</Component>
-			<Component name="Comp_3" xyz="0,0,0">
+			<Component name="Hover" xyz="0,0,0">
 				<Command val="3000"/>
 				<Command val="0"/>
 				<Command val="FFFF"/>
@@ -353,7 +353,7 @@
 			</Component>
 		</Animation>
 		<Animation name="Jump">
-			<Component name="Comp_0" xyz="17,29,2">
+			<Component name="FrontWing" xyz="17,29,2">
 				<Command val="1001"/>
 				<Command val="4"/>
 				<Command val="3000"/>
@@ -376,12 +376,12 @@
 				<Command val="1007"/>
 				<Command val="2"/>
 			</Component>
-			<Component name="Comp_1" xyz="0,0,0">
+			<Component name="Body" xyz="0,0,0">
 				<Command val="1029"/>
 				<Command val="2"/>
 				<Command val="2000"/>
 			</Component>
-			<Component name="Comp_2" xyz="-11,29,-2">
+			<Component name="BackWing" xyz="-11,29,-2">
 				<Command val="3000"/>
 				<Command val="6"/>
 				<Command val="0"/>
@@ -404,12 +404,12 @@
 			</Component>
 		</Animation>
 		<Animation name="Midair">
-			<Component name="Comp_0" xyz="16,29,2">
+			<Component name="FrontWing" xyz="16,29,2">
 				<Command val="1001"/>
 				<Command val="8"/>
 				<Command val="2000"/>
 			</Component>
-			<Component name="Comp_1" xyz="0,0,0">
+			<Component name="Body" xyz="0,0,0">
 				<Command val="3000"/>
 				<Command val="FFFF"/>
 				<Command val="0"/>
@@ -418,7 +418,7 @@
 				<Command val="2"/>
 				<Command val="2000"/>
 			</Component>
-			<Component name="Comp_2" xyz="-11,29,-2">
+			<Component name="BackWing" xyz="-11,29,-2">
 				<Command val="3000"/>
 				<Command val="6"/>
 				<Command val="0"/>
@@ -429,7 +429,7 @@
 			</Component>
 		</Animation>
 		<Animation name="HurtStill">
-			<Component name="Comp_0" xyz="4,16,-2">
+			<Component name="Wing" xyz="4,16,-2">
 				<Command val="3000"/>
 				<Command val="1"/>
 				<Command val="0"/>
@@ -438,14 +438,14 @@
 				<Command val="2"/>
 				<Command val="2000"/>
 			</Component>
-			<Component name="Comp_1" xyz="0,0,0">
+			<Component name="Body" xyz="0,0,0">
 				<Command val="1013"/>
 				<Command val="2"/>
 				<Command val="2000"/>
 			</Component>
 		</Animation>
 		<Animation name="Hurt">
-			<Component name="Comp_0" xyz="4,16,-2">
+			<Component name="Wings" xyz="4,16,-2">
 				<Command val="3000"/>
 				<Command val="1"/>
 				<Command val="0"/>
@@ -463,7 +463,7 @@
 				<Command val="6"/>
 				<Command val="2000"/>
 			</Component>
-			<Component name="Comp_1" xyz="0,0,0">
+			<Component name="Body" xyz="0,0,0">
 				<Command val="1014"/>
 				<Command val="6"/>
 				<Command val="1015"/>
@@ -472,7 +472,7 @@
 			</Component>
 		</Animation>
 		<Animation name="BurnStill">
-			<Component name="Comp_0" xyz="4,16,-2">
+			<Component name="Wings" xyz="4,16,-2">
 				<Command val="3000"/>
 				<Command val="1"/>
 				<Command val="0"/>
@@ -481,14 +481,14 @@
 				<Command val="2"/>
 				<Command val="2000"/>
 			</Component>
-			<Component name="Comp_1" xyz="0,0,0">
+			<Component name="Body" xyz="0,0,0">
 				<Command val="1012"/>
 				<Command val="2"/>
 				<Command val="2000"/>
 			</Component>
 		</Animation>
 		<Animation name="BurnHurt">
-			<Component name="Comp_0" xyz="4,16,-2">
+			<Component name="Wings" xyz="4,16,-2">
 				<Command val="3000"/>
 				<Command val="1"/>
 				<Command val="0"/>
@@ -506,7 +506,7 @@
 				<Command val="6"/>
 				<Command val="2000"/>
 			</Component>
-			<Component name="Comp_1" xyz="0,0,0">
+			<Component name="Body" xyz="0,0,0">
 				<Command val="1016"/>
 				<Command val="6"/>
 				<Command val="1017"/>
@@ -515,7 +515,7 @@
 			</Component>
 		</Animation>
 		<Animation name="Dizzy">
-			<Component name="Comp_0" xyz="0,0,0">
+			<Component name="Body" xyz="0,0,0">
 				<Command val="8103"/>
 				<Command val="1019"/>
 				<Command val="4"/>
@@ -527,7 +527,7 @@
 				<Command val="4"/>
 				<Command val="2000"/>
 			</Component>
-			<Component name="Comp_1" xyz="0,28,-2">
+			<Component name="BackWing" xyz="0,28,-2">
 				<Command val="8103"/>
 				<Command val="1000"/>
 				<Command val="8"/>
@@ -551,7 +551,7 @@
 				<Command val="4"/>
 				<Command val="2000"/>
 			</Component>
-			<Component name="Comp_2" xyz="19,28,2">
+			<Component name="FrontWing" xyz="19,28,2">
 				<Command val="8103"/>
 				<Command val="1001"/>
 				<Command val="8"/>
@@ -575,7 +575,7 @@
 				<Command val="4"/>
 				<Command val="2000"/>
 			</Component>
-			<Component name="Comp_3" xyz="0,0,0">
+			<Component name="Hover" xyz="0,0,0">
 				<Command val="3001"/>
 				<Command val="0"/>
 				<Command val="FFFF"/>
@@ -600,7 +600,7 @@
 			</Component>
 		</Animation>
 		<Animation name="Sleep">
-			<Component name="Comp_0" xyz="0,0,0">
+			<Component name="Body" xyz="0,0,0">
 				<Command val="8103"/>
 				<Command val="1018"/>
 				<Command val="8"/>
@@ -612,7 +612,7 @@
 				<Command val="8"/>
 				<Command val="2000"/>
 			</Component>
-			<Component name="Comp_1" xyz="0,28,-2">
+			<Component name="BackWing" xyz="0,28,-2">
 				<Command val="8103"/>
 				<Command val="1000"/>
 				<Command val="10"/>
@@ -636,7 +636,7 @@
 				<Command val="8"/>
 				<Command val="2000"/>
 			</Component>
-			<Component name="Comp_2" xyz="19,28,2">
+			<Component name="FrontWing" xyz="19,28,2">
 				<Command val="8103"/>
 				<Command val="1001"/>
 				<Command val="10"/>
@@ -660,7 +660,7 @@
 				<Command val="8"/>
 				<Command val="2000"/>
 			</Component>
-			<Component name="Comp_3" xyz="0,0,0">
+			<Component name="Hover" xyz="0,0,0">
 				<Command val="3001"/>
 				<Command val="0"/>
 				<Command val="FFFF"/>
@@ -685,7 +685,7 @@
 			</Component>
 		</Animation>
 		<Animation name="Think">
-			<Component name="Comp_0" xyz="16,28,2">
+			<Component name="FrontWing" xyz="16,28,2">
 				<Command val="8103"/>
 				<Command val="1001"/>
 				<Command val="8"/>
@@ -709,7 +709,7 @@
 				<Command val="6"/>
 				<Command val="2000"/>
 			</Component>
-			<Component name="Comp_1" xyz="-1,2,0">
+			<Component name="Body" xyz="-1,2,0">
 				<Command val="8103"/>
 				<Command val="3000"/>
 				<Command val="FFFF"/>
@@ -719,7 +719,7 @@
 				<Command val="2"/>
 				<Command val="2000"/>
 			</Component>
-			<Component name="Comp_2" xyz="-11,29,-2">
+			<Component name="BackWing" xyz="-11,29,-2">
 				<Command val="8103"/>
 				<Command val="3000"/>
 				<Command val="6"/>
@@ -747,7 +747,7 @@
 				<Command val="6"/>
 				<Command val="2000"/>
 			</Component>
-			<Component name="Comp_3" xyz="0,0,0">
+			<Component name="Hover" xyz="0,0,0">
 				<Command val="3000"/>
 				<Command val="0"/>
 				<Command val="FFFF"/>
@@ -782,7 +782,7 @@
 			</Component>
 		</Animation>
 		<Animation name="CelebrateLoop">
-			<Component name="Comp_0" xyz="16,29,2">
+			<Component name="FrontWing" xyz="16,29,2">
 				<Command val="8103"/>
 				<Command val="1001"/>
 				<Command val="8"/>
@@ -806,7 +806,7 @@
 				<Command val="6"/>
 				<Command val="2000"/>
 			</Component>
-			<Component name="Comp_1" xyz="-2,1,0">
+			<Component name="Body" xyz="-2,1,0">
 				<Command val="8103"/>
 				<Command val="1025"/>
 				<Command val="8"/>
@@ -830,7 +830,7 @@
 				<Command val="4"/>
 				<Command val="2000"/>
 			</Component>
-			<Component name="Comp_2" xyz="-11,29,-2">
+			<Component name="BackWing" xyz="-11,29,-2">
 				<Command val="8103"/>
 				<Command val="3000"/>
 				<Command val="6"/>
@@ -858,7 +858,7 @@
 				<Command val="6"/>
 				<Command val="2000"/>
 			</Component>
-			<Component name="Comp_3" xyz="0,0,0">
+			<Component name="Hover" xyz="0,0,0">
 				<Command val="3000"/>
 				<Command val="0"/>
 				<Command val="FFFF"/>
@@ -893,7 +893,7 @@
 			</Component>
 		</Animation>
 		<Animation name="Celebrate">
-			<Component name="Comp_0" xyz="16,29,2">
+			<Component name="FrontWing" xyz="16,29,2">
 				<Command val="8103"/>
 				<Command val="1001"/>
 				<Command val="8"/>
@@ -917,7 +917,7 @@
 				<Command val="6"/>
 				<Command val="2000"/>
 			</Component>
-			<Component name="Comp_1" xyz="-1,1,0">
+			<Component name="Body" xyz="-1,1,0">
 				<Command val="8103"/>
 				<Command val="3000"/>
 				<Command val="FFFF"/>
@@ -927,7 +927,7 @@
 				<Command val="2"/>
 				<Command val="2000"/>
 			</Component>
-			<Component name="Comp_2" xyz="-11,29,-2">
+			<Component name="BackWing" xyz="-11,29,-2">
 				<Command val="8103"/>
 				<Command val="3000"/>
 				<Command val="6"/>
@@ -955,7 +955,7 @@
 				<Command val="6"/>
 				<Command val="2000"/>
 			</Component>
-			<Component name="Comp_3" xyz="0,0,0">
+			<Component name="Hover" xyz="0,0,0">
 				<Command val="3000"/>
 				<Command val="0"/>
 				<Command val="FFFF"/>
@@ -990,7 +990,7 @@
 			</Component>
 		</Animation>
 		<Animation name="Block">
-			<Component name="Comp_0" xyz="16,29,2">
+			<Component name="FrontWing" xyz="16,29,2">
 				<Command val="8103"/>
 				<Command val="1001"/>
 				<Command val="8"/>
@@ -1014,7 +1014,7 @@
 				<Command val="6"/>
 				<Command val="2000"/>
 			</Component>
-			<Component name="Comp_1" xyz="3,11,0">
+			<Component name="Body" xyz="3,11,0">
 				<Command val="8103"/>
 				<Command val="101E"/>
 				<Command val="3000"/>
@@ -1029,7 +1029,7 @@
 				<Command val="2"/>
 				<Command val="200A"/>
 			</Component>
-			<Component name="Comp_2" xyz="-11,29,-2">
+			<Component name="BackWing" xyz="-11,29,-2">
 				<Command val="8103"/>
 				<Command val="3000"/>
 				<Command val="6"/>
@@ -1057,7 +1057,7 @@
 				<Command val="6"/>
 				<Command val="2000"/>
 			</Component>
-			<Component name="Comp_3" xyz="0,0,0">
+			<Component name="Hover" xyz="0,0,0">
 				<Command val="3000"/>
 				<Command val="0"/>
 				<Command val="FFFF"/>
@@ -1092,7 +1092,7 @@
 			</Component>
 		</Animation>
 		<Animation name="Windup">
-			<Component name="Comp_0" xyz="-6,16,-2">
+			<Component name="Wings" xyz="-6,16,-2">
 				<Command val="8102"/>
 				<Command val="100A"/>
 				<Command val="4"/>
@@ -1100,13 +1100,13 @@
 				<Command val="4"/>
 				<Command val="2000"/>
 			</Component>
-			<Component name="Comp_1" xyz="0,0,0">
+			<Component name="Body" xyz="0,0,0">
 				<Command val="8102"/>
 				<Command val="1011"/>
 				<Command val="2"/>
 				<Command val="2000"/>
 			</Component>
-			<Component name="Comp_2" xyz="0,0,0">
+			<Component name="Hover" xyz="0,0,0">
 				<Command val="3000"/>
 				<Command val="0"/>
 				<Command val="0"/>
@@ -1121,7 +1121,7 @@
 			</Component>
 		</Animation>
 		<Animation name="Recoil">
-			<Component name="Comp_0" xyz="4,16,-2">
+			<Component name="Wings" xyz="4,16,-2">
 				<Command val="8102"/>
 				<Command val="1008"/>
 				<Command val="4"/>
@@ -1133,13 +1133,13 @@
 				<Command val="4"/>
 				<Command val="2000"/>
 			</Component>
-			<Component name="Comp_1" xyz="0,0,0">
+			<Component name="Body" xyz="0,0,0">
 				<Command val="8102"/>
 				<Command val="1010"/>
 				<Command val="2"/>
 				<Command val="2000"/>
 			</Component>
-			<Component name="Comp_2" xyz="0,0,0">
+			<Component name="Hover" xyz="0,0,0">
 				<Command val="3000"/>
 				<Command val="0"/>
 				<Command val="0"/>
@@ -1154,13 +1154,13 @@
 			</Component>
 		</Animation>
 		<Animation name="ShellIdle">
-			<Component name="Comp_0" xyz="0,-1,0">
+			<Component name="Body" xyz="0,-1,0">
 				<Command val="8103"/>
 				<Command val="100D"/>
 				<Command val="2"/>
 				<Command val="2000"/>
 			</Component>
-			<Component name="Comp_1" xyz="-6,27,-2">
+			<Component name="BackWing" xyz="-6,27,-2">
 				<Command val="8103"/>
 				<Command val="3001"/>
 				<Command val="FFF3"/>
@@ -1188,7 +1188,7 @@
 				<Command val="6"/>
 				<Command val="2000"/>
 			</Component>
-			<Component name="Comp_2" xyz="17,27,2">
+			<Component name="FrontWing" xyz="17,27,2">
 				<Command val="8103"/>
 				<Command val="3001"/>
 				<Command val="FFFB"/>
@@ -1216,7 +1216,7 @@
 				<Command val="6"/>
 				<Command val="2000"/>
 			</Component>
-			<Component name="Comp_3" xyz="0,0,0">
+			<Component name="Hover" xyz="0,0,0">
 				<Command val="3001"/>
 				<Command val="0"/>
 				<Command val="0"/>
@@ -1241,7 +1241,7 @@
 			</Component>
 		</Animation>
 		<Animation name="ShellEnter">
-			<Component name="Comp_0" xyz="0,0,0">
+			<Component name="Body" xyz="0,0,0">
 				<Command val="3000"/>
 				<Command val="5"/>
 				<Command val="0"/>
@@ -1286,7 +1286,7 @@
 				<Command val="2"/>
 				<Command val="2050"/>
 			</Component>
-			<Component name="Comp_1" xyz="-6,27,-2">
+			<Component name="BackWing" xyz="-6,27,-2">
 				<Command val="3000"/>
 				<Command val="0"/>
 				<Command val="FFFF"/>
@@ -1325,7 +1325,7 @@
 				<Command val="2"/>
 				<Command val="203C"/>
 			</Component>
-			<Component name="Comp_2" xyz="17,27,2">
+			<Component name="FrontWing" xyz="17,27,2">
 				<Command val="3000"/>
 				<Command val="5"/>
 				<Command val="FFFF"/>
@@ -1366,7 +1366,7 @@
 			</Component>
 		</Animation>
 		<Animation name="ShellDive">
-			<Component name="Comp_0" xyz="0,-1,0">
+			<Component name="Body" xyz="0,-1,0">
 				<Command val="4000"/>
 				<Command val="0"/>
 				<Command val="FFEC"/>
@@ -1378,7 +1378,7 @@
 				<Command val="2"/>
 				<Command val="2000"/>
 			</Component>
-			<Component name="Comp_1" xyz="-6,27,-2">
+			<Component name="BackWing" xyz="-6,27,-2">
 				<Command val="3000"/>
 				<Command val="6"/>
 				<Command val="FFF5"/>
@@ -1393,7 +1393,7 @@
 				<Command val="2"/>
 				<Command val="2000"/>
 			</Component>
-			<Component name="Comp_2" xyz="17,27,2">
+			<Component name="Front" xyz="17,27,2">
 				<Command val="3000"/>
 				<Command val="FFFD"/>
 				<Command val="FFF5"/>
@@ -1410,7 +1410,7 @@
 			</Component>
 		</Animation>
 		<Animation name="ShellHit">
-			<Component name="Comp_0" xyz="0,-1,0">
+			<Component name="Body" xyz="0,-1,0">
 				<Command val="4000"/>
 				<Command val="0"/>
 				<Command val="FFEC"/>
@@ -1422,7 +1422,7 @@
 				<Command val="2"/>
 				<Command val="2000"/>
 			</Component>
-			<Component name="Comp_1" xyz="-6,27,-2">
+			<Component name="BackWing" xyz="-6,27,-2">
 				<Command val="3000"/>
 				<Command val="E"/>
 				<Command val="FFF5"/>
@@ -1431,7 +1431,7 @@
 				<Command val="2"/>
 				<Command val="2000"/>
 			</Component>
-			<Component name="Comp_2" xyz="17,27,2">
+			<Component name="FrontWing" xyz="17,27,2">
 				<Command val="3000"/>
 				<Command val="FFFD"/>
 				<Command val="FFF5"/>
@@ -1442,7 +1442,7 @@
 			</Component>
 		</Animation>
 		<Animation name="ShellExit">
-			<Component name="Comp_0" xyz="0,0,0">
+			<Component name="Body" xyz="0,0,0">
 				<Command val="3000"/>
 				<Command val="8"/>
 				<Command val="2"/>
@@ -1487,7 +1487,7 @@
 				<Command val="2"/>
 				<Command val="2050"/>
 			</Component>
-			<Component name="Comp_1" xyz="-6,27,-2">
+			<Component name="BackWing" xyz="-6,27,-2">
 				<Command val="3000"/>
 				<Command val="FFFC"/>
 				<Command val="FFF5"/>
@@ -1532,7 +1532,7 @@
 				<Command val="2"/>
 				<Command val="2048"/>
 			</Component>
-			<Component name="Comp_2" xyz="17,27,2">
+			<Component name="FrontWing" xyz="17,27,2">
 				<Command val="3000"/>
 				<Command val="FFFB"/>
 				<Command val="FFF5"/>
@@ -1579,14 +1579,14 @@
 			</Component>
 		</Animation>
 		<Animation name="WingsStill">
-			<Component name="Comp_0" xyz="0,0,0">
+			<Component name="Wings" xyz="0,0,0">
 				<Command val="100C"/>
 				<Command val="2"/>
 				<Command val="2000"/>
 			</Component>
 		</Animation>
 		<Animation name="WingsBurn">
-			<Component name="Comp_0" xyz="0,0,0">
+			<Component name="Wings" xyz="0,0,0">
 				<Command val="1024"/>
 				<Command val="2"/>
 				<Command val="2000"/>
