@@ -2,6 +2,7 @@
 #include "online/character.h"
 #include "effects.h"
 #include "dx/debug_menu.h"
+#include "online/online.h"
 
 namespace net_00 {
 
@@ -460,6 +461,45 @@ NpcGroupList DefaultNPCs = {
     {},
 };
 
+API_CALLABLE(AwaitConnectToBridge) {
+    if (online::is_connected_to_bridge()) {
+        online::connect_to_room("paperpiracy_v1");
+        return ApiStatus_DONE2;
+    } else {
+        return ApiStatus_BLOCK;
+    }
+}
+
+API_CALLABLE(AwaitConnectToRoom) {
+    if (online::is_connected_to_room()) {
+        script->varTable[0] = 0;
+        return ApiStatus_DONE2;
+    } else if (!online::is_connected_to_bridge()) {
+        script->varTable[0] = 1;
+        return ApiStatus_DONE2;
+    } else {
+        return ApiStatus_BLOCK;
+    }
+}
+
+EvtScript EVS_Connect = {
+    Call(ShowMessageAtScreenPos, MSG_Online_SearchingForBridgeFirst, 160, 40)
+    Label(0)
+    Call(AwaitConnectToBridge)
+    Call(SwitchMessage, MSG_Online_ConnectingToRoom)
+    Call(AwaitConnectToRoom)
+    IfTrue(LVar0)
+        Call(SwitchMessage, MSG_Online_SearchingForBridgeNext)
+        Goto(0)
+    EndIf
+    Call(SwitchMessage, MSG_Online_Connected)
+    Wait(15)
+    Call(CloseMessage)
+    Call(GotoMap, Ref("mac_05"), 0)
+    Return
+    End
+};
+
 EvtScript EVS_Main = {
     Call(SetSpriteShading, SHADING_NONE)
     EVT_SETUP_CAMERA_NO_LEAD(0, 0, 0)
@@ -468,6 +508,7 @@ EvtScript EVS_Main = {
     Call(DisablePlayerInput, TRUE)
     Call(DisablePlayerPhysics, TRUE)
     Call(MakeNpcs, TRUE, Ref(DefaultNPCs))
+    Exec(EVS_Connect)
     Return
     End
 };

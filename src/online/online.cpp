@@ -1,13 +1,22 @@
 #include "common.h"
+#include "PR/os_libc.h"
 #include "dx/debug_menu.h"
 #include "online.h"
+#include "enums.h"
+#include "functions.h"
+#include "game_modes.h"
+#include "script_api/common.h"
 #include "sprite/npc/Bandit.h"
+#include "gcc/string.h"
 
 namespace online {
 
 struct Header {
     char magic[0x20];
+    u32 heartbeat; // we set to 0, gdb increments
+    char room[0x20];
     s32 me; // index of syncData that this client owns
+    s32 host; // the host's index
     bool isMySyncDataValid; // if false, GDB wont read syncData[me]
     size_t sizeof_syncData;
     volatile SyncData syncData[MAX_PEERS];
@@ -16,6 +25,9 @@ struct Header {
 // .text section is linked first, so header will be placed at the start of this segment
 [[gnu::section(".text")]] Header header = {
     "PAPERMARIO-DX ONLINE",
+    0,
+    "",
+    -1,
     -1,
     false,
     sizeof(SyncData),
@@ -110,7 +122,7 @@ void receive_data() {
             dropped:
             info.droppedPackets++;
 
-            // Prediction
+            // Player prediction
             if (npcs[i] != nullptr) {
                 npcs[i]->pos.x += info.x.velocity();
                 npcs[i]->pos.y += info.y.velocity();
@@ -126,6 +138,13 @@ void receive_data() {
 
                 npcs[i]->flags |= NPC_FLAG_DIRTY_SHADOW;
             }
+
+            // Ship prediction
+            if (sync.ship.slave == -1) {
+                sync.ship.pos.x += sync.ship.velocity.x;
+                sync.ship.pos.y += sync.ship.velocity.y;
+            }
+
             continue;
         }
 
@@ -197,7 +216,7 @@ void receive_data() {
     for (size_t i = 0; i < MAX_PEERS; i++) {
         auto& info = peerInfo[i];
 
-        if (info.is_connected()) {
+        if (header.syncData[i].frameCounter != 0 && info.is_connected()) {
             info.connectionTime++;
         } else {
             if (npcs[i] != nullptr) {
@@ -214,8 +233,52 @@ void receive_data() {
     }
 }
 
+s32 timeSinceHeartbeat = 0xFFFF;
+
+static volatile SyncData::Host* host() {
+    if (header.host < 0) return nullptr;
+    return &header.syncData[header.host].host;
+}
+
+static bool i_am_host() {
+    if (header.me < 0 || header.host < 0) return false;
+    return header.me == header.host;
+}
+
 EXTERN_C void online_begin_step_game_loop() {
     receive_data();
+
+    // Check heartbeat (bridge should write 1)
+    if (header.heartbeat == 0) {
+        // bridge is dead?
+        if (timeSinceHeartbeat < 0xFFFF) {
+            timeSinceHeartbeat++;
+        }
+    } else {
+        timeSinceHeartbeat = 0;
+        header.heartbeat = 0;
+    }
+
+    // If connection lost, go to net_00
+    if (!is_connected_to_room() && get_game_mode() == GAME_MODE_WORLD) { // TODO: do what in battle?
+        s16 areaID;
+        s16 mapID;
+        get_map_IDs_by_name_checked("net_00", &areaID, &mapID);
+        if (gGameStatus.areaID != areaID || gGameStatus.mapID != mapID) {
+            gGameStatusPtr->areaID = areaID;
+            gGameStatusPtr->mapID = mapID;
+            gGameStatusPtr->entryID = 0;
+            set_map_transition_effect(TRANSITION_STANDARD);
+            set_game_mode(GAME_MODE_CHANGE_MAP);
+
+            // Clear all data
+            bzero((void*) &header.syncData, sizeof(header.syncData));
+            bzero((void*) &peerInfo, sizeof(peerInfo));
+            header.me = -1;
+            header.host = -1;
+            header.room[0] = '\0';
+        }
+    }
 }
 
 // at end of game loop, update our sync data
@@ -225,11 +288,23 @@ EXTERN_C void online_end_step_game_loop() {
         return;
     }
 
+    bool first = sync->frameCounter == 0;
+
     sync->frameCounter = gGameStatus.frameCounter;
     sync->player = { gPlayerStatus.pos.x, gPlayerStatus.pos.y, gPlayerStatus.pos.z, gPlayerStatus.curYaw };
     sync->area = gGameStatus.areaID;
     sync->map = gGameStatus.mapID;
     sync->anim = gPlayerStatus.trueAnimation;
+    sync->ship.slave = -1;
+
+    if (i_am_host()) {
+        if (first) {
+            sync->host.seachartSeed = rand_int(0x7FFFFFFF);
+        }
+        sync->host.windDirection = 0.0f; // TODO: randomly change at random intervals
+    } else if (auto* h = host()) {
+        bcopy(&sync->host, (void*)h, sizeof(*h));
+    }
 
     end_writing_my_sync_data(sync);
 }
@@ -240,19 +315,19 @@ EXTERN_C void online_on_clear_npcs() {
     }
 }
 
-bool is_connected_to_gateway() {
-    return true; // TODO: add some kind of check to see if gdb is connected
+bool is_connected_to_bridge() {
+    return timeSinceHeartbeat < 60;
 }
 
-bool is_connected_to_server() {
-    // TODO: make this check for room, not peers
-    for (size_t i = 0; i < MAX_PEERS; i++) {
-        if (i == (size_t)header.me) continue;
-        if (peerInfo[i].is_connected()) {
-            return true;
-        }
-    }
-    return false;
+bool is_connected_to_room() {
+    return is_connected_to_bridge() && header.host >= 0;
+}
+
+void connect_to_room(const char* room) {
+    ASSERT(is_connected_to_bridge());
+    ASSERT(!is_connected_to_room());
+
+    strcpy(header.room, room);
 }
 
 }; // namespace online

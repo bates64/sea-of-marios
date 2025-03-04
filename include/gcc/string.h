@@ -11,6 +11,10 @@ typedef unsigned size_t;
 
 #include "memory.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 char *stpcpy(char *,const char *);
 char *strcat(char *,const char *);
 char *strchr(const char *,int);
@@ -38,5 +42,9 @@ char *strupr(char *);
 
 #define strcmpi(s1,s2)		stricmp(s1,s2)
 #define strncmpi(s1,s2,n)	strnicmp(s1,s2,n)
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

@@ -39,10 +39,13 @@ async fn handle_client<T: Client>(mut client: T, rx: &mut Receiver<Command>, net
     // Read online::comms::header
     let base = 0x80700000;
     let magic = client.read_cstr(base).await?;
-    let ptr_me = base + 0x20;
-    let ptr_is_my_sync_data_valid = base + 0x20 + 4;
-    let sizeof_sync_data = client.read_u32(base + 0x20 + 4 * 2).await?;
-    let ptr_sync_data = base + 0x20 + 4 * 3;
+    let ptr_heartbeat = base + 0x20;
+    let ptr_room = base + 0x20 + 4 * 1;
+    let ptr_me = base + 0x40 + 4 * 1;
+    let ptr_host = base + 0x40 + 4 * 2;
+    let ptr_is_my_sync_data_valid = base + 0x40 + 4 * 3;
+    let sizeof_sync_data = client.read_u32(base + 0x40 + 4 * 4).await?;
+    let ptr_sync_data = base + 0x40 + 4 * 5;
     debug!("online::comms::header::magic = {:?}", magic);
     debug!("sizeof(SyncData) = {}", sizeof_sync_data);
 
@@ -54,9 +57,13 @@ async fn handle_client<T: Client>(mut client: T, rx: &mut Receiver<Command>, net
 
     info!("connection with game established");
     let _ = gui.send(gui::Command::GdbConnected).await;
+
     let _ = net.send(net::Command::Connect { room: "".to_string() }).await; // TODO: do so only when game asks
 
+    let mut has_requested_room = false;
+    let mut frames_since_heartbeat = 0;
     let mut me = -1;
+    let mut host = -1;
 
     // Every frame, exchange messages with the game
     let mut interval = tokio::time::interval(frame_duration);
@@ -78,13 +85,41 @@ async fn handle_client<T: Client>(mut client: T, rx: &mut Receiver<Command>, net
             }
         }
 
-        // TODO: read some keepalive address to see if the game has crashed, if so, disconnect
+        // Check heartbeat (game should write 0)
+        let heartbeat = client.read_u32(ptr_heartbeat).await?;
+        if heartbeat == 1 {
+            // game is dead?
+            frames_since_heartbeat += 1;
+        } else {
+            frames_since_heartbeat = 0;
+
+            // Write 1 to heartbeat so game knows we're alive
+            client.write_u32(ptr_heartbeat, 1).await?;
+        }
+
+        // If the game is dead, we should disconnect
+        if frames_since_heartbeat >= 60 {
+            warn!("game is dead");
+            break;
+        }
+
+        // Request room if asked to
+        if !has_requested_room {
+            let room = client.read_cstr(ptr_room).await?.to_string_lossy().to_string();
+            if !room.is_empty() {
+                info!("requesting room {}", room);
+                has_requested_room = true;
+                let _ = net.send(net::Command::Connect { room }).await;
+            }
+        }
 
         loop {
             match rx.try_recv() {
-                Ok(Command::SetMe(new_me)) => {
+                Ok(Command::SetMe(new_me, new_host)) => {
                     me = new_me;
+                    host = new_host;
                     client.write_i32(ptr_me, new_me).await?;
+                    client.write_i32(ptr_host, new_host).await?;
                 }
                 Ok(Command::SyncData(index, data)) => {
                     if data.len() != sizeof_sync_data as usize {
@@ -99,6 +134,9 @@ async fn handle_client<T: Client>(mut client: T, rx: &mut Receiver<Command>, net
             }
         }
     }
+
+    let _ = net.send(net::Command::Disconnect).await;
+    Ok(())
 }
 
 #[derive(Debug)]
@@ -106,8 +144,8 @@ pub enum Command {
     ConnectGdb(String),
     ConnectProject64,
 
-    /// Set Header::me
-    SetMe(i32),
+    /// Set Header::me and Header::host
+    SetMe(i32, i32),
 
     /// Set Header::syncData[peer]
     SyncData(u8, Vec<u8>),

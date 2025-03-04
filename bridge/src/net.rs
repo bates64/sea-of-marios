@@ -211,6 +211,7 @@ async fn connect(room: &str, rx: &mut Receiver<Command>, gdb: &mut Sender<gdb::C
 
     let mut registry = PlayerRegistry::initial_connect(&mut socket).await;
     let mut known_me = -1;
+    let mut known_host = -1;
 
     'main: loop {
         registry.update_peers(&mut socket);
@@ -218,9 +219,11 @@ async fn connect(room: &str, rx: &mut Receiver<Command>, gdb: &mut Sender<gdb::C
 
         // Let game know our player index
         let me = registry.find(my_id).map(|idx| idx as i32).unwrap_or(-1);
-        if me != known_me {
+        let host = registry.find(registry.host).map(|idx| idx as i32).unwrap_or(-1);
+        if me != known_me || host != known_host {
             known_me = me;
-            let _ = gdb.send(gdb::Command::SetMe(me)).await;
+            known_host = host;
+            let _ = gdb.send(gdb::Command::SetMe(me, host)).await;
             info!("I am player {me}");
         }
 
@@ -275,7 +278,7 @@ async fn connect(room: &str, rx: &mut Receiver<Command>, gdb: &mut Sender<gdb::C
         }
     }
 
-    let _ = gdb.send(gdb::Command::SetMe(-1)).await; // TODO: use error codes for room full, clean disconnect, network error, etc.
+    let _ = gdb.send(gdb::Command::SetMe(-1, -1)).await; // TODO: use error codes for room full, clean disconnect, network error, etc.
 
     info!("connection closed");
 }

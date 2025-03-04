@@ -4,7 +4,7 @@
 namespace mac_06 {
 
 API_CALLABLE(AwaitGateway) {
-    if (online::is_connected_to_gateway()) {
+    if (online::is_connected_to_bridge()) {
         return ApiStatus_DONE2;
     } else {
         return ApiStatus_BLOCK;
@@ -12,7 +12,7 @@ API_CALLABLE(AwaitGateway) {
 }
 
 API_CALLABLE(AwaitServer) {
-    if (online::is_connected_to_server()) {
+    if (online::is_connected_to_room()) {
         return ApiStatus_DONE2;
     } else {
         return ApiStatus_BLOCK;

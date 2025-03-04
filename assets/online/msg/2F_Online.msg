@@ -1,15 +1,23 @@
-#message:2F:(Online_SearchingForGateway)
+#message:2F:(Online_SearchingForBridgeFirst)
 {
-	Give your shipmate an extra[BR]
-	turn to attack.[End]
+	[Style inspect]
+	Searching for bridge...[BR]
+	[Yield][End]
 }
 
 
-
-#message:2F:(Online_ConnectingToServer)
+#message:2F:(Online_SearchingForBridgeNext)
 {
 	[Next]
-	Connecting to server...[BR]
+	Searching for bridge...[BR]
+	[Yield][End]
+}
+
+
+#message:2F:(Online_ConnectingToRoom)
+{
+	[Next]
+	Connecting to room...[BR]
 	[Yield][End]
 }
 
