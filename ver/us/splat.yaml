@@ -9576,4 +9576,6 @@ segments:
     - [auto, palette, seachart/islands]
     - [auto, ci4, seachart/hub, 32, 32]
     - [auto, palette, seachart/hub]
+    - [auto, ci4, piracy, 200, 64]
+    - [auto, palette, piracy]
   - [0x2800000]
