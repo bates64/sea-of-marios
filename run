@@ -11,6 +11,7 @@ ROM = "ver/current/build/papermario.z64"
 EMULATOR_PATHS = [
     "cen64",
     "ares",
+    "/Applications/ares.app/Contents/MacOS/ares",
     "mupen64plus",
     "retroarch",
     "Project64",
