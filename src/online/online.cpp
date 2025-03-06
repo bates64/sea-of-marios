@@ -34,6 +34,9 @@ struct Header {
     {0},
 };
 
+// If true, don't use bridge to connect to room, provide a local room instead with just us
+bool offline = true;
+
 SyncData* begin_writing_my_sync_data() {
     if (header.me < 0) return nullptr;
 
@@ -249,7 +252,7 @@ EXTERN_C void online_begin_step_game_loop() {
     receive_data();
 
     // Check heartbeat (bridge should write 1)
-    if (header.heartbeat == 0) {
+    if (header.heartbeat == 0 && !offline) {
         // bridge is dead?
         if (timeSinceHeartbeat < 0xFFFF) {
             timeSinceHeartbeat++;
@@ -327,7 +330,12 @@ void connect_to_room(const char* room) {
     ASSERT(is_connected_to_bridge());
     ASSERT(!is_connected_to_room());
 
-    strcpy(header.room, room);
+    if (offline) {
+        header.me = 0;
+        header.host = 0;
+    } else {
+        strcpy(header.room, room);
+    }
 }
 
 }; // namespace online
