@@ -84,8 +84,6 @@ void create_target_list(Actor* actor, b32 targetHomePos) {
     // ------------------------------------------------------------------------
     // build a list of all possible targets from the appropriate actor classes
 
-    // no need to add player or partner since they are in the enemyActors array
-    /*
     // try adding the player
     if (battleStatus->curTargetListFlags & TARGET_FLAG_PLAYER) {
         targetDataList->actorID = ACTOR_PLAYER;
@@ -123,7 +121,6 @@ void create_target_list(Actor* actor, b32 targetHomePos) {
             targetDataList++;
         }
     }
-    */
 
     // try adding enemies
     for (i = 0; i < ARRAY_COUNT(battleStatus->enemyActors); i++) {
@@ -246,6 +243,17 @@ void create_target_list(Actor* actor, b32 targetHomePos) {
         targetActor = get_actor(target->actorID);
         targetPart = get_actor_part(targetActor, target->partID);
 
+        // always keep player and partner actors
+        if (target->actorID == ACTOR_PLAYER || target->actorID == ACTOR_PARTNER) {
+            continue;
+        }
+
+        // sanity check condition -- function should never reach this point with this flag set
+        if (battleStatus->curTargetListFlags & TARGET_FLAG_OVERRIDE) {
+            removeTarget = TRUE;
+            goto FIRST_PASS_REMOVE;
+        }
+
         // skip any target if the battle is dark
         if (!(gBattleStatus.flags2 & BS_FLAGS2_IGNORE_DARKNESS) && battleStatus->darknessMode > 0) {
             get_screen_overlay_params(SCREEN_LAYER_BACK, &overlayType, &overlayZoom);
@@ -288,13 +296,9 @@ void create_target_list(Actor* actor, b32 targetHomePos) {
         targetActor = get_actor(target->actorID);
         targetPart = get_actor_part(targetActor, target->partID);
 
-        if (targetActor == gBattleStatus.playerActor && !(battleStatus->curTargetListFlags & TARGET_FLAG_PLAYER)) {
-            removeTarget = TRUE;
-            goto SECOND_PASS_REMOVE;
-        }
-        if (targetActor == gBattleStatus.partnerActor && !(battleStatus->curTargetListFlags & TARGET_FLAG_PARTNER)) {
-            removeTarget = TRUE;
-            goto SECOND_PASS_REMOVE;
+        // always keep player and partner actors
+        if (target->actorID == ACTOR_PLAYER || target->actorID == ACTOR_PARTNER) {
+            continue;
         }
         if ((battleStatus->curTargetListFlags & TARGET_FLAG_JUMP_LIKE) && (targetPart->targetFlags & ACTOR_PART_TARGET_NO_JUMP)) {
             removeTarget = TRUE;
@@ -638,7 +642,7 @@ s32 btl_are_all_enemies_defeated(void) {
     for (i = 0; i < ARRAY_COUNT(battleStatus->enemyActors); i++) {
         enemy = battleStatus->enemyActors[i];
         if (enemy != NULL) {
-            if(!(enemy->flags & (ACTOR_FLAG_NO_DMG_APPLY | ACTOR_FLAG_TARGET_ONLY)) && enemy != battleStatus->playerActor && enemy != battleStatus->partnerActor) {
+            if(!(enemy->flags & (ACTOR_FLAG_NO_DMG_APPLY | ACTOR_FLAG_TARGET_ONLY))) {
                 enemiesStillAlive = TRUE;
             }
         }
@@ -1004,7 +1008,7 @@ void set_actor_anim(s32 actorID, s32 partID, AnimID animID) {
         ActorPart* part;
 
         switch (actorID & ACTOR_CLASS_MASK) {
-            /*case ACTOR_CLASS_PLAYER:
+            case ACTOR_CLASS_PLAYER:
                 part = &actor->partsTable[0];
                 if (part->curAnimation != animID) {
                     part->curAnimation = animID;
@@ -1027,7 +1031,7 @@ void set_actor_anim(s32 actorID, s32 partID, AnimID animID) {
                     spr_update_sprite(part->spriteInstanceID, animID, part->animationRate);
                     part->animNotifyValue = spr_get_notify_value(part->spriteInstanceID);
                 }
-                break;*/
+                break;
             case ACTOR_CLASS_ENEMY:
                 part = get_actor_part(actor, partID);
                 if (part->curAnimation != animID) {

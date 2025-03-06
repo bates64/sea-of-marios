@@ -1,6 +1,5 @@
 #include "common.h"
 #include "sprite/player.h"
-#include "online/character.h"
 
 extern f32 JumpedOnSwitchX;
 extern f32 JumpedOnSwitchZ;
@@ -13,6 +12,7 @@ void action_update_peach_falling(void);
 void initialize_jump(void) {
     PlayerStatus* playerStatus = &gPlayerStatus;
     CollisionStatus* collisionStatus = &gCollisionStatus;
+    AnimID anim;
 
     playerStatus->actionSubstate = JUMP_SUBSTATE_0;
     playerStatus->timeInAir = 0;
@@ -25,7 +25,14 @@ void initialize_jump(void) {
 
     phys_init_integrator_for_current_state();
 
-    suggest_player_anim_allow_backward(character_jump_anim(gGameStatus.character));
+    if (playerStatus->animFlags & PA_FLAG_8BIT_MARIO) {
+        anim = ANIM_MarioW3_8bit_Jump;
+    } else if (!(playerStatus->animFlags & (PA_FLAG_USING_WATT | PA_FLAG_WATT_IN_HANDS))) {
+        anim = ANIM_Mario1_Jump;
+    } else {
+        anim = ANIM_MarioW1_JumpWatt;
+    }
+    suggest_player_anim_allow_backward(anim);
 
     collisionStatus->lastTouchedFloor = collisionStatus->curFloor;
     collisionStatus->curFloor = NO_COLLIDER;
@@ -33,6 +40,7 @@ void initialize_jump(void) {
 
 void action_update_jump(void) {
     PlayerStatus* playerStatus = &gPlayerStatus;
+    AnimID anim;
 
     if (playerStatus->flags & PS_FLAG_ACTION_STATE_CHANGED) {
         playerStatus->flags &= ~PS_FLAG_ACTION_STATE_CHANGED;
@@ -44,7 +52,7 @@ void action_update_jump(void) {
             gCameras[CAM_DEFAULT].moveFlags |= CAMERA_MOVE_IGNORE_PLAYER_Y;
         }
 
-        if (playerStatus->actionState == ACTION_STATE_JUMP && !character_is_flying(gGameStatus.character)) {
+        if (playerStatus->actionState == ACTION_STATE_JUMP) {
             if (playerStatus->animFlags & PA_FLAG_8BIT_MARIO) {
                 sfx_play_sound_at_player(SOUND_JUMP_8BIT_MARIO, SOUND_SPACE_DEFAULT);
             } else {
@@ -53,12 +61,22 @@ void action_update_jump(void) {
         }
     }
 
+    if (playerStatus->animFlags & PA_FLAG_8BIT_MARIO) {
+        anim = ANIM_MarioW3_8bit_Jump;
+    } else if (!(playerStatus->animFlags & (PA_FLAG_USING_WATT | PA_FLAG_WATT_IN_HANDS))) {
+        anim = ANIM_Mario1_Jump;
+    } else {
+        anim = ANIM_MarioW1_JumpWatt;
+    }
+    suggest_player_anim_allow_backward(anim);
+
     playerStatus->timeInAir++;
 }
 
 void action_update_landing_on_switch(void) {
     PlayerStatus* playerStatus = &gPlayerStatus;
     CollisionStatus* collisionStatus = &gCollisionStatus;
+    AnimID anim;
 
     if (playerStatus->flags & PS_FLAG_ACTION_STATE_CHANGED) {
         Entity* entity = get_entity_by_index(collisionStatus->curFloor);
@@ -80,6 +98,13 @@ void action_update_landing_on_switch(void) {
         playerStatus->flags &= ~(PS_FLAG_ACTION_STATE_CHANGED | PS_FLAG_JUMPING | PS_FLAG_FLYING);
         playerStatus->flags |= PS_FLAG_FALLING;
 
+        if (!(playerStatus->animFlags & (PA_FLAG_USING_WATT | PA_FLAG_WATT_IN_HANDS))) {
+            anim = ANIM_Mario1_Fall;
+        } else {
+            anim = ANIM_MarioW1_FallWatt;
+        }
+
+        suggest_player_anim_allow_backward(anim);
         gCameras[CAM_DEFAULT].moveFlags |= CAMERA_MOVE_IGNORE_PLAYER_Y;
     }
 
@@ -100,6 +125,14 @@ void action_update_falling(void) {
         playerStatus->flags &= ~(PS_FLAG_ACTION_STATE_CHANGED | PS_FLAG_JUMPING | PS_FLAG_FLYING);
         playerStatus->flags |= PS_FLAG_FALLING;
 
+        if (playerStatus->animFlags & PA_FLAG_8BIT_MARIO) {
+            anim = ANIM_MarioW3_8bit_Jump;
+        } else if (!(playerStatus->animFlags & (PA_FLAG_USING_WATT | PA_FLAG_WATT_IN_HANDS))) {
+            anim = ANIM_Mario1_Fall;
+        } else {
+            anim = ANIM_MarioW1_FallWatt;
+        }
+        suggest_player_anim_allow_backward(anim);
         gCameras[CAM_DEFAULT].moveFlags |= CAMERA_MOVE_IGNORE_PLAYER_Y;
     }
     playerStatus->timeInAir++;

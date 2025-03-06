@@ -1,6 +1,5 @@
 #include "common.h"
 #include "sprite/player.h"
-#include "online/character.h"
 
 enum {
     SUBSTATE_FLYING     = 0,
@@ -20,7 +19,7 @@ void action_update_hit_fire(void) {
         playerStatus->animFlags |= PA_FLAG_INTERRUPT_USE_PARTNER;
         playerStatus->flags |= (PS_FLAG_HIT_FIRE | PS_FLAG_FLYING);
 
-        suggest_player_anim_always_forward(character_hurt_anim(gGameStatus.character));
+        suggest_player_anim_always_forward(ANIM_Mario1_TouchedFire);
 
         playerStatus->actionSubstate = SUBSTATE_FLYING;
         playerStatus->gravityIntegrator[0] = 18.3473f;

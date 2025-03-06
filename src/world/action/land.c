@@ -1,6 +1,5 @@
 #include "common.h"
 #include "sprite/player.h"
-#include "online/character.h"
 
 enum {
     SUBSTATE_INIT   = 0,
@@ -17,6 +16,7 @@ void action_update_land(void) {
     f32 inputMoveMagnitude;
     f32 inputMoveAngle;
     s32 jumpInputCheck;
+    AnimID anim;
 
     if (playerStatus->animFlags & PA_FLAG_USING_PEACH_PHYSICS) {
         action_update_peach_land();
@@ -36,11 +36,17 @@ void action_update_land(void) {
         playerStatus->landPos.x = playerStatus->pos.x;
         playerStatus->landPos.z = playerStatus->pos.z;
 
-        suggest_player_anim_allow_backward(character_idle_anim(gGameStatus.character));
-        sfx_play_sound_at_player(SOUND_PLAYER_LONG_FALL | SOUND_ID_STOP, SOUND_SPACE_DEFAULT);
-        if (!character_is_flying(gGameStatus.character)) {
-            sfx_play_sound_at_player(SOUND_LAND_SOFTLY, SOUND_SPACE_DEFAULT);
+        if (playerStatus->animFlags & PA_FLAG_8BIT_MARIO) {
+            anim = ANIM_MarioW3_8bit_Still;
+        } else if (!(playerStatus->animFlags & PA_FLAG_USING_WATT)) {
+            anim = ANIM_Mario1_Land;
+        } else {
+            anim = ANIM_MarioW1_LandWatt;
         }
+
+        suggest_player_anim_allow_backward(anim);
+        sfx_play_sound_at_player(SOUND_PLAYER_LONG_FALL | SOUND_ID_STOP, SOUND_SPACE_DEFAULT);
+        sfx_play_sound_at_player(SOUND_LAND_SOFTLY, SOUND_SPACE_DEFAULT);
 
         if (!(collisionStatus->curFloor & COLLISION_WITH_ENTITY_BIT)) {
             phys_adjust_cam_on_landing();

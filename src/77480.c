@@ -1406,8 +1406,6 @@ void player_update_sprite(void) {
 }
 
 s32 get_player_back_anim(s32 anim) {
-    return anim | SPRITE_ID_BACK_FACING;
-    /*
     s32 sprIndex = (anim >> 16) & 0xff;
     s32 outAnim = 0;
 
@@ -1452,7 +1450,6 @@ s32 get_player_back_anim(s32 anim) {
     } else {
         return anim | SPRITE_ID_BACK_FACING;
     }
-    */
 }
 
 void render_player(void) {

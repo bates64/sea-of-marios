@@ -823,7 +823,7 @@ void update_enemy_shadows(void) {
 
 void update_hero_shadows(void) {
     update_nonplayer_actor_shadow(TRUE, gBattleStatus.partnerActor);
-    //update_player_actor_shadow();
+    update_player_actor_shadow();
 }
 
 void func_80255FD8(void) {

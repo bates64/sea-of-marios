@@ -182,7 +182,7 @@ void receive_data() {
                 }
 
                 NpcBlueprint bp = {
-                    .flags = 0,
+                    .flags = 0, // TODO: use player anim flag
                     .initialAnim = sync.anim,
                     .onUpdate = NULL,
                     .onRender = NULL,

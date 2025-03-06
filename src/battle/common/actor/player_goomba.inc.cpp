@@ -296,8 +296,8 @@ EvtScript EVS_TakeTurn = {
             ExecWait(EVS_Attack_Headbonk)
         CaseEq(MOVE_MULTIBONK)
             ExecWait(EVS_Attack_Multibonk)
-        CaseEq(MOVE_RALLY_WINK)
-            ExecWait(EVS_Move_RallyWink)
+        //CaseEq(MOVE_RALLY_WINK)
+        //    ExecWait(EVS_Move_RallyWink)
         CaseEq(MOVE_CHARGE)
             ExecWait(EVS_Move_Charge)
     EndSwitch

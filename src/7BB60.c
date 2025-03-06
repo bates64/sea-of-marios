@@ -2,7 +2,6 @@
 #include "world/partners.h"
 #include "sprite/player.h"
 #include "dx/debug_menu.h"
-#include "online/character.h"
 
 CollisionStatus gCollisionStatus;
 f32 JumpedOnSwitchX;
@@ -1104,10 +1103,6 @@ s8 get_current_partner_id(void) {
 }
 
 void try_player_footstep_sounds(s32 interval) {
-    if (character_is_flying(gGameStatus.character)) {
-        return;
-    }
-
     if (gGameStatusPtr->frameCounter % interval == 0) {
         s32 surfaceType = get_collider_flags(gCollisionStatus.curFloor) & COLLIDER_FLAGS_SURFACE_TYPE_MASK;
         s32 soundID, altSoundID;

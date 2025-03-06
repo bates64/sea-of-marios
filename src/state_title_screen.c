@@ -184,7 +184,7 @@ void state_init_title_screen(void) {
     clear_script_list();
     clear_worker_list();
     clear_render_tasks();
-    spr_init_sprites(-1);
+    spr_init_sprites(PLAYER_SPRITES_MARIO_WORLD);
     clear_animator_list();
     clear_entity_models();
     clear_npcs();
@@ -336,7 +336,7 @@ void state_step_title_screen(void) {
             clear_animator_list();
             clear_npcs();
             hud_element_clear_cache();
-            spr_init_sprites(-1);
+            spr_init_sprites(PLAYER_SPRITES_MARIO_WORLD);
             clear_entity_data(TRUE);
             clear_windows();
             gOverrideFlags &= ~GLOBAL_OVERRIDES_DISABLE_DRAW_FRAME;

@@ -1,7 +1,6 @@
 #include "common.h"
 #include "world/disguise.h"
 #include "sprite/player.h"
-#include "online/character.h"
 
 AnimID IdlePeachAnims[] = {
     [PEACH_BAKING_NONE]                 ANIM_Peach1_Idle,
@@ -39,6 +38,7 @@ void action_update_idle(void) {
     PlayerData* playerData = &gPlayerData;
     s32 firstFrame = FALSE;
     f32 angle, magnitude;
+    AnimID anim;
 
     if (playerStatus->animFlags & PA_FLAG_USING_PEACH_PHYSICS) {
         action_update_idle_peach();
@@ -57,7 +57,16 @@ void action_update_idle(void) {
         playerStatus->curSpeed = 0.0f;
         playerStatus->pitch = 0.0f;
 
-        suggest_player_anim_allow_backward(character_idle_anim(gGameStatus.character));
+        if (playerStatus->animFlags & PA_FLAG_8BIT_MARIO) {
+            anim = ANIM_MarioW3_8bit_Still;
+        } else if (!(playerStatus->animFlags & PA_FLAG_USING_WATT)) {
+            anim = ANIM_Mario1_Idle;
+        } else if (playerStatus->prevActionState == ACTION_STATE_IDLE) {
+            anim = ANIM_MarioW1_TakeItem;
+        } else {
+            anim = ANIM_MarioW1_CarryIdle;
+        }
+        suggest_player_anim_allow_backward(anim);
     }
 
     if (playerStatus->animFlags & PA_FLAG_RAISED_ARMS) {

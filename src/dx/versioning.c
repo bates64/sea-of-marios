@@ -74,7 +74,6 @@ void ver_deserialize_standard() {
     gGameStatus.savedPos.x = saveData->savePos.x;
     gGameStatus.savedPos.y = saveData->savePos.y;
     gGameStatus.savedPos.z = saveData->savePos.z;
-    gGameStatus.character = saveData->character;
 
     // copy saved enemy defeat flags
     for (i = 0; i < ARRAY_COUNT(gCurrentEncounter.defeatFlags[0]); i++) {

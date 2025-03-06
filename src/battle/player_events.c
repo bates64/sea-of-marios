@@ -1066,9 +1066,8 @@ EvtScript EVS_Player_Celebrate = {
         Call(SetActorYaw, ACTOR_SELF, LVar0)
         Wait(1)
     EndLoop
-    // TODO
-    //Call(ChoosePlayerCelebrationAnim)
-    //Call(SetAnimation, ACTOR_PLAYER, 0, LVar0)
+    Call(ChoosePlayerCelebrationAnim)
+    Call(SetAnimation, ACTOR_PLAYER, 0, LVar0)
     Wait(31)
     Return
     End

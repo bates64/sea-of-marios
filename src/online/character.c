@@ -29,11 +29,8 @@ static struct {
     [CHARACTER_FUZZY] = {ANIM_Fuzzy_Walk, ANIM_Fuzzy_Run, ANIM_Fuzzy_Jump, FALSE},
 };
 
-void spr_load_player_character();
-
 void change_player_character(enum PlayerCharacter character) {
     gGameStatus.character = character;
-    spr_load_player_character();
 }
 
 s32 character_idle_anim(s8 character) {
