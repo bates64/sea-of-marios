@@ -182,12 +182,12 @@ void receive_data() {
                 }
 
                 NpcBlueprint bp = {
-                    .flags = 0, // TODO: use player anim flag
+                    .flags = 0,
                     .initialAnim = sync.anim,
                     .onUpdate = NULL,
                     .onRender = NULL,
                 };
-                npcs[i] = get_npc_by_index(create_npc_with_index(&bp, NULL, FALSE, MAX_NPCS - 1 - i));
+                npcs[i] = get_npc_by_index(create_npc_with_index(&bp, NULL, TRUE, MAX_NPCS - 1 - i));
                 npcs[i]->pos = { sync.player.x, sync.player.y, sync.player.z };
 
                 // They just entered the map, discard position history
