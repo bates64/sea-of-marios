@@ -87,7 +87,7 @@ NpcData NpcData_SpearGuy[] = {
 
 NpcGroupList DefaultNPCs = {
     NPC_GROUP(NpcData_RussT),
-    NPC_GROUP((NpcData_SpearGuy), BTL_KMR_1_FORMATION_00, BTL_KMR_1_STAGE_04),
+    NPC_GROUP((NpcData_SpearGuy), BTL_KMR_1_FORMATION_00, BTL_KMR_1_STAGE_00),
     {},
 };
 
@@ -99,7 +99,9 @@ EvtScript EVS_Main = {
     // Call(DisablePlayerInput, TRUE)
     // Call(DisablePlayerPhysics, TRUE)
     Exec(EVS_SetFoliage)
+    Exec(EVS_SpawnTreasureChest)
     Call(MakeNpcs, TRUE, Ref(DefaultNPCs))
+    ExecWait(EVS_MakeEntities)
     Return
     End
 };

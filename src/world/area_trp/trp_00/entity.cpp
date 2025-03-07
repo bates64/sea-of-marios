@@ -26,7 +26,10 @@ EvtScript EVS_SpawnTreasureChest = {
         EndIf
         Wait(1)
     EndLoop
+    Call(PlaySound, SOUND_CHIME_SOLVED_PUZZLE)
+    Wait(30)
     Call((PlayBigSmokePuff), GEN_CHEST_VEC)
+    Call(PlaySoundAt, SOUND_SMOKE_BURST, SOUND_SPACE_DEFAULT, GEN_CHEST_VEC)
     Call(MakeEntity, Ref(Entity_Chest), GEN_CHEST_PARAMS, MAKE_ENTITY_END)
     Call(AssignChestFlag, GF_TRP00_Chest_PyramidStone)
     Call(AssignScript, Ref(EVS_OpenChest))
