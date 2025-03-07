@@ -66,7 +66,7 @@ extern char wMapShapeName[];
 extern char wMapBgName[];
 
 /// Zero-terminated.
-extern AreaConfig gAreas[10];
+extern AreaConfig gAreas[9];
 
 extern EvtScript EVS_NpcHitRecoil;
 extern EvtScript EVS_800936C0;
