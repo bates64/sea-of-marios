@@ -41,6 +41,16 @@
 #define GEN_HIDDEN_ITEM_BLOCK1_ITEM ITEM_NONE
 #define GEN_HIDDEN_ITEM_BLOCK1_PARAMS GEN_HIDDEN_ITEM_BLOCK1_XYZA, GEN_HIDDEN_ITEM_BLOCK1_ITEM
 
+// type: Marker:Entity:Chest
+// name: Chest
+#define GEN_CHEST_X 124
+#define GEN_CHEST_Y 0
+#define GEN_CHEST_Z 55
+#define GEN_CHEST_DIR -50
+#define GEN_CHEST_VEC 124,0,55
+#define GEN_CHEST_XYZA 124, 0, 55, -50
+#define GEN_CHEST_PARAMS GEN_CHEST_XYZA
+
 // type: Marker:NPC
 // name: DockNPC
 // anim: ANIM_RussT_Idle

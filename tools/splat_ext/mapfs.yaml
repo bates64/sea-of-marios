@@ -190,8 +190,22 @@
 - net_00_hit
 - net_01_shape
 - net_01_hit
+- prt_00_shape
+- prt_00_hit
 - trp_00_shape
 - trp_00_hit
+- trp_01_shape
+- trp_01_hit
+- grs_01_shape
+- grs_01_hit
+- dst_00_shape
+- dst_00_hit
+- dst_01_shape
+- dst_01_hit
+- dst_05_shape
+- dst_05_hit
+# - net_bt00_shape
+# - net_bt00_hit
 - mac_tex
 - tik_tex
 - kgr_tex
@@ -222,6 +236,8 @@
 - gv__tex
 - net_tex
 - trp_tex
+- grs_tex
+- dst_tex
 - kmr_bg
 - nok_bg
 - name: sbk_bg

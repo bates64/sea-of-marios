@@ -1,0 +1,22 @@
+#define MODEL_Root              0x14
+#define MODEL_Tree1             0x13
+#define MODEL_TreeLeaves1       0x12
+#define MODEL_TreeTrunk1        0x11
+#define MODEL_Cliff4            0x10
+#define MODEL_Cliff3            0xF
+#define MODEL_Cliff2            0xE
+#define MODEL_Cliff1            0xD
+#define MODEL_Rocks             0xC
+#define MODEL_CactusSpikes      0xB
+#define MODEL_Cacti             0xA
+#define MODEL_Bush1             0x9
+#define MODEL_Sea               0x8
+#define MODEL_OceanFloor        0x7
+#define MODEL_WaterSurface      0x6
+#define MODEL_Waves             0x5
+#define MODEL_Island            0x4
+#define MODEL_Dock              0x3
+#define MODEL_Floor             0x2
+#define MODEL_IslandWall2       0x1
+#define MODEL_IslandWall1       0x0
+

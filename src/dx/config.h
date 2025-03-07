@@ -29,7 +29,7 @@
 #define DX_SKIP_DEMO 1
 
 /// Map to load when starting a new game.
-#define NEW_GAME_MAP_ID "net_00"
+#define NEW_GAME_MAP_ID "trp_00"
 
 /// Entry to use when starting a new game.
 #define NEW_GAME_ENTRY_ID 0

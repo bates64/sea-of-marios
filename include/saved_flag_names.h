@@ -29,7 +29,7 @@ enum GameFlags {
     GF_Unused_EVT_19                            = GameFlag(0x019),
     GF_Unused_EVT_1A                            = GameFlag(0x01A),
     GF_Unused_EVT_1B                            = GameFlag(0x01B),
-    GF_Unused_EVT_1C                            = GameFlag(0x01C),
+    GF_TRP00_Chest_PyramidStone                 = GameFlag(0x01C),
     GF_TRP00_ItemBlock_Coin                     = GameFlag(0x01D),
     GF_KMR04_Tree3_Dolly                        = GameFlag(0x01E),
     GF_KMR02_KeptDolly                          = GameFlag(0x01F),

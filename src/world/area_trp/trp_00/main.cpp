@@ -49,12 +49,32 @@ NpcData NpcData_RussT = {
 
 #include "world/common/enemy/SpearGuy_Wander.inc.c"
 
+EvtScript EVS_NpcDefeat_SpearGuy = {
+    Call(GetBattleOutcome, LVar0)
+    Switch(LVar0)
+        CaseEq(OUTCOME_PLAYER_WON)
+            Set(MapVar(0), TRUE)
+            Call(DoNpcDefeat)
+        CaseEq(OUTCOME_PLAYER_LOST)
+        CaseEq(OUTCOME_PLAYER_FLED)
+    EndSwitch
+    Return
+    End
+};
+
+EvtScript EVS_NpcInit_SpearGuy = {
+    Call(BindNpcDefeat, NPC_SELF, Ref(EVS_NpcDefeat_SpearGuy))
+    Return
+    End
+};
+
 NpcData NpcData_SpearGuy[] = {
     {
         .id = NPC_Enemy1,
         .settings = &N(NpcSettings_SpearGuy_Wander),
         .pos = { GEN_ENEMY1_VEC },
         .flags = ENEMY_FLAG_IGNORE_ENTITY_COLLISION | ENEMY_FLAG_FLYING,
+        .init = &EVS_NpcInit_SpearGuy,
         .yaw = GEN_ENEMY1_DIR,
         .drops = SPEAR_GUY_DROPS,
         .territory = GEN_ENEMY1_TERRITORY,
@@ -67,7 +87,7 @@ NpcData NpcData_SpearGuy[] = {
 
 NpcGroupList DefaultNPCs = {
     NPC_GROUP(NpcData_RussT),
-    NPC_GROUP((NpcData_SpearGuy), BTL_JAN_FORMATION_00, BTL_JAN_STAGE_01),
+    NPC_GROUP((NpcData_SpearGuy), BTL_KMR_1_FORMATION_00, BTL_KMR_1_STAGE_04),
     {},
 };
 

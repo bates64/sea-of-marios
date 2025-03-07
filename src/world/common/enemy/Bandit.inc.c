@@ -28,7 +28,7 @@ API_CALLABLE(N(Bandit_TetherStolenCoin)) {
         script->functionTemp[2] = areaFlag;
     }
 
-    npc = script->functionTempPtr[0];
+    npc = (Npc*)script->functionTempPtr[0];
     itemEntityIndex = script->functionTemp[1];
     areaFlag = script->functionTemp[2];
 
@@ -111,9 +111,15 @@ EvtScript N(EVS_NpcDefeat_Bandit) = {
 NpcSettings N(NpcSettings_Bandit) = {
     .height = 26,
     .radius = 24,
-    .level = ACTOR_LEVEL_BANDIT,
     .ai = &N(EVS_NpcAI_Bandit),
     .onHit = &EnemyNpcHit,
     .onDefeat = &N(EVS_NpcDefeat_Bandit),
+    .level = ACTOR_LEVEL_BANDIT,
     .actionFlags = AI_ACTION_JUMP_WHEN_SEE_PLAYER | AI_ACTION_04,
+};
+
+NpcSettings N(NpcSettings_Bandit_Stationary) = {
+    .height = 26,
+    .radius = 24,
+    .level = ACTOR_LEVEL_BANDIT,
 };

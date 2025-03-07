@@ -22,8 +22,8 @@ EvtScript N(EVS_NpcAI_Goomba_Wander) = {
 NpcSettings N(NpcSettings_Goomba_Wander) = {
     .height = 20,
     .radius = 23,
-    .level = ACTOR_LEVEL_GOOMBA,
     .ai = &N(EVS_NpcAI_Goomba_Wander),
     .onHit = &EnemyNpcHit,
     .onDefeat = &EnemyNpcDefeat,
+    .level = ACTOR_LEVEL_GOOMBA,
 };

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Map desc="Beach" background="net_bg" textures="trp_tex">
 	<Editor>
-		<Camera pos="-147.679810,233.476074,402.609558" pitch="26.879988" yaw="356.643372"/>
-		<Camera pos="-120.042770,65536.000000,-105.011848"/>
-		<Camera pos="65536.000000,-77.484764,38.100845"/>
-		<Camera pos="-472.054169,242.906982,65536.000000"/>
+		<Camera pos="-333.646179,223.661789,126.224579" pitch="48.160038" yaw="350.800079"/>
+		<Camera pos="124.000000,65536.000000,55.000000"/>
+		<Camera pos="65536.000000,0.000000,55.000000"/>
+		<Camera pos="124.000000,0.000000,65536.000000"/>
 	</Editor>
 	<ModelTree>
 		<Node name="Root" id="15">
@@ -48,26 +48,27 @@
 	</ColliderTree>
 	<ZoneTree>
 		<Node name="Root" id="2">
-			<Node name="Entrance" id="0"/>
+			<Node name="Dock" id="0"/>
 			<Node name="FloorIsland" id="1"/>
 		</Node>
 	</ZoneTree>
 	<MarkerTree>
-		<Node name="Root" id="9">
+		<Node name="Root" id="A">
 			<Node name="Entries" id="0">
 				<Node name="Entry0" id="FFFFFFFF"/>
 			</Node>
-			<Node name="Entities" id="2">
+			<Node name="Entities" id="3">
 				<Node name="HiddenItemBlock1" id="1"/>
+				<Node name="Chest" id="2"/>
 			</Node>
-			<Node name="NPCs" id="4">
-				<Node name="DockNPC" id="3"/>
+			<Node name="NPCs" id="5">
+				<Node name="DockNPC" id="4"/>
 			</Node>
-			<Node name="Enemies" id="6">
-				<Node name="Enemy1" id="5"/>
+			<Node name="Enemies" id="7">
+				<Node name="Enemy1" id="6"/>
 			</Node>
-			<Node name="Tree" id="8">
-				<Node name="Tree1" id="7"/>
+			<Node name="Tree" id="9">
+				<Node name="Tree1" id="8"/>
 			</Node>
 		</Node>
 	</MarkerTree>
@@ -3305,21 +3306,29 @@
 			<Camera type="TYPE_0" flag="false" boomLength="450.000000" boomPitch="16.000000" viewPitch="-6.000000" posA="0,10,50" posB="0,10,-50" posC="10,0,10"/>
 		</Zone>
 		<Zone ver="0">
-			<MapObject name="Entrance" id="0"/>
+			<MapObject name="Dock" id="0"/>
 			<HitObject type="HIT"/>
 			<HitMesh ver="0">
 				<TriangleBatch ver="0">
 					<VertexTable>
-						<Vertex xyz="-321,1,47" uv="1792,4096" rgba="160,134,95,255"/>
-						<Vertex xyz="-242,1,47" uv="1792,0" rgba="160,134,95,255"/>
-						<Vertex xyz="-242,1,-46" uv="768,0" rgba="160,134,95,255"/>
-						<Vertex xyz="-321,1,-46" uv="768,4096" rgba="160,134,95,255"/>
-						<Vertex xyz="-321,1,47" uv="1792,4096" rgba="160,134,95,255"/>
-						<Vertex xyz="-242,1,-46" uv="768,0" rgba="160,134,95,255"/>
+						<Vertex xyz="-242,-5,-47" uv="5888,0" rgba="160,134,95,255"/>
+						<Vertex xyz="-242,5,-47" uv="5888,256" rgba="255,239,210,255"/>
+						<Vertex xyz="-242,-5,46" uv="6912,0" rgba="160,134,95,255"/>
+						<Vertex xyz="-242,5,-47" uv="5888,256" rgba="255,239,210,255"/>
+						<Vertex xyz="-242,5,46" uv="6912,256" rgba="255,239,210,255"/>
+						<Vertex xyz="-242,-5,46" uv="6912,0" rgba="160,134,95,255"/>
+						<Vertex xyz="-573,5,-46" uv="768,4096" rgba="160,134,95,255"/>
+						<Vertex xyz="-573,5,47" uv="1792,4096" rgba="160,134,95,255"/>
+						<Vertex xyz="-242,5,-46" uv="768,0" rgba="160,134,95,255"/>
+						<Vertex xyz="-573,5,47" uv="1792,4096" rgba="160,134,95,255"/>
+						<Vertex xyz="-242,5,47" uv="1792,0" rgba="160,134,95,255"/>
+						<Vertex xyz="-242,5,-46" uv="768,0" rgba="160,134,95,255"/>
 					</VertexTable>
 					<TriangleList>
 						<Triangle ijk="0,1,2"/>
 						<Triangle ijk="3,4,5"/>
+						<Triangle ijk="6,7,8"/>
+						<Triangle ijk="9,10,11"/>
 					</TriangleList>
 				</TriangleBatch>
 			</HitMesh>
@@ -3328,32 +3337,36 @@
 	</Zones>
 	<Markers>
 		<Marker ver="4" type="Root">
-			<MapObject name="Root" id="9"/>
+			<MapObject name="Root" id="A"/>
 		</Marker>
 		<Marker ver="4" type="Group">
-			<MapObject name="Tree" id="8"/>
+			<MapObject name="Tree" id="9"/>
 		</Marker>
 		<Marker ver="4" type="Position" pos="-4,0,-17" yaw="0.000000">
-			<MapObject name="Tree1" id="7"/>
+			<MapObject name="Tree1" id="8"/>
 		</Marker>
 		<Marker ver="4" type="Group">
-			<MapObject name="Enemies" id="6"/>
+			<MapObject name="Enemies" id="7"/>
 		</Marker>
 		<Marker ver="4" type="NPC" pos="124,0,55" yaw="0.000000">
-			<MapObject name="Enemy1" id="5"/>
+			<MapObject name="Enemy1" id="6"/>
 			<Movement type="Wander" data="7C,0,37,14,0,FFFF8001,0,7C,0,37,64,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0"/>
 			<Sprite animation="ANIM_SpearGuy_Anim03"/>
 		</Marker>
 		<Marker ver="4" type="Group">
-			<MapObject name="NPCs" id="4"/>
+			<MapObject name="NPCs" id="5"/>
 		</Marker>
 		<Marker ver="4" type="NPC" pos="-450,0,0" yaw="0.000000">
-			<MapObject name="DockNPC" id="3"/>
+			<MapObject name="DockNPC" id="4"/>
 			<Movement type="Stationary" data="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0"/>
 			<Sprite animation="ANIM_RussT_Idle"/>
 		</Marker>
 		<Marker ver="4" type="Group">
-			<MapObject name="Entities" id="2"/>
+			<MapObject name="Entities" id="3"/>
+		</Marker>
+		<Marker ver="4" type="Entity" pos="124,0,55" yaw="-50.000000">
+			<MapObject name="Chest" id="2"/>
+			<Entity type="Chest"/>
 		</Marker>
 		<Marker ver="4" type="Entity" pos="-120,95,-90" yaw="0.000000">
 			<MapObject name="HiddenItemBlock1" id="1"/>
