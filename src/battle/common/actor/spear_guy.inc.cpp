@@ -39,12 +39,12 @@ enum ActorVars {
     AVAR_Generation         = 1,
 };
 
-enum ActorParams {
-    DMG_STAB        = 3,
-    DMG_THROW       = 3,
-    DMG_TACKLE      = 2,
-    DMG_VAULT       = 3,
-};
+// Actor Stats
+constexpr s32 hp = 7;
+constexpr s32 dmgStab = 3;
+constexpr s32 dmgThrow = 3;
+constexpr s32 dmgTackle = 2;
+constexpr s32 dmgVault = 3;
 
 s32 SpearForwardAnims[] = {
     STATUS_KEY_NORMAL,    ANIM_SpearGuy_Anim04,
@@ -572,7 +572,7 @@ EvtScript EVS_Attack_SpearStab = {
     Wait(5)
     Wait(2)
     Call(SetGoalToTarget, ACTOR_SELF)
-    Call(EnemyDamageTarget, ACTOR_SELF, LVar0, DAMAGE_TYPE_NO_CONTACT, 0, 0, DMG_STAB, BS_FLAGS1_TRIGGER_EVENTS)
+    Call(EnemyDamageTarget, ACTOR_SELF, LVar0, DAMAGE_TYPE_NO_CONTACT, 0, 0, dmgStab, BS_FLAGS1_TRIGGER_EVENTS)
     Switch(LVar0)
         CaseOrEq(HIT_RESULT_HIT)
         CaseOrEq(HIT_RESULT_NO_DAMAGE)
@@ -912,7 +912,7 @@ EvtScript EVS_Attack_ThrowSpear = {
     Call(JumpPartTo, ACTOR_SELF, PRT_SPEAR, LVar0, LVar1, LVar2, 20, TRUE)
     Wait(2)
     Call(SetGoalToTarget, ACTOR_SELF)
-    Call(EnemyDamageTarget, ACTOR_SELF, LVar0, DAMAGE_TYPE_NO_CONTACT, 0, 0, DMG_THROW, BS_FLAGS1_TRIGGER_EVENTS)
+    Call(EnemyDamageTarget, ACTOR_SELF, LVar0, DAMAGE_TYPE_NO_CONTACT, 0, 0, dmgThrow, BS_FLAGS1_TRIGGER_EVENTS)
     Wait(3)
     Call(SetPartFlagBits, ACTOR_SELF, PRT_SPEAR, ACTOR_PART_FLAG_INVISIBLE, TRUE)
     Wait(20)
@@ -1313,7 +1313,7 @@ EvtScript EVS_Attack_Tackle = {
     Call(SetAnimation, ACTOR_SELF, PRT_SHY_GUY, ANIM_ShyGuy_Red_Anim05)
     Wait(2)
     Call(SetGoalToTarget, ACTOR_SELF)
-    Call(EnemyDamageTarget, ACTOR_SELF, LVar0, 0, 0, 0, DMG_TACKLE, BS_FLAGS1_TRIGGER_EVENTS)
+    Call(EnemyDamageTarget, ACTOR_SELF, LVar0, 0, 0, 0, dmgTackle, BS_FLAGS1_TRIGGER_EVENTS)
     Call(ResetAllActorSounds, ACTOR_SELF)
     Call(UseBattleCamPreset, BTL_CAM_DEFAULT)
     Call(MoveBattleCamOver, 15)
@@ -1417,7 +1417,7 @@ EvtScript EVS_Attack_Vault = {
     Call(SetGoalToTarget, ACTOR_SELF)
     Call(JumpToGoal, ACTOR_SELF, 18, FALSE, TRUE, FALSE)
     Wait(2)
-    Call(EnemyDamageTarget, ACTOR_SELF, LVar0, 0, 0, 0, DMG_VAULT, BS_FLAGS1_TRIGGER_EVENTS)
+    Call(EnemyDamageTarget, ACTOR_SELF, LVar0, 0, 0, 0, dmgVault, BS_FLAGS1_TRIGGER_EVENTS)
     Switch(LVar0)
         CaseOrEq(HIT_RESULT_HIT)
         CaseOrEq(HIT_RESULT_NO_DAMAGE)
@@ -1509,7 +1509,7 @@ EvtScript EVS_ShyGuy_TakeTurn = {
 
 ActorBlueprint SpearGuy = {
     .flags = 0,
-    .maxHP = 7,
+    .maxHP = spear_guy::hp,
     .type = ACTOR_TYPE_SPEAR_GUY,
     .level = ACTOR_LEVEL_SPEAR_GUY,
     .partCount = ARRAY_COUNT(spear_guy::ActorParts),

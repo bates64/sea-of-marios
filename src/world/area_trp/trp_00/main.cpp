@@ -87,7 +87,7 @@ NpcData NpcData_SpearGuy[] = {
 
 NpcGroupList DefaultNPCs = {
     NPC_GROUP(NpcData_RussT),
-    NPC_GROUP((NpcData_SpearGuy), BTL_KMR_1_FORMATION_00, BTL_KMR_1_STAGE_00),
+    NPC_GROUP((NpcData_SpearGuy), BTL_KMR_1_FORMATION_01, BTL_KMR_1_STAGE_00),
     {},
 };
 
