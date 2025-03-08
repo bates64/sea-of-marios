@@ -75,6 +75,9 @@ void ver_deserialize_standard() {
     gGameStatus.savedPos.y = saveData->savePos.y;
     gGameStatus.savedPos.z = saveData->savePos.z;
 
+    // always load to net_00 regardless of what the save file says
+    get_map_IDs_by_name_checked("net_00", &gGameStatus.areaID, &gGameStatus.mapID);
+
     // copy saved enemy defeat flags
     for (i = 0; i < ARRAY_COUNT(gCurrentEncounter.defeatFlags[0]); i++) {
         for (j = 0; j < ARRAY_COUNT(gCurrentEncounter.defeatFlags); j++) {
