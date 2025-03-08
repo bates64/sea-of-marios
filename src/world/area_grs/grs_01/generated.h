@@ -176,3 +176,91 @@
 #define GEN_CHEST_XYZA -155, -139, 539, 10
 #define GEN_CHEST_PARAMS GEN_CHEST_XYZA
 
+// type: Marker:Position
+// name: Tree1
+#define GEN_TREE1_X -261
+#define GEN_TREE1_Y 0
+#define GEN_TREE1_Z -338
+#define GEN_TREE1_DIR 0
+#define GEN_TREE1_VEC -261,0,-338
+
+// type: Marker:Position
+// name: Tree2
+#define GEN_TREE2_X 62
+#define GEN_TREE2_Y 0
+#define GEN_TREE2_Z -156
+#define GEN_TREE2_DIR 0
+#define GEN_TREE2_VEC 62,0,-156
+
+// type: Marker:Position
+// name: Tree3
+#define GEN_TREE3_X 679
+#define GEN_TREE3_Y -139
+#define GEN_TREE3_Z 20
+#define GEN_TREE3_DIR 0
+#define GEN_TREE3_VEC 679,-139,20
+
+// type: Marker:Position
+// name: Bush1
+#define GEN_BUSH1_X -545
+#define GEN_BUSH1_Y 0
+#define GEN_BUSH1_Z 252
+#define GEN_BUSH1_DIR 0
+#define GEN_BUSH1_VEC -545,0,252
+
+// type: Marker:Position
+// name: Bush2
+#define GEN_BUSH2_X -294
+#define GEN_BUSH2_Y 0
+#define GEN_BUSH2_Z 433
+#define GEN_BUSH2_DIR 0
+#define GEN_BUSH2_VEC -294,0,433
+
+// type: Marker:Position
+// name: Bush3
+#define GEN_BUSH3_X -387
+#define GEN_BUSH3_Y 0
+#define GEN_BUSH3_Z -190
+#define GEN_BUSH3_DIR 0
+#define GEN_BUSH3_VEC -387,0,-190
+
+// type: Marker:Position
+// name: Bush4
+#define GEN_BUSH4_X -171
+#define GEN_BUSH4_Y 0
+#define GEN_BUSH4_Z 25
+#define GEN_BUSH4_DIR 0
+#define GEN_BUSH4_VEC -171,0,25
+
+// type: Marker:Position
+// name: Bush5
+#define GEN_BUSH5_X -47
+#define GEN_BUSH5_Y 0
+#define GEN_BUSH5_Z -289
+#define GEN_BUSH5_DIR 0
+#define GEN_BUSH5_VEC -47,0,-289
+
+// type: Marker:Position
+// name: Bush6
+#define GEN_BUSH6_X 118
+#define GEN_BUSH6_Y 0
+#define GEN_BUSH6_Z 235
+#define GEN_BUSH6_DIR 0
+#define GEN_BUSH6_VEC 118,0,235
+
+// type: Marker:Position
+// name: Bush7
+#define GEN_BUSH7_X 538
+#define GEN_BUSH7_Y -139
+#define GEN_BUSH7_Z 213
+#define GEN_BUSH7_DIR 0
+#define GEN_BUSH7_VEC 538,-139,213
+
+// type: Marker:Position
+// name: Bush8
+#define GEN_BUSH8_X 400
+#define GEN_BUSH8_Y -139
+#define GEN_BUSH8_Z 470
+#define GEN_BUSH8_DIR 0
+#define GEN_BUSH8_VEC 400,-139,470
+

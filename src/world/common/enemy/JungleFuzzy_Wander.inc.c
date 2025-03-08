@@ -25,8 +25,8 @@ EvtScript N(EVS_NpcAI_JungleFuzzy_Wander) = {
 NpcSettings N(NpcSettings_JungleFuzzy_Wander) = {
     .height = 20,
     .radius = 22,
-    .level = ACTOR_LEVEL_JUNGLE_FUZZY,
     .ai = &N(EVS_NpcAI_JungleFuzzy_Wander),
     .onHit = &EnemyNpcHit,
     .onDefeat = &EnemyNpcDefeat,
+    .level = ACTOR_LEVEL_JUNGLE_FUZZY,
 };

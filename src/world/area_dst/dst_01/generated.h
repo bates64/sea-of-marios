@@ -48,19 +48,19 @@
 // type: Marker:NPC
 // name: Bandit1
 // anim: ANIM_Bandit_Still
-#define GEN_BANDIT1_X 490
+#define GEN_BANDIT1_X 255
 #define GEN_BANDIT1_Y 0
-#define GEN_BANDIT1_Z -205
+#define GEN_BANDIT1_Z 594
 #define GEN_BANDIT1_DIR 0
-#define GEN_BANDIT1_VEC 490,0,-205
+#define GEN_BANDIT1_VEC 255,0,594
 #define GEN_BANDIT1_TERRITORY \
 { \
     .wander = { \
-        .centerPos   = { 490, 0, -205 }, \
+        .centerPos   = { 255, 0, 594 }, \
         .wanderSize  = { 100 }, \
         .moveSpeedOverride = NO_OVERRIDE_MOVEMENT_SPEED, \
         .wanderShape = SHAPE_CYLINDER, \
-        .detectPos   = { 490, 0, -205 }, \
+        .detectPos   = { 255, 0, 594 }, \
         .detectSize  = { 250 }, \
         .detectShape = SHAPE_CYLINDER, \
         .isFlying = TRUE, \
@@ -134,25 +134,25 @@
 }
 
 // type: Marker:Entity:Chest
-// name: Chest2
-#define GEN_CHEST2_X 202
-#define GEN_CHEST2_Y 0
-#define GEN_CHEST2_Z -447
-#define GEN_CHEST2_DIR 0
-#define GEN_CHEST2_VEC 202,0,-447
-#define GEN_CHEST2_XYZA 202, 0, -447, 0
-#define GEN_CHEST2_PARAMS GEN_CHEST2_XYZA
+// name: Chest
+#define GEN_CHEST_X 189
+#define GEN_CHEST_Y 0
+#define GEN_CHEST_Z -571
+#define GEN_CHEST_DIR -20
+#define GEN_CHEST_VEC 189,0,-571
+#define GEN_CHEST_XYZA 189, 0, -571, -20
+#define GEN_CHEST_PARAMS GEN_CHEST_XYZA
 
 // type: Marker:Entity:YellowBlock
-// name: Marker
-#define GEN_MARKER_X 479
-#define GEN_MARKER_Y 50
-#define GEN_MARKER_Z -360
-#define GEN_MARKER_DIR 0
-#define GEN_MARKER_VEC 479,50,-360
-#define GEN_MARKER_XYZA 479, 50, -360, 0
-#define GEN_MARKER_ITEM ITEM_NONE
-#define GEN_MARKER_PARAMS GEN_MARKER_XYZA, GEN_MARKER_ITEM
+// name: YellowBlock
+#define GEN_YELLOW_BLOCK_X 479
+#define GEN_YELLOW_BLOCK_Y 60
+#define GEN_YELLOW_BLOCK_Z -360
+#define GEN_YELLOW_BLOCK_DIR 0
+#define GEN_YELLOW_BLOCK_VEC 479,60,-360
+#define GEN_YELLOW_BLOCK_XYZA 479, 60, -360, 0
+#define GEN_YELLOW_BLOCK_ITEM ITEM_NONE
+#define GEN_YELLOW_BLOCK_PARAMS GEN_YELLOW_BLOCK_XYZA, GEN_YELLOW_BLOCK_ITEM
 
 // type: Marker:Position
 // name: Tree1

@@ -37,6 +37,42 @@ NpcData NpcData_Goomba1 = {
     .aiDetectFlags = AI_DETECT_SIGHT,
 };
 
+NpcData NpcData_Goomba2 = {
+    .id = NPC_Goomba2,
+    .settings = &N(NpcSettings_Goomba_Wander),
+    .pos = { GEN_GOOMBA2_VEC },
+    .flags = ENEMY_FLAG_IGNORE_ENTITY_COLLISION | ENEMY_FLAG_FLYING,
+    .yaw = GEN_GOOMBA2_DIR,
+    .drops = GOOMBA_DROPS,
+    .territory = GEN_GOOMBA2_TERRITORY,
+    .animations = GOOMBA_ANIMS,
+    .aiDetectFlags = AI_DETECT_SIGHT,
+};
+
+NpcData NpcData_Goomba3 = {
+    .id = NPC_Goomba3,
+    .settings = &N(NpcSettings_Goomba_Wander),
+    .pos = { GEN_GOOMBA3_VEC },
+    .flags = ENEMY_FLAG_IGNORE_ENTITY_COLLISION | ENEMY_FLAG_FLYING,
+    .yaw = GEN_GOOMBA3_DIR,
+    .drops = GOOMBA_DROPS,
+    .territory = GEN_GOOMBA3_TERRITORY,
+    .animations = GOOMBA_ANIMS,
+    .aiDetectFlags = AI_DETECT_SIGHT,
+};
+
+NpcData NpcData_Goomba4 = {
+    .id = NPC_Goomba4,
+    .settings = &N(NpcSettings_Goomba_Wander),
+    .pos = { GEN_GOOMBA4_VEC },
+    .flags = ENEMY_FLAG_IGNORE_ENTITY_COLLISION | ENEMY_FLAG_FLYING,
+    .yaw = GEN_GOOMBA4_DIR,
+    .drops = GOOMBA_DROPS,
+    .territory = GEN_GOOMBA4_TERRITORY,
+    .animations = GOOMBA_ANIMS,
+    .aiDetectFlags = AI_DETECT_SIGHT,
+};
+
 #include "world/common/enemy/KoopaTroopa_Wander.inc.c"
 
 // EvtScript EVS_NpcDefeat_SpearGuy = {
@@ -70,9 +106,25 @@ NpcData NpcData_KoopaTroopa1 = {
     .aiDetectFlags = AI_DETECT_SIGHT,
 };
 
+NpcData NpcData_KoopaTroopa2 = {
+    .id = NPC_KoopaTroopa2,
+    .settings = &N(NpcSettings_KoopaTroopa_Wander),
+    .pos = { GEN_KOOPA_TROOPA2_VEC },
+    .flags = ENEMY_FLAG_IGNORE_ENTITY_COLLISION | ENEMY_FLAG_FLYING,
+    .yaw = GEN_KOOPA_TROOPA2_DIR,
+    .drops = KOOPA_TROOPA_NOK_DROPS,
+    .territory = GEN_KOOPA_TROOPA2_TERRITORY,
+    .animations = KOOPA_TROOPA_ANIMS,
+    .aiDetectFlags = AI_DETECT_SIGHT,
+};
+
 NpcGroupList DefaultNPCs = {
-    NPC_GROUP((NpcData_Goomba1), BTL_KMR_1_FORMATION_00, BTL_KMR_1_STAGE_04),
-    NPC_GROUP((NpcData_KoopaTroopa1), BTL_KMR_1_FORMATION_00, BTL_KMR_1_STAGE_04),
+    NPC_GROUP((NpcData_Goomba1), BTL_KMR_1_FORMATION_00, BTL_KMR_1_STAGE_00),
+    NPC_GROUP((NpcData_Goomba2), BTL_KMR_1_FORMATION_00, BTL_KMR_1_STAGE_00),
+    NPC_GROUP((NpcData_Goomba3), BTL_KMR_1_FORMATION_00, BTL_KMR_1_STAGE_00),
+    NPC_GROUP((NpcData_Goomba4), BTL_KMR_1_FORMATION_00, BTL_KMR_1_STAGE_00),
+    NPC_GROUP((NpcData_KoopaTroopa1), BTL_KMR_1_FORMATION_00, BTL_KMR_1_STAGE_00),
+    NPC_GROUP((NpcData_KoopaTroopa2), BTL_KMR_1_FORMATION_00, BTL_KMR_1_STAGE_00),
     {},
 };
 
@@ -83,8 +135,8 @@ EvtScript EVS_Main = {
     Exec(EVS_TexPan)
     // Call(DisablePlayerInput, TRUE)
     // Call(DisablePlayerPhysics, TRUE)
-    // Exec(EVS_SetFoliage)
-    // Call(MakeNpcs, TRUE, Ref(DefaultNPCs))
+    Exec(EVS_SetFoliage)
+    Call(MakeNpcs, TRUE, Ref(DefaultNPCs))
     Return
     End
 };

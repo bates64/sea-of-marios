@@ -23,27 +23,78 @@ EvtScript EVS_TexPan = {
     End
 };
 
-// #include "world/common/npc/RussT.inc.c"
+#include "world/common/enemy/Pokey.inc.c"
 
-// EvtScript EVS_NpcInit_RussT = {
+NpcData NpcData_Pokey1 = {
+    .id = NPC_Pokey1,
+    .settings = &N(NpcSettings_Pokey),
+    .pos = { GEN_POKEY1_VEC },
+    .flags = ENEMY_FLAG_FLYING,
+    .yaw = GEN_POKEY1_DIR,
+    .drops = POKEY_DROPS,
+    .territory = GEN_POKEY1_TERRITORY,
+    .animations = POKEY_ANIMS,
+    .aiDetectFlags = AI_DETECT_SIGHT,
+};
 
-//     Return
-//     End
-// };
+NpcData NpcData_Pokey2 = {
+    .id = NPC_Pokey2,
+    .settings = &N(NpcSettings_Pokey),
+    .pos = { GEN_POKEY2_VEC },
+    .flags = ENEMY_FLAG_FLYING,
+    .yaw = GEN_POKEY2_DIR,
+    .drops = POKEY_DROPS,
+    .territory = GEN_POKEY2_TERRITORY,
+    .animations = POKEY_ANIMS,
+    .aiDetectFlags = AI_DETECT_SIGHT,
+};
 
-// NpcData NpcData_RussT = {
-//     .id = NPC_DockNPC,
-//     .settings = &NpcSettings_RussT,
-//     .pos = { GEN_DOCK_NPC_VEC },
-//     .flags = COMMON_PASSIVE_FLAGS,
-//     .init = &EVS_NpcInit_RussT,
-//     .yaw = GEN_DOCK_NPC_DIR,
-//     .drops = NO_DROPS,
-//     .animations = RUSS_T_ANIMS,
-// };
+#include "world/common/enemy/Bandit.inc.c"
+
+NpcData NpcData_Bandit1 = {
+    .id = NPC_Bandit1,
+    .settings = &N(NpcSettings_Bandit),
+    .pos = { GEN_BANDIT1_VEC },
+    .flags = ENEMY_FLAG_IGNORE_ENTITY_COLLISION | ENEMY_FLAG_FLYING | ENEMY_FLAG_NO_SHADOW_RAYCAST,
+    .yaw = GEN_BANDIT1_DIR,
+    .drops = BANDIT_DROPS,
+    .territory = GEN_BANDIT1_TERRITORY,
+    .animations = BANDIT_ANIMS,
+    .aiDetectFlags = AI_DETECT_SIGHT,
+};
+
+NpcData NpcData_Bandit2 = {
+    .id = NPC_Bandit2,
+    .settings = &N(NpcSettings_Bandit),
+    .pos = { GEN_BANDIT2_VEC },
+    .flags = ENEMY_FLAG_IGNORE_ENTITY_COLLISION | ENEMY_FLAG_FLYING | ENEMY_FLAG_NO_SHADOW_RAYCAST,
+    .yaw = GEN_BANDIT2_DIR,
+    .drops = BANDIT_DROPS,
+    .territory = GEN_BANDIT2_TERRITORY,
+    .animations = BANDIT_ANIMS,
+    .aiDetectFlags = AI_DETECT_SIGHT,
+};
+
+#include "world/common/enemy/Cleft.inc.c"
+
+NpcData NpcData_Cleft = {
+    .id = NPC_Cleft,
+    .settings = &N(NpcSettings_Cleft),
+    .pos = { GEN_CLEFT_VEC },
+    .flags = ENEMY_FLAG_IGNORE_ENTITY_COLLISION | ENEMY_FLAG_FLYING,
+    .yaw = GEN_CLEFT_DIR,
+    .drops = CLEFT_DROPS,
+    .territory = GEN_CLEFT_TERRITORY,
+    .animations = CLEFT_ANIMS,
+    .aiDetectFlags = AI_DETECT_SIGHT,
+};
 
 NpcGroupList DefaultNPCs = {
-    // NPC_GROUP(NpcData_RussT),
+    NPC_GROUP((NpcData_Pokey1), BTL_KMR_1_FORMATION_00, BTL_KMR_1_STAGE_00),
+    NPC_GROUP((NpcData_Pokey2), BTL_KMR_1_FORMATION_00, BTL_KMR_1_STAGE_00),
+    NPC_GROUP((NpcData_Bandit1), BTL_KMR_1_FORMATION_00, BTL_KMR_1_STAGE_00),
+    NPC_GROUP((NpcData_Bandit2), BTL_KMR_1_FORMATION_00, BTL_KMR_1_STAGE_00),
+    NPC_GROUP((NpcData_Cleft), BTL_KMR_1_FORMATION_00, BTL_KMR_1_STAGE_00),
     {},
 };
 
@@ -55,7 +106,8 @@ EvtScript EVS_Main = {
     // Call(DisablePlayerInput, TRUE)
     // Call(DisablePlayerPhysics, TRUE)
     Exec(EVS_SetFoliage)
-    // Call(MakeNpcs, TRUE, Ref(DefaultNPCs))
+    Call(MakeNpcs, TRUE, Ref(DefaultNPCs))
+    ExecWait(EVS_MakeEntities)
     Return
     End
 };

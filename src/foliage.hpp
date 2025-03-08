@@ -179,6 +179,23 @@ namespace foliage {
         }; \
     }; \
 
+#define DEFINE_PALM_TREE(name, leaf_model1, leaf_model2, trunk_model, bomb_pos, bomb_diameter) \
+    namespace name { \
+        s32 LeafModelsData[] = { leaf_model1, leaf_model2 }; \
+        FoliageModelList LeafModels = { .count = ARRAY_COUNT(LeafModelsData), .models = LeafModelsData }; \
+        s32 TrunkModelsData[] = { trunk_model }; \
+        FoliageModelList TrunkModels = { .count = ARRAY_COUNT(TrunkModelsData), .models = TrunkModelsData }; \
+        ShakeTreeConfig ShakeTree = { \
+            .leaves = &LeafModels, \
+            .trunk = &TrunkModels, \
+            .drops = NULL, \
+        }; \
+        BombTrigger BombPos = { \
+            .pos = { bomb_pos }, \
+            .diameter = bomb_diameter, \
+        }; \
+    }; \
+
 /// @param falling_leaves array of positions where leaves will fall from e.g. `{ { x, y, z }, { x, y, z } }`
 #define DEFINE_TREE_WITH_FALLING_LEAVES_WITH_DROP(name, leaf_model, trunk_model, bomb_pos, bomb_diameter, falling_leaves, pos_macro, item, spawn_mode, spawn_flag) \
     namespace name { \

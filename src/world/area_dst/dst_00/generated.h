@@ -6,7 +6,7 @@
 
 // type: EntryList
 #define GEN_ENTRY_LIST \
-    { -560.0,    0.0,    0.0,    0.0 },
+    { -541.0,    0.0,    0.0,    0.0 },
 
 // type: TexPanner
 #define GEN_TEX_PANNER_1 \
@@ -24,11 +24,11 @@
 
 // type: Marker:Entry
 // name: Entry0
-#define GEN_ENTRY0_X -560
+#define GEN_ENTRY0_X -541
 #define GEN_ENTRY0_Y 0
 #define GEN_ENTRY0_Z 0
 #define GEN_ENTRY0_DIR 0
-#define GEN_ENTRY0_VEC -560,0,0
+#define GEN_ENTRY0_VEC -541,0,0
 
 // type: Marker:NPC
 // name: DockNPC

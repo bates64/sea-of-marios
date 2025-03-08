@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Map desc="Beach" background="net_bg" textures="trp_tex">
 	<Editor>
-		<Camera pos="345.746643,182.036804,434.630493" pitch="10.000000" yaw="0.000000"/>
-		<Camera pos="350.000000,65536.000000,-163.000000"/>
-		<Camera pos="65536.000000,60.000000,-163.000000"/>
-		<Camera pos="344.223969,62.109444,65536.000000"/>
+		<Camera pos="-269.869446,107.907654,422.047974" pitch="32.639999" yaw="343.760040"/>
+		<Camera pos="426.000000,65536.000000,-58.000000"/>
+		<Camera pos="65536.000000,76.000000,-58.000000"/>
+		<Camera pos="426.000000,74.159492,65536.000000"/>
 	</Editor>
 	<ModelTree>
 		<Node name="Root" id="52">
@@ -144,12 +144,12 @@
 	</ColliderTree>
 	<ZoneTree>
 		<Node name="Root" id="2">
-			<Node name="Entrance" id="0"/>
+			<Node name="Dock" id="0"/>
 			<Node name="FloorIsland" id="1"/>
 		</Node>
 	</ZoneTree>
 	<MarkerTree>
-		<Node name="Root" id="B">
+		<Node name="Root" id="20">
 			<Node name="Entries" id="0">
 				<Node name="Entry0" id="FFFFFFFF"/>
 			</Node>
@@ -161,9 +161,31 @@
 				<Node name="SpearGuy3" id="5"/>
 			</Node>
 			<Node name="Entities" id="A">
-				<Node name="Chest1" id="7"/>
-				<Node name="Chest2" id="8"/>
-				<Node name="YellowBlock" id="9"/>
+				<Node name="YellowBlock" id="7"/>
+				<Node name="Chest1" id="8"/>
+				<Node name="Chest2" id="9"/>
+			</Node>
+			<Node name="Foliage" id="1F">
+				<Node name="Tree1" id="B"/>
+				<Node name="Tree2" id="C"/>
+				<Node name="Tree3" id="D"/>
+				<Node name="Tree4" id="E"/>
+				<Node name="Tree5" id="F"/>
+				<Node name="Tree6" id="10"/>
+				<Node name="Tree7" id="11"/>
+				<Node name="Tree8" id="12"/>
+				<Node name="Tree9" id="13"/>
+				<Node name="Tree10" id="14"/>
+				<Node name="Bush1" id="15"/>
+				<Node name="Bush2" id="16"/>
+				<Node name="Bush3" id="17"/>
+				<Node name="Bush4" id="18"/>
+				<Node name="Bush5" id="19"/>
+				<Node name="Bush6" id="1A"/>
+				<Node name="Bush7" id="1B"/>
+				<Node name="Bush8" id="1C"/>
+				<Node name="Bush9" id="1D"/>
+				<Node name="Bush10" id="1E"/>
 			</Node>
 		</Node>
 	</MarkerTree>
@@ -1314,7 +1336,7 @@
 				</DisplayList>
 			</ShapeMesh>
 			<PropertyList>
-				<Property v="5C,0,1"/>
+				<Property v="5C,0,D"/>
 				<Property v="5F,0,0"/>
 			</PropertyList>
 		</Model>
@@ -1656,7 +1678,7 @@
 				</DisplayList>
 			</ShapeMesh>
 			<PropertyList>
-				<Property v="5C,0,1"/>
+				<Property v="5C,0,D"/>
 				<Property v="5F,0,0"/>
 			</PropertyList>
 		</Model>
@@ -1682,7 +1704,7 @@
 				</DisplayList>
 			</ShapeMesh>
 			<PropertyList>
-				<Property v="5C,0,1"/>
+				<Property v="5C,0,D"/>
 				<Property v="5F,0,0"/>
 			</PropertyList>
 		</Model>
@@ -1708,7 +1730,7 @@
 				</DisplayList>
 			</ShapeMesh>
 			<PropertyList>
-				<Property v="5C,0,1"/>
+				<Property v="5C,0,D"/>
 				<Property v="5F,0,0"/>
 			</PropertyList>
 		</Model>
@@ -1734,7 +1756,7 @@
 				</DisplayList>
 			</ShapeMesh>
 			<PropertyList>
-				<Property v="5C,0,1"/>
+				<Property v="5C,0,D"/>
 				<Property v="5F,0,0"/>
 			</PropertyList>
 		</Model>
@@ -1760,7 +1782,7 @@
 				</DisplayList>
 			</ShapeMesh>
 			<PropertyList>
-				<Property v="5C,0,1"/>
+				<Property v="5C,0,D"/>
 				<Property v="5F,0,0"/>
 			</PropertyList>
 		</Model>
@@ -1786,7 +1808,7 @@
 				</DisplayList>
 			</ShapeMesh>
 			<PropertyList>
-				<Property v="5C,0,1"/>
+				<Property v="5C,0,D"/>
 				<Property v="5F,0,0"/>
 			</PropertyList>
 		</Model>
@@ -1812,7 +1834,7 @@
 				</DisplayList>
 			</ShapeMesh>
 			<PropertyList>
-				<Property v="5C,0,1"/>
+				<Property v="5C,0,D"/>
 				<Property v="5F,0,0"/>
 			</PropertyList>
 		</Model>
@@ -1838,7 +1860,7 @@
 				</DisplayList>
 			</ShapeMesh>
 			<PropertyList>
-				<Property v="5C,0,1"/>
+				<Property v="5C,0,D"/>
 				<Property v="5F,0,0"/>
 			</PropertyList>
 		</Model>
@@ -1864,7 +1886,7 @@
 				</DisplayList>
 			</ShapeMesh>
 			<PropertyList>
-				<Property v="5C,0,1"/>
+				<Property v="5C,0,D"/>
 				<Property v="5F,0,0"/>
 			</PropertyList>
 		</Model>
@@ -7993,7 +8015,7 @@
 			<HitObject type="ROOT"/>
 		</Zone>
 		<Zone ver="0">
-			<MapObject name="FloorIsland" id="1"/>
+			<MapObject name="FloorIsland" id="1" hidden="true"/>
 			<HitObject type="HIT"/>
 			<HitMesh ver="0">
 				<TriangleBatch ver="0">
@@ -8110,21 +8132,29 @@
 			<Camera type="TYPE_0" flag="false" boomLength="450.000000" boomPitch="16.000000" viewPitch="-6.000000" posA="0,10,50" posB="0,10,-50" posC="10,0,10"/>
 		</Zone>
 		<Zone ver="0">
-			<MapObject name="Entrance" id="0"/>
+			<MapObject name="Dock" id="0" hidden="true"/>
 			<HitObject type="HIT"/>
 			<HitMesh ver="0">
 				<TriangleBatch ver="0">
 					<VertexTable>
-						<Vertex xyz="-822,1,47" uv="1792,4096" rgba="160,134,95,255"/>
-						<Vertex xyz="-743,1,47" uv="1792,0" rgba="160,134,95,255"/>
-						<Vertex xyz="-743,1,-46" uv="768,0" rgba="160,134,95,255"/>
-						<Vertex xyz="-822,1,-46" uv="768,4096" rgba="160,134,95,255"/>
-						<Vertex xyz="-822,1,47" uv="1792,4096" rgba="160,134,95,255"/>
-						<Vertex xyz="-743,1,-46" uv="768,0" rgba="160,134,95,255"/>
+						<Vertex xyz="-743,0,47" uv="5888,0" rgba="160,134,95,255"/>
+						<Vertex xyz="-743,0,-46" uv="6912,0" rgba="160,134,95,255"/>
+						<Vertex xyz="-743,6,47" uv="5888,256" rgba="255,239,210,255"/>
+						<Vertex xyz="-743,6,47" uv="5888,256" rgba="255,239,210,255"/>
+						<Vertex xyz="-743,0,-46" uv="6912,0" rgba="160,134,95,255"/>
+						<Vertex xyz="-743,6,-46" uv="6912,256" rgba="255,239,210,255"/>
+						<Vertex xyz="-743,6,-46" uv="2816,0" rgba="255,239,210,255"/>
+						<Vertex xyz="-1051,6,47" uv="3840,4096" rgba="255,239,210,255"/>
+						<Vertex xyz="-743,6,47" uv="3840,0" rgba="255,239,210,255"/>
+						<Vertex xyz="-1051,6,-46" uv="2816,4096" rgba="255,239,210,255"/>
+						<Vertex xyz="-1051,6,47" uv="3840,4096" rgba="255,239,210,255"/>
+						<Vertex xyz="-743,6,-46" uv="2816,0" rgba="255,239,210,255"/>
 					</VertexTable>
 					<TriangleList>
 						<Triangle ijk="0,1,2"/>
 						<Triangle ijk="3,4,5"/>
+						<Triangle ijk="6,7,8"/>
+						<Triangle ijk="9,10,11"/>
 					</TriangleList>
 				</TriangleBatch>
 			</HitMesh>
@@ -8133,22 +8163,85 @@
 	</Zones>
 	<Markers>
 		<Marker ver="4" type="Root">
-			<MapObject name="Root" id="B"/>
+			<MapObject name="Root" id="20"/>
+		</Marker>
+		<Marker ver="4" type="Group">
+			<MapObject name="Foliage" id="1F"/>
+		</Marker>
+		<Marker ver="4" type="Position" pos="427,68,-58" yaw="0.000000">
+			<MapObject name="Bush10" id="1E"/>
+		</Marker>
+		<Marker ver="4" type="Position" pos="148,68,-197" yaw="0.000000">
+			<MapObject name="Bush9" id="1D"/>
+		</Marker>
+		<Marker ver="4" type="Position" pos="500,0,363" yaw="0.000000">
+			<MapObject name="Bush8" id="1C"/>
+		</Marker>
+		<Marker ver="4" type="Position" pos="289,0,571" yaw="0.000000">
+			<MapObject name="Bush7" id="1B"/>
+		</Marker>
+		<Marker ver="4" type="Position" pos="-29,0,1" yaw="0.000000">
+			<MapObject name="Bush6" id="1A"/>
+		</Marker>
+		<Marker ver="4" type="Position" pos="-156,0,-197" yaw="0.000000">
+			<MapObject name="Bush5" id="19"/>
+		</Marker>
+		<Marker ver="4" type="Position" pos="-399,0,547" yaw="0.000000">
+			<MapObject name="Bush4" id="18"/>
+		</Marker>
+		<Marker ver="4" type="Position" pos="-274,0,307" yaw="0.000000">
+			<MapObject name="Bush3" id="17"/>
+		</Marker>
+		<Marker ver="4" type="Position" pos="-433,0,-44" yaw="0.000000">
+			<MapObject name="Bush2" id="16"/>
+		</Marker>
+		<Marker ver="4" type="Position" pos="-596,0,123" yaw="0.000000">
+			<MapObject name="Bush1" id="15"/>
+		</Marker>
+		<Marker ver="4" type="Position" pos="-528,0,-350" yaw="0.000000">
+			<MapObject name="Tree10" id="14"/>
+		</Marker>
+		<Marker ver="4" type="Position" pos="618,0,295" yaw="0.000000">
+			<MapObject name="Tree9" id="13"/>
+		</Marker>
+		<Marker ver="4" type="Position" pos="427,0,525" yaw="0.000000">
+			<MapObject name="Tree8" id="12"/>
+		</Marker>
+		<Marker ver="4" type="Position" pos="598,68,-138" yaw="0.000000">
+			<MapObject name="Tree7" id="11"/>
+		</Marker>
+		<Marker ver="4" type="Position" pos="-108,0,-360" yaw="0.000000">
+			<MapObject name="Tree6" id="10"/>
+		</Marker>
+		<Marker ver="4" type="Position" pos="-292,0,-155" yaw="0.000000">
+			<MapObject name="Tree5" id="F"/>
+		</Marker>
+		<Marker ver="4" type="Position" pos="183,68,-363" yaw="0.000000">
+			<MapObject name="Tree4" id="E"/>
+		</Marker>
+		<Marker ver="4" type="Position" pos="-111,0,131" yaw="0.000000">
+			<MapObject name="Tree3" id="D"/>
+		</Marker>
+		<Marker ver="4" type="Position" pos="-612,0,32" yaw="0.000000">
+			<MapObject name="Tree2" id="C"/>
+		</Marker>
+		<Marker ver="4" type="Position" pos="-442,0,331" yaw="0.000000">
+			<MapObject name="Tree1" id="B"/>
 		</Marker>
 		<Marker ver="4" type="Group">
 			<MapObject name="Entities" id="A"/>
 		</Marker>
-		<Marker ver="4" type="Entity" pos="560,50,180" yaw="0.000000">
-			<MapObject name="YellowBlock" id="9"/>
-			<Entity type="YellowBlock" item="ITEM_NONE"/>
-		</Marker>
 		<Marker ver="4" type="Entity" pos="-165,0,-435" yaw="0.000000">
-			<MapObject name="Chest2" id="8"/>
+			<MapObject name="Chest2" id="9"/>
 			<Entity type="Chest"/>
 		</Marker>
 		<Marker ver="4" type="Entity" pos="365,60,-315" yaw="0.000000">
-			<MapObject name="Chest1" id="7"/>
+			<MapObject name="Chest1" id="8"/>
 			<Entity type="Chest"/>
+		</Marker>
+		<Marker ver="4" type="Entity" pos="560,60,180" yaw="0.000000">
+			<MapObject name="YellowBlock" id="7"/>
+			<Entity type="YellowBlock" item="ITEM_NONE"/>
 		</Marker>
 		<Marker ver="4" type="Group">
 			<MapObject name="NPCs" id="6"/>
@@ -8160,7 +8253,7 @@
 		</Marker>
 		<Marker ver="4" type="NPC" pos="550,0,200" yaw="0.000000">
 			<MapObject name="JungleFuzzy2" id="4"/>
-			<Movement type="Wander" data="226,0,C8,32,0,FFFF8001,0,226,0,C8,C8,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0"/>
+			<Movement type="Wander" data="226,0,C8,32,0,FFFF8001,0,226,0,C8,C8,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0"/>
 			<Sprite animation="ANIM_Fuzzy_Jungle_Still"/>
 		</Marker>
 		<Marker ver="4" type="NPC" pos="70,0,110" yaw="0.000000">
@@ -8175,7 +8268,7 @@
 		</Marker>
 		<Marker ver="4" type="NPC" pos="-550,0,290" yaw="0.000000">
 			<MapObject name="JungleFuzzy1" id="1"/>
-			<Movement type="Wander" data="FFFFFDDA,0,122,32,0,FFFF8001,0,FFFFFDDA,0,122,C8,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0"/>
+			<Movement type="Wander" data="FFFFFDDA,0,122,32,0,FFFF8001,0,FFFFFDDA,0,122,C8,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0"/>
 			<Sprite animation="ANIM_Fuzzy_Jungle_Still"/>
 		</Marker>
 		<Marker ver="4" type="Group">

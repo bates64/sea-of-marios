@@ -27,5 +27,6 @@ extern EvtScript EVS_Main;
 extern EvtScript EVS_BindExitTriggers;
 extern EvtScript EVS_TexPan;
 extern EvtScript EVS_SetFoliage;
+extern EvtScript EVS_MakeEntities;
 
 }; // namespace trp_01

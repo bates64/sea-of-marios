@@ -6,37 +6,44 @@ namespace trp_01 {
 
 #include "world/common/entity/Chest.inc.c"
 
-EvtScript EVS_OpenChest = EVT_OPEN_CHEST(ITEM_PYRAMID_STONE, GF_TRP00_Chest_PyramidStone);
+EvtScript EVS_OpenChest1 = EVT_OPEN_CHEST(ITEM_PYRAMID_STONE, GF_TRP00_Chest_PyramidStone);
+EvtScript EVS_OpenChest2 = EVT_OPEN_CHEST(ITEM_PYRAMID_STONE, GF_TRP00_Chest_PyramidStone);
 
-API_CALLABLE(PlayBigSmokePuff) {
-    Bytecode* args = script->ptrReadPos;
-    s32 x = evt_get_variable(script, *args++);
-    s32 y = evt_get_variable(script, *args++);
-    s32 z = evt_get_variable(script, *args++);
+// API_CALLABLE(PlayBigSmokePuff) {
+//     Bytecode* args = script->ptrReadPos;
+//     s32 x = evt_get_variable(script, *args++);
+//     s32 y = evt_get_variable(script, *args++);
+//     s32 z = evt_get_variable(script, *args++);
 
-    fx_big_smoke_puff(x, y, z);
+//     fx_big_smoke_puff(x, y, z);
 
-    return ApiStatus_DONE2;
-}
+//     return ApiStatus_DONE2;
+// }
 
-EvtScript EVS_SpawnTreasureChest = {
-    Loop(0)
-        IfEq(MapVar(0), TRUE)
-            BreakLoop
-        EndIf
-        Wait(1)
-    EndLoop
-    Call((PlayBigSmokePuff), GEN_CHEST1_VEC)
-    Call(MakeEntity, Ref(Entity_Chest), GEN_CHEST1_PARAMS, MAKE_ENTITY_END)
-    Call(AssignChestFlag, GF_TRP00_Chest_PyramidStone)
-    Call(AssignScript, Ref(EVS_OpenChest))
-    Return
-    End
-};
+// EvtScript EVS_SpawnTreasureChest = {
+//     Loop(0)
+//         IfEq(MapVar(0), TRUE)
+//             BreakLoop
+//         EndIf
+//         Wait(1)
+//     EndLoop
+//     Call((PlayBigSmokePuff), GEN_CHEST1_VEC)
+//     Call(MakeEntity, Ref(Entity_Chest), GEN_CHEST1_PARAMS, MAKE_ENTITY_END)
+//     Call(AssignChestFlag, GF_TRP00_Chest_PyramidStone)
+//     Call(AssignScript, Ref(EVS_OpenChest))
+//     Return
+//     End
+// };
 
 EvtScript EVS_MakeEntities = {
     Call(MakeEntity, Ref(Entity_YellowBlock), GEN_YELLOW_BLOCK_PARAMS, MAKE_ENTITY_END)
     Call(AssignBlockFlag, GF_TRP00_ItemBlock_Coin)
+    Call(MakeEntity, Ref(Entity_Chest), GEN_CHEST1_PARAMS, MAKE_ENTITY_END)
+    Call(AssignChestFlag, GF_TRP00_Chest_PyramidStone)
+    Call(AssignScript, Ref(EVS_OpenChest1))
+    Call(MakeEntity, Ref(Entity_Chest), GEN_CHEST2_PARAMS, MAKE_ENTITY_END)
+    Call(AssignChestFlag, GF_TRP00_Chest_PyramidStone)
+    Call(AssignScript, Ref(EVS_OpenChest2))
     Return
     End
 };
