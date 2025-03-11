@@ -1,5 +1,6 @@
 #include "area.hpp"
 #include "stage/kmr_bt04.hpp"
+#include "stage/net_bt00.hpp"
 
 #include "battle/common/actor/goomba_and_paragoomba.hpp"
 #include "battle/common/actor/goomba_and_paragoomba.inc.cpp"
@@ -22,11 +23,11 @@
 #include "battle/common/actor/cleft.hpp"
 #include "battle/common/actor/cleft.inc.cpp"
 
-#include "battle/common/actor/captain_goomba.hpp"
-#include "battle/common/actor/captain_goomba.inc.cpp"
+#include "battle/common/actor/captain_kuribo.hpp"
+#include "battle/common/actor/captain_kuribo.inc.cpp"
 
-#include "battle/common/actor/goom_mate.hpp"
-#include "battle/common/actor/goom_mate.inc.cpp"
+#include "battle/common/actor/red_and_blue_mate.hpp"
+#include "battle/common/actor/red_and_blue_mate.inc.cpp"
 
 #include "battle/common/actor/mecha_blooper_and_baby_blooper.hpp"
 #include "battle/common/actor/mecha_blooper_and_baby_blooper.inc.cpp"
@@ -35,7 +36,7 @@ using namespace battle::actor;
 
 namespace battle::area::kmr_part_1 {
 
-Vec3i CaptainGoombaPos = { 100, 0, 20 };
+Vec3i CaptainKuriboPos = { 100, 0, 20 };
 
 Vec3i BlooperPos = { 80, 45, -10 };
 
@@ -67,6 +68,14 @@ Formation Formation_Cleft = {
     ACTOR_BY_IDX(Cleft, BTL_POS_GROUND_B, 10),
 };
 
+Formation Formation_MechaBlooper = {
+    ACTOR_BY_POS(MechaBlooper, BlooperPos, 10),
+};
+
+Formation Formation_CaptainKuribo = {
+    ACTOR_BY_POS(CaptainKuribo, CaptainKuriboPos, 10),
+};
+
 BattleList Battles = {
     BATTLE(Formation_Goomba, ForestPath, "Goomba"),
     BATTLE(Formation_KoopaTroopa, ForestPath, "KoopaTroopa"),
@@ -75,11 +84,14 @@ BattleList Battles = {
     BATTLE(Formation_Pokey, ForestPath, "Pokey"),
     BATTLE(Formation_Bandit, ForestPath, "Bandit"),
     BATTLE(Formation_Cleft, ForestPath, "Cleft"),
+    BATTLE(Formation_MechaBlooper, ForestPath, "MechaBlooper"),
+    BATTLE(Formation_CaptainKuribo, ShipDeck, "CaptainKuribo"),
     {},
 };
 
 StageList Stages = {
     STAGE("ForestPath", ForestPath),
+    STAGE("ShipDeck", ShipDeck),
     {},
 };
 

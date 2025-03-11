@@ -204,8 +204,8 @@
 - dst_01_hit
 - dst_05_shape
 - dst_05_hit
-# - net_bt00_shape
-# - net_bt00_hit
+- net_bt00_shape
+- net_bt00_hit
 - mac_tex
 - tik_tex
 - kgr_tex

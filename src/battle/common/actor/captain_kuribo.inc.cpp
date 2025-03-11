@@ -8,7 +8,7 @@
 
 namespace battle::actor {
 
-namespace captain_goomba {
+namespace captain_kuribo {
 
 extern EvtScript EVS_Init;
 extern EvtScript EVS_Idle;
@@ -751,17 +751,17 @@ EvtScript EVS_Death = {
     End
 };
 
-}; // namespace captain_goomba
+}; // namespace captain_kuribo
 
-ActorBlueprint CaptainGoomba = {
+ActorBlueprint CaptainKuribo = {
     .flags = 0,
-    .maxHP = captain_goomba::hp,
-    .type = ACTOR_TYPE_GOOMBA_KING,
-    .level = ACTOR_LEVEL_GOOMBA_KING,
-    .partCount = ARRAY_COUNT(captain_goomba::ActorParts),
-    .partsData = captain_goomba::ActorParts,
-    .initScript = &captain_goomba::EVS_Init,
-    .statusTable = captain_goomba::StatusTable,
+    .maxHP = captain_kuribo::hp,
+    .type = ACTOR_TYPE_CAPTAIN_KURIBO,
+    .level = ACTOR_LEVEL_CAPTAIN_KURIBO,
+    .partCount = ARRAY_COUNT(captain_kuribo::ActorParts),
+    .partsData = captain_kuribo::ActorParts,
+    .initScript = &captain_kuribo::EVS_Init,
+    .statusTable = captain_kuribo::StatusTable,
     .escapeChance = 0,
     .airLiftChance = 0,
     .hurricaneChance = 0,

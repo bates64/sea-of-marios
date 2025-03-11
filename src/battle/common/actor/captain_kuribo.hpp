@@ -4,6 +4,6 @@
 
 namespace battle::actor {
 
-extern ActorBlueprint CaptainGoomba;
+extern ActorBlueprint CaptainKuribo;
 
 }; // namespace battle::actor

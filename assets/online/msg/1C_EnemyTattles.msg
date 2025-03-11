@@ -2965,6 +2965,33 @@
 	peeved.[Wait][End]
 }
 
+#message:1C:(EnemyTattle_BlueMate) {
+	[Style right]
+	This is Blue Mate.[BR]
+	[Wait][Next]
+	Max HP: 5, Attack Power: 2,[BR]
+	Defense Power: 1[BR]
+	[Wait][End]
+}
+
+#message:1C:(EnemyTattle_CaptainKuribo) {
+	[Style right]
+	This is Captain Kuribo.[BR]
+	[Wait][Next]
+	Max HP: 12, Attack Power: 4,[BR]
+	Defense Power: 0[BR]
+	[Wait][End]
+}
+
+#message:1C:(EnemyTattle_RedMate) {
+	[Style right]
+	This is Red Mate.[BR]
+	[Wait][Next]
+	Max HP: 6, Attack Power: 3,[BR]
+	Defense Power: 0[BR]
+	[Wait][End]
+}
+
 #message:1C:(EnemyTattle_MechaBlooper) {
 	[Style right]
 	This is a Mecha Blooper.[BR]

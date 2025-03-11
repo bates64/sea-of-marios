@@ -522,6 +522,18 @@
 	R Paragoomba[End]
 }
 
+#message:29:(EnemyName_BlueMate) {
+	Blue Mate[End]
+}
+
+#message:29:(EnemyName_RedMate) {
+	Red Mate[End]
+}
+
+#message:29:(EnemyName_CaptainKuribo) {
+	Captain Kuribo[End]
+}
+
 #message:29:(EnemyName_MechaBlooper) {
 	Mecha Blooper[End]
 }

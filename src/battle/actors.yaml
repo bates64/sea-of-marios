@@ -2334,6 +2334,39 @@
     stepDelay: [ 30, 30 ]
     tattleCamOffset: [ 0, 0, 0 ]
     shadowOffset: 0
+- BlueMate:
+    level: 20
+    nameMsg: MSG_EnemyName_BlueMate
+    tattleMsg: MSG_EnemyTattle_BlueMate
+    walkSound: [ SOUND_GOOMBA_BROS_STEP, SOUND_GOOMBA_BROS_STEP ]
+    flySound: [ SOUND_NONE, SOUND_NONE ]
+    jumpSound: SOUND_ACTOR_HURT
+    hurtSound: SOUND_ACTOR_HURT
+    stepDelay: [ 30, 30 ]
+    tattleCamOffset: [ 0, 4, 0 ]
+    shadowOffset: 0
+- RedMate:
+    level: 20
+    nameMsg: MSG_EnemyName_RedMate
+    tattleMsg: MSG_EnemyTattle_RedMate
+    walkSound: [ SOUND_GOOMBA_BROS_STEP, SOUND_GOOMBA_BROS_STEP ]
+    flySound: [ SOUND_NONE, SOUND_NONE ]
+    jumpSound: SOUND_ACTOR_HURT
+    hurtSound: SOUND_ACTOR_HURT
+    stepDelay: [ 30, 30 ]
+    tattleCamOffset: [ 0, 4, 0 ]
+    shadowOffset: 0
+- CaptainKuribo:
+    level: 49
+    nameMsg: MSG_EnemyName_CaptainKuribo
+    tattleMsg: MSG_EnemyTattle_CaptainKuribo
+    walkSound: [ SOUND_HEAVY_NPC_STEP_A, SOUND_HEAVY_NPC_STEP_A ]
+    flySound: [ SOUND_NONE, SOUND_NONE ]
+    jumpSound: SOUND_NONE
+    hurtSound: SOUND_ACTOR_HURT
+    stepDelay: [ 22, 30 ]
+    tattleCamOffset: [ 0, 6, 10 ]
+    shadowOffset: 0
 - MechaBlooper:
     level: 65
     nameMsg: MSG_EnemyName_MechaBlooper

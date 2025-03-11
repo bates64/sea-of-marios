@@ -4,6 +4,7 @@
 
 namespace battle::actor {
 
-extern ActorBlueprint GoomMate;
+extern ActorBlueprint RedMate;
+extern ActorBlueprint BlueMate;
 
 }; // namespace battle::actor
