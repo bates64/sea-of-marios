@@ -238,5 +238,7 @@
         <Sprite name="PlayerParatroopa"/>
         <Sprite name="PlayerBobomb"/>
         <Sprite name="MechaBlooper"/>
+        <Sprite name="CaptainKuribo"/>
+        <Sprite name="Goomates"/>        
     </Sprites>
 </Names>
