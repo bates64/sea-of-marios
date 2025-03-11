@@ -1468,9 +1468,9 @@ EvtScript EVS_Pokey_ScareAway = {
 
 ActorBlueprint Pokey = {
     .flags = 0,
+    .maxHP = pokey::hp,
     .type = ACTOR_TYPE_POKEY,
     .level = ACTOR_LEVEL_POKEY,
-    .maxHP = pokey::hp,
     .partCount = ARRAY_COUNT(pokey::ActorParts),
     .partsData = pokey::ActorParts,
     .initScript = &pokey::EVS_Init,

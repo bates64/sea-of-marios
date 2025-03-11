@@ -2334,3 +2334,14 @@
     stepDelay: [ 30, 30 ]
     tattleCamOffset: [ 0, 0, 0 ]
     shadowOffset: 0
+- MechaBlooper:
+    level: 65
+    nameMsg: MSG_EnemyName_MechaBlooper
+    tattleMsg: MSG_EnemyTattle_MechaBlooper
+    walkSound: [ SOUND_NONE, SOUND_NONE ]
+    flySound: [ SOUND_NONE, SOUND_NONE ]
+    jumpSound: SOUND_NONE
+    hurtSound: SOUND_NONE
+    stepDelay: [ 25, 25 ]
+    tattleCamOffset: [ 0, 0, 0 ]
+    shadowOffset: 0

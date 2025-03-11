@@ -28,11 +28,16 @@
 #include "battle/common/actor/goom_mate.hpp"
 #include "battle/common/actor/goom_mate.inc.cpp"
 
+#include "battle/common/actor/mecha_blooper_and_baby_blooper.hpp"
+#include "battle/common/actor/mecha_blooper_and_baby_blooper.inc.cpp"
+
 using namespace battle::actor;
 
 namespace battle::area::kmr_part_1 {
 
 Vec3i CaptainGoombaPos = { 100, 0, 20 };
+
+Vec3i BlooperPos = { 80, 45, -10 };
 
 Formation Formation_Goomba = {
     ACTOR_BY_IDX(Goomba, BTL_POS_GROUND_B, 10),

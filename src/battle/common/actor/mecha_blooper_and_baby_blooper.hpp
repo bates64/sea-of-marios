@@ -4,7 +4,7 @@
 
 namespace battle::actor {
 
-extern ActorBlueprint Bandit;
-extern ActorBlueprint Coin;
+extern ActorBlueprint MechaBlooper;
+extern ActorBlueprint BabyBlooper;
 
 }; // namespace battle::actor

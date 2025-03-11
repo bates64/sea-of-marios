@@ -3,6 +3,10 @@
 
 #include "common_structs.h"
 
+#ifdef _LANGUAGE_C_PLUS_PLUS
+extern "C" {
+#endif
+
 // args: none
 API_CALLABLE(action_command_stop_leech_init);
 
@@ -15,5 +19,9 @@ void action_command_stop_leech_free(void);
 
 // timeout duration for leech -- if the player can survive for this many frames (> 18.2 mintues) the command will end
 #define AC_LEECH_MAX_TIME 32767
+
+#ifdef _LANGUAGE_C_PLUS_PLUS
+}
+#endif
 
 #endif

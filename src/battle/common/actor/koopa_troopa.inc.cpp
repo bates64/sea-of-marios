@@ -602,9 +602,9 @@ EvtScript EVS_TakeTurn = {
 
 ActorBlueprint KoopaTroopa = {
     .flags = 0,
+    .maxHP = koopa_troopa::hp,
     .type = ACTOR_TYPE_KOOPA_TROOPA,
     .level = ACTOR_LEVEL_KOOPA_TROOPA,
-    .maxHP = koopa_troopa::hp,
     .partCount = ARRAY_COUNT(koopa_troopa::ActorParts),
     .partsData = koopa_troopa::ActorParts,
     .initScript = &koopa_troopa::EVS_Init,

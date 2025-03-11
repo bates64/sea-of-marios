@@ -3,6 +3,10 @@
 
 #include "common.h"
 
+#ifdef _LANGUAGE_C_PLUS_PLUS
+extern "C" {
+#endif
+
 typedef union ModelNodePropertyData {
     s32 s;
     f32 f;
@@ -223,5 +227,9 @@ void mdl_make_local_vertex_copy(s32 arg0, u16 treeIdx, s32);
 void play_model_animation_starting_from(s32 index, s16* animPos, s32 framesToSkip);
 
 void mdl_set_shroud_tint_params(u8 r, u8 g, u8 b, u8 a);
+
+#ifdef _LANGUAGE_C_PLUS_PLUS
+}
+#endif
 
 #endif

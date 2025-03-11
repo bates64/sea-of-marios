@@ -28,6 +28,10 @@
 #include "battle/action_cmd/three_chances.h"
 #include "battle/action_cmd/tidal_wave.h"
 
+#ifdef _LANGUAGE_C_PLUS_PLUS
+extern "C" {
+#endif
+
 // standard states for action commands
 // used by every command except three_chances and tidal_wave
 enum {
@@ -224,5 +228,9 @@ API_CALLABLE(GetActionProgress);
 API_CALLABLE(SetActionProgress);
 API_CALLABLE(GetActionResultTier);
 API_CALLABLE(SetActionResultTier);
+
+#ifdef _LANGUAGE_C_PLUS_PLUS
+}
+#endif
 
 #endif
