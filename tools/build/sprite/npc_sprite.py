@@ -65,14 +65,14 @@ def from_dir(
     true_max_components = 0
 
     if "a" in SpriteSheet.attrib:
-        max_components = int(SpriteSheet.attrib["a"])
+        max_components = int(SpriteSheet.attrib["a"], 16)
     else:
-        max_components = int(SpriteSheet.attrib[MAX_COMPONENTS_XML])
+        max_components = int(SpriteSheet.attrib[MAX_COMPONENTS_XML], 16)
 
     if "b" in SpriteSheet.attrib:
-        num_variations = int(SpriteSheet.attrib["b"])
+        num_variations = int(SpriteSheet.attrib["b"], 16)
     else:
-        num_variations = int(SpriteSheet.attrib[PALETTE_GROUPS_XML])
+        num_variations = int(SpriteSheet.attrib[PALETTE_GROUPS_XML], 16)
 
     variation_names = SpriteSheet.get("variations", default="").split(",")
 
