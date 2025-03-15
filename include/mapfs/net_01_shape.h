@@ -1,4 +1,16 @@
-#define MODEL_Root              0x26
+#define MODEL_Root              0x32
+#define MODEL_SmallShip         0x31
+#define MODEL_Windows           0x30
+#define MODEL_CannonballPile    0x2F
+#define MODEL_Cannons           0x2E
+#define MODEL_Wheel             0x2D
+#define MODEL_Grate             0x2C
+#define MODEL_Rail              0x2B
+#define MODEL_Wood              0x2A
+#define MODEL_Mast              0x29
+#define MODEL_SailLogo          0x28
+#define MODEL_Sails             0x27
+#define MODEL_MainShip          0x26
 #define MODEL_MoneyBags         0x25
 #define MODEL_ChestStar         0x24
 #define MODEL_ChestTrim         0x23

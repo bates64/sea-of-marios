@@ -15,4 +15,6 @@ enum {
     NPC_Muskular,
 };
 
+extern EvtScript EVS_Main;
+
 }; // namespace net_00

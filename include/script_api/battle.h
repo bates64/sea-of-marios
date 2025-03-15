@@ -190,6 +190,7 @@ API_CALLABLE(ShowShockEffect);
 API_CALLABLE(GetActorAttackBoost);
 API_CALLABLE(GetActorDefenseBoost);
 API_CALLABLE(BoostAttack);
+API_CALLABLE(BoostAttack2);
 API_CALLABLE(BoostDefense);
 API_CALLABLE(VanishActor);
 API_CALLABLE(ElectrifyActor);

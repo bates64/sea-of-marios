@@ -3328,6 +3328,134 @@ API_CALLABLE(BoostAttack) {
     return ApiStatus_BLOCK;
 }
 
+API_CALLABLE(BoostAttack2) {
+    Bytecode* args = script->ptrReadPos;
+    s32 actorID;
+    Actor* actor;
+    s32 flags;
+    s32 flags2;
+    f32 x1, y1, z1;
+    f32 x2, y2, z2;
+    s32 attackBoost;
+
+    if (isInitialCall) {
+        script->functionTemp[0] = 0;
+    }
+
+    if (script->functionTemp[0] == 0) {
+        actorID = evt_get_variable(script, *args++);
+        if (actorID == ACTOR_SELF) {
+            actorID = script->owner1.actorID;
+        }
+        attackBoost = evt_get_variable(script, *args++);
+        actor = get_actor(actorID);
+        script->functionTempPtr[1] = actor;
+        script->functionTemp[2] = attackBoost;
+
+        btl_cam_use_preset(BTL_CAM_ACTOR_SIMPLE);
+        btl_cam_set_zoffset(12);
+        btl_cam_target_actor(actor->actorID);
+        btl_cam_set_zoom(250);
+        btl_cam_move(10);
+        btl_cam_disable_clamp_x();
+        if (actor->flags & ACTOR_FLAG_UPSIDE_DOWN) {
+            btl_cam_set_zoffset(0);
+        }
+        ApplyingBuff = TRUE;
+        script->functionTemp[3] = 5;
+        script->functionTemp[0] = 1;
+    }
+    get_actor(script->owner1.actorID);
+    actor = script->functionTempPtr[1];
+    attackBoost = script->functionTemp[2];
+
+    flags = actor->flags;
+    x1 = actor->curPos.x + actor->headOffset.x;
+    if (flags & ACTOR_FLAG_UPSIDE_DOWN) {
+        y1 = actor->curPos.y + actor->headOffset.y - actor->size.y / 2;
+    } else if (!(flags & ACTOR_FLAG_HALF_HEIGHT)) {
+        y1 = actor->curPos.y + actor->headOffset.y + actor->size.y / 2;
+    } else {
+        y1 = actor->curPos.y + actor->headOffset.y + actor->size.y;
+    }
+    z1 = actor->curPos.z + actor->headOffset.z + 10.0f;
+
+    flags2 = actor->flags;
+    x2 = actor->curPos.x + actor->headOffset.x + actor->size.x / 2;
+    if (flags2 & ACTOR_FLAG_UPSIDE_DOWN) {
+        y2 = actor->curPos.y + actor->headOffset.y - actor->size.y;
+    } else if (!(flags2 & ACTOR_FLAG_HALF_HEIGHT)) {
+        y2 = actor->curPos.y + actor->headOffset.y + actor->size.y;
+    } else {
+        y2 = actor->curPos.y + actor->headOffset.y + actor->size.y * 2;
+    }
+    z2 = actor->curPos.z + actor->headOffset.z + 10.0f;
+
+    switch (script->functionTemp[0]) {
+        case 1:
+            if (script->functionTemp[3] == 0) {
+                fx_radial_shimmer(2, x1, y1, z1, 1.0f, 30);
+                btl_cam_use_preset_immediately(BTL_CAM_REPOSITION);
+                script->functionTemp[3] = 30;
+                script->functionTemp[0] = 2;
+            } else {
+                script->functionTemp[3]--;
+                break;
+            }
+            break;
+        case 2:
+            if (script->functionTemp[3] == 0) {
+                dispatch_event_actor(actor, EVENT_RECEIVE_BUFF);
+                btl_cam_use_preset(BTL_CAM_DEFAULT);
+                btl_cam_move(15);
+                actor->isGlowing = TRUE;
+                actor->attackBoost += attackBoost;
+                if (actor->attackBoost > 20) {
+                    actor->attackBoost = 20;
+                } else if (actor->attackBoost < -20) {
+                    actor->attackBoost = -20;
+                }
+                script->functionTemp[3] = 15;
+                script->functionTemp[0] = 3;
+            } else {
+                script->functionTemp[3]--;
+                break;
+            }
+            break;
+        case 3:
+            if (script->functionTemp[3] == 0) {
+                if (attackBoost > 0) {
+                    btl_show_variable_battle_message(BTL_MSG_ATTACK_UP, 60, attackBoost);
+                } else {
+                    // btl_show_variable_battle_message(BTL_MSG_ATTACK_DOWN, 60, -attackBoost);
+                }
+                script->functionTemp[0] = 4;
+            } else {
+                script->functionTemp[3]--;
+                break;
+            }
+            break;
+        case 4:
+            if (btl_is_popup_displayed() == 0) {
+                btl_cam_use_preset(BTL_CAM_DEFAULT);
+                script->functionTemp[3] = 10;
+                script->functionTemp[0] = 5;
+            }
+            break;
+        case 5:
+            if (script->functionTemp[3] != 0) {
+                script->functionTemp[3]--;
+                break;
+            }
+            if ((actor->handleEventScript != NULL) && does_script_exist(actor->handleEventScriptID)) {
+                break;
+            }
+            ApplyingBuff = FALSE;
+            return ApiStatus_DONE2;
+    }
+    return ApiStatus_BLOCK;
+}
+
 API_CALLABLE(BoostDefense) {
     Bytecode* args = script->ptrReadPos;
     s32 actorID;

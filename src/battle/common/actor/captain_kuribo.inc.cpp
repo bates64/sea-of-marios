@@ -1,8 +1,8 @@
 #include "battle/battle.h"
 #include "script_api/battle.h"
 #include "effects.h"
-#include "sprite/npc/GoombaKing.h"
-#include "sprite/npc/GoombaBros.h"
+#include "sprite/npc/CaptainKuribo.h"
+#include "sprite/npc/Goomates.h"
 #include "sprite/player.h"
 // #include "goomba_king_common.h"
 
@@ -17,8 +17,10 @@ extern EvtScript EVS_HandleEvent;
 extern EvtScript EVS_HandlePhase;
 extern EvtScript EVS_ShakeScreenWhileWalking;
 extern EvtScript EVS_Attack_GroundStomp;
-extern EvtScript EVS_Attack_SpinSwipe;
+extern EvtScript EVS_Attack_Stomp;
+extern EvtScript EVS_Attack_SpinKick;
 extern EvtScript EVS_Death;
+extern EvtScript EVS_ReturnHome;
 
 enum ActorPartIDs {
     PRT_MAIN        = 1,
@@ -26,6 +28,8 @@ enum ActorPartIDs {
 };
 
 enum ActorVars {
+    AVAR_TurnCount,
+    AVAR_RedDead,
     AVAR_IncreaseShaking, // when TRUE walking around causes more camera shaking
     AVAR_Scene_BeginBattle,
     AVAR_ScreenShakingScriptID,
@@ -33,8 +37,11 @@ enum ActorVars {
 
 // Actor Stats
 constexpr s32 hp = 12;
-constexpr s32 dmgSpin = 4;
-constexpr s32 dmgStomp = 5;
+constexpr s32 dmgKickWeak = 2;
+constexpr s32 dmgKick = 2;
+constexpr s32 dmgStompWeak = 1;
+constexpr s32 dmgStomp = 1;
+constexpr s32 dmgGroundStomp = 4;
 
 // enum ActorParams {
 //     DMG_SPIN        = 1,
@@ -42,56 +49,57 @@ constexpr s32 dmgStomp = 5;
 // };
 
 s32 DefaultAnims[] = {
-    STATUS_KEY_NORMAL,    ANIM_GoombaKing_Idle,
-    STATUS_KEY_STONE,     ANIM_GoombaKing_Still,
-    STATUS_KEY_SLEEP,     ANIM_GoombaKing_Sleep,
-    STATUS_KEY_POISON,    ANIM_GoombaKing_Still,
-    STATUS_KEY_STOP,      ANIM_GoombaKing_Still,
-    STATUS_KEY_STATIC,    ANIM_GoombaKing_Still,
-    STATUS_KEY_PARALYZE,  ANIM_GoombaKing_Still,
-    STATUS_KEY_DIZZY,     ANIM_GoombaKing_Dizzy,
+    STATUS_KEY_NORMAL,    ANIM_CaptainKuribo_Idle,
+    STATUS_KEY_STONE,     ANIM_CaptainKuribo_Still,
+    STATUS_KEY_SLEEP,     ANIM_CaptainKuribo_Sleep,
+    STATUS_KEY_POISON,    ANIM_CaptainKuribo_Still,
+    STATUS_KEY_STOP,      ANIM_CaptainKuribo_Still,
+    STATUS_KEY_STATIC,    ANIM_CaptainKuribo_Still,
+    STATUS_KEY_PARALYZE,  ANIM_CaptainKuribo_Still,
+    STATUS_KEY_DIZZY,     ANIM_CaptainKuribo_Dizzy,
     STATUS_END,
 };
 
 // while shuffling around during idle
 s32 ShuffleAnims[] = {
-    STATUS_KEY_NORMAL,    ANIM_GoombaKing_Run,
-    STATUS_KEY_STONE,     ANIM_GoombaKing_Still,
-    STATUS_KEY_SLEEP,     ANIM_GoombaKing_Sleep,
-    STATUS_KEY_POISON,    ANIM_GoombaKing_Still,
-    STATUS_KEY_STOP,      ANIM_GoombaKing_Still,
-    STATUS_KEY_STATIC,    ANIM_GoombaKing_Still,
-    STATUS_KEY_PARALYZE,  ANIM_GoombaKing_Still,
-    STATUS_KEY_DIZZY,     ANIM_GoombaKing_Dizzy,
+    STATUS_KEY_NORMAL,    ANIM_CaptainKuribo_Run,
+    STATUS_KEY_STONE,     ANIM_CaptainKuribo_Still,
+    STATUS_KEY_SLEEP,     ANIM_CaptainKuribo_Sleep,
+    STATUS_KEY_POISON,    ANIM_CaptainKuribo_Still,
+    STATUS_KEY_STOP,      ANIM_CaptainKuribo_Still,
+    STATUS_KEY_STATIC,    ANIM_CaptainKuribo_Still,
+    STATUS_KEY_PARALYZE,  ANIM_CaptainKuribo_Still,
+    STATUS_KEY_DIZZY,     ANIM_CaptainKuribo_Dizzy,
     STATUS_END,
 };
 
 s32 DangerAnims[] = {
-    STATUS_KEY_NORMAL,    ANIM_GoombaKing_Dizzy,
-    STATUS_KEY_STONE,     ANIM_GoombaKing_Still,
-    STATUS_KEY_SLEEP,     ANIM_GoombaKing_Sleep,
-    STATUS_KEY_POISON,    ANIM_GoombaKing_Still,
-    STATUS_KEY_STOP,      ANIM_GoombaKing_Still,
-    STATUS_KEY_STATIC,    ANIM_GoombaKing_Still,
-    STATUS_KEY_PARALYZE,  ANIM_GoombaKing_Still,
-    STATUS_KEY_DIZZY,     ANIM_GoombaKing_Dizzy,
+    STATUS_KEY_NORMAL,    ANIM_CaptainKuribo_Dizzy,
+    STATUS_KEY_STONE,     ANIM_CaptainKuribo_Still,
+    STATUS_KEY_SLEEP,     ANIM_CaptainKuribo_Sleep,
+    STATUS_KEY_POISON,    ANIM_CaptainKuribo_Still,
+    STATUS_KEY_STOP,      ANIM_CaptainKuribo_Still,
+    STATUS_KEY_STATIC,    ANIM_CaptainKuribo_Still,
+    STATUS_KEY_PARALYZE,  ANIM_CaptainKuribo_Still,
+    STATUS_KEY_DIZZY,     ANIM_CaptainKuribo_Dizzy,
     STATUS_END,
 };
 
 s32 FuryAnims[] = {
-    STATUS_KEY_NORMAL,    ANIM_GoombaKing_Angry,
-    STATUS_KEY_STONE,     ANIM_GoombaKing_Still,
-    STATUS_KEY_SLEEP,     ANIM_GoombaKing_Sleep,
-    STATUS_KEY_POISON,    ANIM_GoombaKing_Still,
-    STATUS_KEY_STOP,      ANIM_GoombaKing_Still,
-    STATUS_KEY_STATIC,    ANIM_GoombaKing_Still,
-    STATUS_KEY_PARALYZE,  ANIM_GoombaKing_Still,
-    STATUS_KEY_DIZZY,     ANIM_GoombaKing_Dizzy,
+    STATUS_KEY_NORMAL,    ANIM_CaptainKuribo_Angry,
+    STATUS_KEY_STONE,     ANIM_CaptainKuribo_Still,
+    STATUS_KEY_SLEEP,     ANIM_CaptainKuribo_Sleep,
+    STATUS_KEY_POISON,    ANIM_CaptainKuribo_Still,
+    STATUS_KEY_STOP,      ANIM_CaptainKuribo_Still,
+    STATUS_KEY_STATIC,    ANIM_CaptainKuribo_Still,
+    STATUS_KEY_PARALYZE,  ANIM_CaptainKuribo_Still,
+    STATUS_KEY_DIZZY,     ANIM_CaptainKuribo_Dizzy,
     STATUS_END,
 };
 
 s32 DefenseTable[] = {
-    ELEMENT_NORMAL,   0,
+    ELEMENT_NORMAL,   -2,
+    ELEMENT_FIRE,     -3,
     ELEMENT_END,
 };
 
@@ -163,6 +171,8 @@ EvtScript EVS_Init = {
     Call(BindIdle, ACTOR_SELF, Ref(EVS_Idle))
     Call(BindHandleEvent, ACTOR_SELF, Ref(EVS_HandleEvent))
     Call(BindHandlePhase, ACTOR_SELF, Ref(EVS_HandlePhase))
+    Call(SetActorVar, ACTOR_SELF, AVAR_TurnCount, 1)
+    Call(SetActorVar, ACTOR_SELF, AVAR_RedDead, FALSE)
     Call(SetActorVar, ACTOR_SELF, AVAR_IncreaseShaking, FALSE)
     // Call(SetActorVar, ACTOR_SELF, AVAR_Scene_BeginBattle, FALSE)
     ExecGetTID(EVS_ShakeScreenWhileWalking, LVar0)
@@ -172,7 +182,12 @@ EvtScript EVS_Init = {
 };
 
 EvtScript EVS_Idle = {
-    Label(0)
+    Call(GetActorVar, ACTOR_SELF, AVAR_RedDead, LVar5)
+    IfEq(LVar5, 2)
+        Call(SetIdleAnimations, ACTOR_SELF, PRT_MAIN, Ref(FuryAnims))
+        Return
+    Else
+        Label(0)
         Call(RandInt, 80, LVar0)
         Add(LVar0, 80)
         Wait(LVar0)
@@ -206,6 +221,18 @@ EvtScript EVS_Idle = {
         Call(SetIdleAnimations, ACTOR_SELF, PRT_MAIN, Ref(DefaultAnims))
         Wait(80)
         Goto(0)
+    EndIf
+    Return
+    End
+};
+
+EvtScript EVS_ReturnHome = {
+    Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_CaptainKuribo_Idle)
+    Call(SetGoalToHome, ACTOR_SELF)
+    Call(SetActorSpeed, ACTOR_SELF, Float(3.0))
+    Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_CaptainKuribo_Run)
+    Call(RunToGoal, ACTOR_SELF, 0, FALSE)
+    Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_CaptainKuribo_Idle)
     Return
     End
 };
@@ -238,96 +265,96 @@ EvtScript EVS_HandleEvent = {
     Switch(LVar0)
         CaseEq(EVENT_HIT_COMBO)
             SetConst(LVar0, PRT_MAIN)
-            SetConst(LVar1, ANIM_GoombaKing_Dead)
+            SetConst(LVar1, ANIM_CaptainKuribo_Dead)
             ExecWait(EVS_Enemy_Hit)
         CaseEq(EVENT_HIT)
             SetConst(LVar0, PRT_MAIN)
-            SetConst(LVar1, ANIM_GoombaKing_Dead)
+            SetConst(LVar1, ANIM_CaptainKuribo_Dead)
             ExecWait(EVS_Enemy_Hit)
         CaseEq(EVENT_BURN_HIT)
             SetConst(LVar0, PRT_MAIN)
-            SetConst(LVar1, ANIM_GoombaKing_BurnHurt)
-            SetConst(LVar2, ANIM_GoombaKing_BurnStill)
+            SetConst(LVar1, ANIM_CaptainKuribo_BurnHurt)
+            SetConst(LVar2, ANIM_CaptainKuribo_BurnStill)
             ExecWait(EVS_Enemy_BurnHit)
         CaseEq(EVENT_SPIN_SMASH_HIT)
             SetConst(LVar0, PRT_MAIN)
-            SetConst(LVar1, ANIM_GoombaKing_Dead)
+            SetConst(LVar1, ANIM_CaptainKuribo_Dead)
             ExecWait(EVS_Enemy_SpinSmashHit)
         CaseEq(EVENT_SHOCK_HIT)
             SetConst(LVar0, PRT_MAIN)
-            SetConst(LVar1, ANIM_GoombaKing_Dead)
+            SetConst(LVar1, ANIM_CaptainKuribo_Dead)
             ExecWait(EVS_Enemy_ShockHit)
             SetConst(LVar0, PRT_MAIN)
-            SetConst(LVar1, ANIM_GoombaKing_Dead)
+            SetConst(LVar1, ANIM_CaptainKuribo_Dead)
             ExecWait(EVS_ShockKnockback)
             SetConst(LVar0, PRT_MAIN)
-            SetConst(LVar1, ANIM_GoombaKing_Run)
+            SetConst(LVar1, ANIM_CaptainKuribo_Run)
             ExecWait(EVS_Enemy_ReturnHome)
         CaseEq(EVENT_SHOCK_DEATH)
             SetConst(LVar0, PRT_MAIN)
-            SetConst(LVar1, ANIM_GoombaKing_Dead)
+            SetConst(LVar1, ANIM_CaptainKuribo_Dead)
             ExecWait(EVS_Enemy_ShockHit)
             Call(GetActorVar, ACTOR_SELF, AVAR_ScreenShakingScriptID, LVar0)
             KillThread(LVar0)
             SetConst(LVar0, PRT_MAIN)
-            SetConst(LVar1, ANIM_GoombaKing_Dead)
+            SetConst(LVar1, ANIM_CaptainKuribo_Dead)
             ExecWait(EVS_Death)
             Return
         CaseOrEq(EVENT_ZERO_DAMAGE)
         CaseOrEq(EVENT_IMMUNE)
             SetConst(LVar0, PRT_MAIN)
-            SetConst(LVar1, ANIM_GoombaKing_Idle)
+            SetConst(LVar1, ANIM_CaptainKuribo_Idle)
             ExecWait(EVS_Enemy_NoDamageHit)
         EndCaseGroup
         CaseEq(EVENT_DEATH)
             SetConst(LVar0, PRT_MAIN)
-            SetConst(LVar1, ANIM_GoombaKing_Dead)
+            SetConst(LVar1, ANIM_CaptainKuribo_Dead)
             ExecWait(EVS_Enemy_Hit)
             Wait(10)
             Call(GetActorVar, ACTOR_SELF, AVAR_ScreenShakingScriptID, LVar0)
             KillThread(LVar0)
             SetConst(LVar0, PRT_MAIN)
-            SetConst(LVar1, ANIM_GoombaKing_Dead)
+            SetConst(LVar1, ANIM_CaptainKuribo_Dead)
             ExecWait(EVS_Death)
             Return
         CaseEq(EVENT_BURN_DEATH)
             SetConst(LVar0, PRT_MAIN)
-            SetConst(LVar1, ANIM_GoombaKing_BurnHurt)
-            SetConst(LVar2, ANIM_GoombaKing_BurnStill)
+            SetConst(LVar1, ANIM_CaptainKuribo_BurnHurt)
+            SetConst(LVar2, ANIM_CaptainKuribo_BurnStill)
             ExecWait(EVS_Enemy_BurnHit)
             Wait(10)
             Call(GetActorVar, ACTOR_SELF, AVAR_ScreenShakingScriptID, LVar0)
             KillThread(LVar0)
             SetConst(LVar0, PRT_MAIN)
-            SetConst(LVar1, ANIM_GoombaKing_BurnStill)
+            SetConst(LVar1, ANIM_CaptainKuribo_BurnStill)
             ExecWait(EVS_Death)
             Return
         CaseEq(EVENT_SPIN_SMASH_DEATH)
             SetConst(LVar0, PRT_MAIN)
-            SetConst(LVar1, ANIM_GoombaKing_Dead)
+            SetConst(LVar1, ANIM_CaptainKuribo_Dead)
             ExecWait(EVS_Enemy_SpinSmashHit)
             Call(GetActorVar, ACTOR_SELF, AVAR_ScreenShakingScriptID, LVar0)
             KillThread(LVar0)
             SetConst(LVar0, PRT_MAIN)
-            SetConst(LVar1, ANIM_GoombaKing_Dead)
+            SetConst(LVar1, ANIM_CaptainKuribo_Dead)
             ExecWait(EVS_Death)
             Return
         CaseEq(EVENT_SPIKE_CONTACT)
-            Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_GoombaKing_Dead)
+            Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_CaptainKuribo_Dead)
             Wait(20)
-            Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_GoombaKing_Run)
+            Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_CaptainKuribo_Run)
             Call(SetGoalToHome, ACTOR_SELF)
             Call(SetActorSpeed, ACTOR_SELF, Float(6.0))
             Call(RunToGoal, ACTOR_SELF, 0, FALSE)
-            Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_GoombaKing_Idle)
+            Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_CaptainKuribo_Idle)
         CaseEq(EVENT_END_FIRST_STRIKE)
             SetConst(LVar0, PRT_MAIN)
-            SetConst(LVar1, ANIM_GoombaKing_Idle)
+            SetConst(LVar1, ANIM_CaptainKuribo_Idle)
             ExecWait(EVS_Enemy_ReturnHome)
             Call(HPBarToHome, ACTOR_SELF)
         CaseEq(EVENT_RECOVER_STATUS)
             SetConst(LVar0, PRT_MAIN)
-            SetConst(LVar1, ANIM_GoombaKing_Idle)
+            SetConst(LVar1, ANIM_CaptainKuribo_Idle)
             ExecWait(EVS_Enemy_Recover)
         CaseDefault
     EndSwitch
@@ -341,28 +368,28 @@ EvtScript EVS_TakeTurn = {
     Call(UseIdleAnimation, ACTOR_SELF, FALSE)
     Call(EnableIdleScript, ACTOR_SELF, IDLE_SCRIPT_DISABLE)
     Call(SetActorDispOffset, ACTOR_SELF, 0, 0, 0)
-    Call(SetTargetActor, ACTOR_SELF, ACTOR_PLAYER)
-    Call(SetGoalToTarget, ACTOR_SELF)
-    // Call(GetStatusFlags, ACTOR_SELF, LVar0)
-    // IfNotFlag(LVar0, STATUS_FLAG_SHRINK)
-    //     Call(GetActorVar, ACTOR_TREE, AVAR_TREE_DELAY, LVar0)
-    //     IfNe(LVar0, 0)
-    //         Call(RandInt, 100, LVar1)
-    //         IfLt(LVar1, 60)
-    //             Sub(LVar0, 1)
-    //             Call(SetActorVar, ACTOR_TREE, AVAR_TREE_DELAY, LVar0)
-    //             ExecWait(EVS_Attack_GroundStomp)
-    //             Return
-    //         EndIf
-    //     EndIf
-    // EndIf
-    ExecWait(EVS_Attack_SpinSwipe)
-    Return
+    Call(GetActorVar, ACTOR_SELF, AVAR_RedDead, LVar3)
+    IfEq(LVar3, TRUE)
+        Call(SetActorVar, ACTOR_SELF, AVAR_RedDead, 2)
+        Call(UseBattleCamPreset, BTL_CAM_ACTOR)
+        Call(BattleCamTargetActor, ACTOR_SELF)
+        Call(MoveBattleCamOver, 30)
+        Wait(30)
+        Call(ActorSpeak, MSG_Intro_BattleCK_Talk_Zero, ACTOR_SELF, PRT_MAIN, ANIM_CaptainKuribo_Talk, ANIM_CaptainKuribo_Angry)
+        Call(SetIdleAnimations, ACTOR_SELF, PRT_MAIN, Ref(FuryAnims))
+        ExecWait(EVS_Attack_SpinKick)
+        Return
+    EndIf
+    ExecWait(EVS_Attack_SpinKick)
+    Call(UseIdleAnimation, ACTOR_SELF, TRUE)
+    Call(EnableIdleScript, ACTOR_SELF, IDLE_SCRIPT_ENABLE)
     Return
     End
 };
 
-EvtScript EVS_Attack_SpinSwipe = {
+EvtScript EVS_Attack_SpinKick = {
+    Call(EnableIdleScript, ACTOR_SELF, IDLE_SCRIPT_DISABLE)
+    Call(UseIdleAnimation, ACTOR_SELF, FALSE)
     Call(GetStatusFlags, ACTOR_SELF, LVar0)
     IfNotFlag(LVar0, STATUS_FLAG_SHRINK)
         Call(UseBattleCamPreset, BTL_CAM_ENEMY_APPROACH)
@@ -388,16 +415,16 @@ EvtScript EVS_Attack_SpinSwipe = {
         Call(AddGoalPos, ACTOR_SELF, 12, 0, 0)
     EndIf
     Call(SetActorSpeed, ACTOR_SELF, Float(2.0))
-    Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_GoombaKing_Run)
+    Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_CaptainKuribo_Run)
     Call(RunToGoal, ACTOR_SELF, 0, FALSE)
-    Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_GoombaKing_Idle)
+    Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_CaptainKuribo_Idle)
     Wait(8)
     Thread
         Call(PlaySoundAtActor, ACTOR_SELF, SOUND_GOOMBA_KING_SPIN)
         Wait(10)
         Call(PlaySoundAtActor, ACTOR_SELF, SOUND_GOOMBA_KING_SPIN)
     EndThread
-    Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_GoombaKing_Kick)
+    Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_CaptainKuribo_Kick)
     Set(LVar0, 0)
     Loop(20)
         Add(LVar0, 18)
@@ -412,7 +439,7 @@ EvtScript EVS_Attack_SpinSwipe = {
             IfEq(LVarA, HIT_RESULT_LUCKY)
                 Call(EnemyTestTarget, ACTOR_SELF, LVar0, DAMAGE_TYPE_TRIGGER_LUCKY, 0, 0, 0)
             EndIf
-            Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_GoombaKing_Dizzy)
+            Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_CaptainKuribo_Dizzy)
             Set(LVar0, 0)
             Loop(20)
                 Add(LVar0, 18)
@@ -422,12 +449,12 @@ EvtScript EVS_Attack_SpinSwipe = {
             Call(SetActorYaw, ACTOR_SELF, 0)
             Call(UseBattleCamPreset, BTL_CAM_DEFAULT)
             Call(MoveBattleCamOver, 20)
-            Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_GoombaKing_Idle)
+            Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_CaptainKuribo_Idle)
             Call(SetGoalToHome, ACTOR_SELF)
             Call(SetActorSpeed, ACTOR_SELF, Float(4.0))
-            Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_GoombaKing_Run)
+            Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_CaptainKuribo_Run)
             Call(RunToGoal, ACTOR_SELF, 0, FALSE)
-            Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_GoombaKing_Idle)
+            Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_CaptainKuribo_Idle)
             Call(EnableIdleScript, ACTOR_SELF, IDLE_SCRIPT_ENABLE)
             Call(UseIdleAnimation, ACTOR_SELF, TRUE)
             Return
@@ -437,20 +464,130 @@ EvtScript EVS_Attack_SpinSwipe = {
     Call(MoveBattleCamOver, 20)
     Wait(2)
     Call(SetGoalToTarget, ACTOR_SELF)
-    Call(EnemyDamageTarget, ACTOR_SELF, LVarA, 0, 0, 0, dmgSpin, BS_FLAGS1_TRIGGER_EVENTS)
-    Call(SetActorRotation, ACTOR_SELF, 0, 0, 0)
-    Call(SetActorYaw, ACTOR_SELF, 0)
-    Call(SetActorDispOffset, ACTOR_SELF, 0, 0, 0)
-    Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_GoombaKing_Idle)
-    Switch(LVarA)
+    // Call(ActorExists, ACTOR_ENEMY1, LVar0)
+    // IfEq(LVar0, FALSE)
+        Call(EnemyDamageTarget, ACTOR_SELF, LVarA, 0, 0, 0, dmgKick, BS_FLAGS1_TRIGGER_EVENTS)
+    // Else
+    //     Call(GetActorVar, ACTOR_ENEMY1, 3, LVar6)
+    //     IfEq(LVar6, FALSE)
+    //         Call(EnemyDamageTarget, ACTOR_SELF, LVarA, 0, 0, 0, dmgKick, BS_FLAGS1_TRIGGER_EVENTS)
+    //     Else
+    //         Call(EnemyDamageTarget, ACTOR_SELF, LVarA, 0, 0, 0, dmgKickWeak, BS_FLAGS1_TRIGGER_EVENTS)
+    //     EndIf
+    // EndIf
+    Call(GetBattleFlags, LVarA)
+    IfNotFlag(LVarA, BS_FLAGS1_ATK_BLOCKED)
+        Call(SetActorRotation, ACTOR_SELF, 0, 0, 0)
+        Call(SetActorYaw, ACTOR_SELF, 0)
+        Call(SetActorDispOffset, ACTOR_SELF, 0, 0, 0)
+        Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_CaptainKuribo_Idle)
+        ExecWait(EVS_Attack_Stomp)
+    Else
+        Call(SetActorRotation, ACTOR_SELF, 0, 0, 0)
+        Call(SetActorYaw, ACTOR_SELF, 0)
+        Call(SetActorDispOffset, ACTOR_SELF, 0, 0, 0)
+        Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_CaptainKuribo_Idle)
+        Call(GetActorPos, ACTOR_SELF, LVar0, LVar1, LVar2)
+        Add(LVar0, 20)
+        Set(LVar1, 0)
+        Call(SetGoalPos, ACTOR_SELF, LVar0, LVar1, LVar2)
+        Call(SetActorJumpGravity, ACTOR_SELF, Float(0.8))
+        Call(JumpToGoal, ACTOR_SELF, 20, FALSE, TRUE, FALSE)
+        ExecWait(EVS_ReturnHome)
+    EndIf
+    Call(EnableIdleScript, ACTOR_SELF, IDLE_SCRIPT_ENABLE)
+    Call(UseIdleAnimation, ACTOR_SELF, TRUE)
+    Return
+    End
+};
+
+EvtScript EVS_Attack_Stomp = {
+    Call(EnableIdleScript, ACTOR_SELF, IDLE_SCRIPT_DISABLE)
+    Call(UseIdleAnimation, ACTOR_SELF, FALSE)
+    Call(SetTargetActor, ACTOR_SELF, ACTOR_PLAYER)
+    Call(UseBattleCamPreset, BTL_CAM_ENEMY_APPROACH)
+    Call(SetBattleCamDist, 180)
+    Call(BattleCamTargetActor, ACTOR_SELF)
+    Call(SetBattleCamTargetingModes, BTL_CAM_YADJ_TARGET, BTL_CAM_XADJ_AVG, FALSE)
+    Call(SetGoalToTarget, ACTOR_SELF)
+    Loop(2)
+        Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_CaptainKuribo_Angry)
+        Call(EnemyTestTarget, ACTOR_SELF, LVarA, 0, 0, 2, BS_FLAGS1_INCLUDE_POWER_UPS)
+        Switch(LVarA)
+        CaseOrEq(HIT_RESULT_MISS)
+        CaseOrEq(HIT_RESULT_LUCKY)
+            Call(SetActorJumpGravity, ACTOR_SELF, Float(0.8))
+            Call(GetGoalPos, ACTOR_SELF, LVar0, LVar1, LVar2)
+            Sub(LVar0, 20)
+            Set(LVar1, 0)
+            Add(LVar2, 5)
+            Call(SetGoalPos, ACTOR_SELF, LVar0, LVar1, LVar2)
+            Call(JumpToGoal, ACTOR_SELF, 20, FALSE, TRUE, FALSE)
+            Call(PlaySoundAtActor, ACTOR_SELF, SOUND_HEAVY_NPC_STEP_B)
+            Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_CaptainKuribo_Still)
+            Thread
+                Call(StartRumble, BTL_RUMBLE_PLAYER_MAX)
+                Call(GetStatusFlags, ACTOR_SELF, LVar0)
+                IfNotFlag(LVar0, STATUS_FLAG_SHRINK)
+                    Call(ShakeCam, CAM_BATTLE, 0, 10, Float(4.0))
+                EndIf
+                Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_CaptainKuribo_Idle)
+            EndThread
+            Call(ShakeCam, CAM_BATTLE, 0, 5, Float(3.0))
+            Call(GetActorPos, ACTOR_SELF, LVar0, LVar1, LVar2)
+            PlayEffect(EFFECT_SMOKE_IMPACT, 0, LVar0, LVar1, LVar2, 60, 8, 10, 20, 0)
+            Wait(2)
+            Call(SetGoalToTarget, ACTOR_SELF)
+            IfEq(LVarA, HIT_RESULT_LUCKY)
+                Call(EnemyTestTarget, ACTOR_SELF, LVar0, DAMAGE_TYPE_TRIGGER_LUCKY, 0, 0, 0)
+            EndIf
+            Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_CaptainKuribo_Angry)
+            Wait(15)
+            Call(EnableIdleScript, ACTOR_SELF, IDLE_SCRIPT_ENABLE)
+            Call(UseIdleAnimation, ACTOR_SELF, TRUE)
+            Return
+        EndCaseGroup
         CaseDefault
-            Wait(20)
-            Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_GoombaKing_Idle)
-            Call(SetGoalToHome, ACTOR_SELF)
-            Call(SetActorSpeed, ACTOR_SELF, Float(3.0))
-            Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_GoombaKing_Run)
-            Call(RunToGoal, ACTOR_SELF, 0, FALSE)
-            Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_GoombaKing_Idle)
+            Call(SetActorJumpGravity, ACTOR_SELF, Float(0.8))
+            Call(GetGoalPos, ACTOR_SELF, LVar0, LVar1, LVar2)
+            Call(SetGoalPos, ACTOR_SELF, LVar0, LVar1, LVar2)
+            Call(JumpToGoal, ACTOR_SELF, 20, FALSE, TRUE, FALSE)
+            Call(PlaySoundAtActor, ACTOR_SELF, SOUND_HEAVY_NPC_STEP_B)
+            Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_CaptainKuribo_Still)
+            Thread
+                Call(StartRumble, BTL_RUMBLE_PLAYER_MAX)
+                Call(GetStatusFlags, ACTOR_SELF, LVar0)
+                IfNotFlag(LVar0, STATUS_FLAG_SHRINK)
+                    Call(ShakeCam, CAM_BATTLE, 0, 10, Float(4.0))
+                EndIf
+                Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_CaptainKuribo_Idle)
+            EndThread
+        EndSwitch
+        Wait(2)
+        Call(SetGoalToTarget, ACTOR_SELF)
+        // Call(ActorExists, ACTOR_ENEMY1, LVar0)
+        // IfEq(LVar0, FALSE)
+            Call(EnemyDamageTarget, ACTOR_SELF, LVarA, 0, 0, 0, dmgStomp, BS_FLAGS1_TRIGGER_EVENTS)
+        // Else
+        //     Call(GetActorVar, ACTOR_ENEMY1, 3, LVar6)
+        //     IfEq(LVar6, FALSE)
+        //         Call(EnemyDamageTarget, ACTOR_SELF, LVarA, 0, 0, 0, dmgStomp, BS_FLAGS1_TRIGGER_EVENTS)
+        //     Else
+        //         Call(EnemyDamageTarget, ACTOR_SELF, LVarA, 0, 0, 0, dmgStompWeak, BS_FLAGS1_TRIGGER_EVENTS)
+        //     EndIf
+        // EndIf
+    EndLoop
+    Switch(LVar0)
+        CaseDefault
+            Call(GetActorPos, ACTOR_SELF, LVar0, LVar1, LVar2)
+            Add(LVar0, 20)
+            Set(LVar1, 0)
+            Call(SetGoalPos, ACTOR_SELF, LVar0, LVar1, LVar2)
+            Call(SetActorJumpGravity, ACTOR_SELF, Float(0.8))
+            Call(JumpToGoal, ACTOR_SELF, 20, FALSE, TRUE, FALSE)
+            Call(PlaySoundAtActor, ACTOR_SELF, SOUND_HEAVY_NPC_STEP_B)
+            Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_CaptainKuribo_Still)
+            ExecWait(EVS_ReturnHome)
     EndSwitch
     Call(EnableIdleScript, ACTOR_SELF, IDLE_SCRIPT_ENABLE)
     Call(UseIdleAnimation, ACTOR_SELF, TRUE)
@@ -464,7 +601,7 @@ EvtScript EVS_Attack_SpinSwipe = {
 //     Call(MoveBattleCamOver, 40)
 //     Wait(15)
 //     Call(SetBattleCamTargetingModes, BTL_CAM_YADJ_NONE, BTL_CAM_XADJ_AVG, FALSE)
-//     Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_GoombaKing_Angry)
+//     Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_CaptainKuribo_Angry)
 //     Call(SetActorJumpGravity, ACTOR_SELF, Float(0.8))
 //     Call(GetActorPos, ACTOR_SELF, LVar0, LVar1, LVar2)
 //     Call(SetGoalPos, ACTOR_SELF, LVar0, LVar1, LVar2)
@@ -472,14 +609,14 @@ EvtScript EVS_Attack_SpinSwipe = {
 //     Call(PlaySoundAtActor, ACTOR_SELF, SOUND_HEAVY_NPC_STEP_B)
 //     Call(UseBattleCamPreset, BTL_CAM_DEFAULT)
 //     Call(MoveBattleCamOver, 30)
-//     Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_GoombaKing_Still)
+//     Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_CaptainKuribo_Still)
 //     Thread
 //         Call(StartRumble, BTL_RUMBLE_PLAYER_MAX)
 //         Call(GetStatusFlags, ACTOR_SELF, LVar0)
 //         IfNotFlag(LVar0, STATUS_FLAG_SHRINK)
 //             Call(ShakeCam, CAM_BATTLE, 0, 10, Float(4.0))
 //         EndIf
-//         Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_GoombaKing_Idle)
+//         Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_CaptainKuribo_Idle)
 //         PlayEffect(EFFECT_DROP_LEAVES, 0, -80, 125, 0, 100, 0)
 //         PlayEffect(EFFECT_DROP_LEAVES, 0, -15, 135, 0, 85, 0)
 //         PlayEffect(EFFECT_DROP_LEAVES, 0, 100, 103, 0, 70, 0)
@@ -620,7 +757,7 @@ EvtScript EVS_Attack_SpinSwipe = {
 //     Wait(24)
 //     Wait(2)
 //     Call(SetGoalToTarget, ACTOR_SELF)
-//     Call(EnemyDamageTarget, ACTOR_SELF, LVar0, 0, SUPPRESS_EVENT_ALL, 0, dmgStomp, BS_FLAGS1_TRIGGER_EVENTS)
+//     Call(EnemyDamageTarget, ACTOR_SELF, LVar0, 0, SUPPRESS_EVENT_ALL, 0, dmgGroundStomp, BS_FLAGS1_TRIGGER_EVENTS)
 //     Switch(LVar0)
 //         CaseEq(HIT_RESULT_10)
 //             Return
@@ -637,50 +774,12 @@ EvtScript EVS_HandlePhase = {
     // Call(GetBattlePhase, LVar0)
     // Switch(LVar0)
     //     CaseEq(PHASE_PLAYER_BEGIN)
-    //         Call(GetActorVar, ACTOR_SELF, AVAR_Scene_BeginBattle, LVar0)
-    //         IfEq(LVar0, FALSE)
-    //             Call(EnableBattleStatusBar, FALSE)
-    //             Call(UseBattleCamPreset, BTL_CAM_ACTOR_CLOSE)
-    //             Call(BattleCamTargetActor, ACTOR_RED_GOOMBA)
-    //             Call(MoveBattleCamOver, 20)
-    //             Wait(20)
-    //             Call(UseIdleAnimation, ACTOR_RED_GOOMBA, FALSE)
-    //             Call(EnableIdleScript, ACTOR_RED_GOOMBA, IDLE_SCRIPT_DISABLE)
-    //             Call(ActorSpeak, MSG_CH0_00CB, ACTOR_RED_GOOMBA, PRT_MAIN, ANIM_GoombaBros_Red_Talk, ANIM_GoombaBros_Red_Talk)
-    //             Call(EnableIdleScript, ACTOR_RED_GOOMBA, IDLE_SCRIPT_ENABLE)
-    //             Call(UseIdleAnimation, ACTOR_RED_GOOMBA, TRUE)
-    //             Call(UseBattleCamPreset, BTL_CAM_ACTOR_CLOSE)
-    //             Call(BattleCamTargetActor, ACTOR_BLUE_GOOMBA)
-    //             Call(MoveBattleCamOver, 10)
-    //             Wait(10)
-    //             Call(UseIdleAnimation, ACTOR_BLUE_GOOMBA, FALSE)
-    //             Call(EnableIdleScript, ACTOR_BLUE_GOOMBA, IDLE_SCRIPT_DISABLE)
-    //             Call(ActorSpeak, MSG_CH0_00CC, ACTOR_BLUE_GOOMBA, PRT_MAIN, ANIM_GoombaBros_Blue_Talk, ANIM_GoombaBros_Blue_Talk)
-    //             Call(EnableIdleScript, ACTOR_BLUE_GOOMBA, IDLE_SCRIPT_ENABLE)
-    //             Call(UseIdleAnimation, ACTOR_BLUE_GOOMBA, TRUE)
-    //             Call(UseBattleCamPreset, BTL_CAM_ACTOR)
-    //             Call(BattleCamTargetActor, ACTOR_KING)
-    //             Call(MoveBattleCamOver, 20)
-    //             Wait(20)
-    //             Call(ActorSpeak, MSG_CH0_00CD, ACTOR_KING, PRT_MAIN, ANIM_GoombaKing_Angry, ANIM_GoombaKing_Angry)
-    //             Call(SetActorVar, ACTOR_SELF, AVAR_Scene_BeginBattle, TRUE)
-    //             Call(UseBattleCamPreset, BTL_CAM_ACTOR)
-    //             Call(BattleCamTargetActor, ACTOR_PLAYER)
-    //             Call(MoveBattleCamOver, 10)
-    //             Wait(10)
-    //             Call(UseIdleAnimation, ACTOR_PARTNER, FALSE)
-    //             Call(UseIdleAnimation, ACTOR_PLAYER, FALSE)
-    //             Call(SetActorYaw, ACTOR_PLAYER, 180)
-    //             Call(SetAnimation, ACTOR_PLAYER, 0, ANIM_Mario1_Question)
-    //             Call(ActorSpeak, MSG_CH0_00CE, ACTOR_PARTNER, 0, -1, -1)
-    //             Call(SetAnimation, ACTOR_PLAYER, 0, ANIM_Mario1_NodYes)
-    //             Wait(15)
-    //             Call(SetActorYaw, ACTOR_PLAYER, 0)
-    //             Call(UseIdleAnimation, ACTOR_PARTNER, TRUE)
-    //             Call(UseIdleAnimation, ACTOR_PLAYER, TRUE)
-    //             Call(UseBattleCamPreset, BTL_CAM_DEFAULT)
-    //             Wait(20)
-    //             Call(EnableBattleStatusBar, TRUE)
+    //         Call(GetActorVar, ACTOR_SELF, AVAR_RedDead, LVar3)
+    //         IfEq(LVar3, TRUE)
+    //             Call(SetActorVar, ACTOR_SELF, AVAR_RedDead, 2)
+    //             Call(ActorSpeak, MSG_Intro_BattleCK_Talk_Zero, ACTOR_SELF, PRT_MAIN, ANIM_CaptainKuribo_Talk, ANIM_CaptainKuribo_Idle)
+    //             Call(SetIdleAnimations, ACTOR_SELF, PRT_MAIN, Ref(FuryAnims))
+    //             ExecWait(EVS_Attack_SpinKick)
     //         EndIf
     // EndSwitch
     Call(EnableIdleScript, ACTOR_SELF, IDLE_SCRIPT_ENABLE)
@@ -693,11 +792,11 @@ EvtScript EVS_ShakeScreenWhileWalking = {
     Label(0)
         Wait(1)
         Call(GetAnimation, ACTOR_SELF, PRT_MAIN, LVar0)
-        IfNe(LVar0, ANIM_GoombaKing_Run)
+        IfNe(LVar0, ANIM_CaptainKuribo_Run)
             Goto(0)
         EndIf
         Call(GetAnimation, ACTOR_SELF, PRT_MAIN, LVar0)
-        IfNe(LVar0, ANIM_GoombaKing_Run)
+        IfNe(LVar0, ANIM_CaptainKuribo_Run)
             Goto(0)
         EndIf
         Call(StartRumble, BTL_RUMBLE_LONG)
@@ -724,6 +823,12 @@ EvtScript EVS_ShakeScreenWhileWalking = {
 EvtScript EVS_Death = {
     Call(HideHealthBar, ACTOR_SELF)
     Call(UseIdleAnimation, ACTOR_SELF, FALSE)
+    Call(EnableIdleScript, ACTOR_SELF, IDLE_SCRIPT_DISABLE)
+    Call(UseBattleCamPreset, BTL_CAM_ACTOR)
+    Call(BattleCamTargetActor, ACTOR_SELF)
+    Call(MoveBattleCamOver, 30)
+    Wait(30)
+    Call(ActorSpeak, MSG_Intro_BattleCK_Talk_One, ACTOR_SELF, PRT_MAIN, ANIM_CaptainKuribo_Talk, ANIM_CaptainKuribo_Dead)
     Set(LVar2, 0)
     Call(SetAnimation, ACTOR_SELF, LVar0, LVar1)
     Wait(10)

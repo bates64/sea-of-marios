@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<SpriteSheet maxComponents="E" paletteGroups="1">
+<SpriteSheet maxComponents="14" paletteGroups="1">
 	<PaletteList>
 		<Palette id="0" src="Default.png"/>
 		<Palette id="1" src="Poisoned.png"/>

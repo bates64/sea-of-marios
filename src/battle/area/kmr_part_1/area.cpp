@@ -36,7 +36,9 @@ using namespace battle::actor;
 
 namespace battle::area::kmr_part_1 {
 
-Vec3i CaptainKuriboPos = { 100, 0, 20 };
+Vec3i CaptainKuriboPos = { 120, 0, 30 };
+Vec3i RedMatePos = { 60, 0, 20 };
+Vec3i BlueMatePos = { 10, 0, 10 };
 
 Vec3i BlooperPos = { 80, 45, -10 };
 
@@ -73,7 +75,9 @@ Formation Formation_MechaBlooper = {
 };
 
 Formation Formation_CaptainKuribo = {
-    ACTOR_BY_POS(CaptainKuribo, CaptainKuriboPos, 10),
+    ACTOR_BY_POS(CaptainKuribo, CaptainKuriboPos, 8),
+    ACTOR_BY_POS(RedMate, RedMatePos, 9),
+    ACTOR_BY_POS(BlueMate, BlueMatePos, 10),
 };
 
 BattleList Battles = {

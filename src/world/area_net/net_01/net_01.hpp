@@ -7,12 +7,21 @@
 #include "mapfs/net_01_shape.h"
 #include "mapfs/net_01_hit.h"
 
-// #include "sprite/npc/WorldMuskular.h"
+#include "sprite/npc/CaptainKuribo.h"
+#include "sprite/npc/Goomates.h"
 
 namespace net_01 {
 
-// enum {
-//     NPC_Muskular,
-// };
+enum {
+    NPC_CaptainKuribo,
+    NPC_Goomate_Red,
+    NPC_Goomate_Blue,
+};
+
+enum {
+    MV_Intro           = MapVar(0),
+};
+
+extern EvtScript EVS_Main;
 
 }; // namespace net_01

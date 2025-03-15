@@ -6,6 +6,11 @@
 }
 
 
+
+
+
+
+
 #message:2F:(Online_SearchingForBridgeNext)
 {
 	[Next]
@@ -14,12 +19,22 @@
 }
 
 
+
+
+
+
+
 #message:2F:(Online_ConnectingToRoom)
 {
 	[Next]
 	Connecting to room...[BR]
 	[Yield][End]
 }
+
+
+
+
+
 
 
 
@@ -32,10 +47,20 @@
 
 
 
+
+
+
+
+
 #message:2F:(MoveName_RallyWink)
 {
 	Rally Wink[End]
 }
+
+
+
+
+
 
 
 
@@ -44,6 +69,11 @@
 	Give your shipmate an extra[BR]
 	turn to attack.[End]
 }
+
+
+
+
+
 
 
 // TODO
@@ -56,6 +86,11 @@ test![br]
 }
 
 
+
+
+
+
+
 #message:2F:(Personality_Question_Opportunistic)
 {
 [Next]
@@ -65,6 +100,11 @@ One of them is about to make a[BR]
 terrible deal! [Pause 10]What do you do?[BR]
 [Yield][End]
 }
+
+
+
+
+
 
 
 
@@ -80,6 +120,11 @@ terrible deal! [Pause 10]What do you do?[BR]
 
 
 
+
+
+
+
+
 #message:2F:(Personality_Question_Tenacious)
 {
 [Next]
@@ -89,6 +134,11 @@ the enemy is finally retreating.[br][pause 10]
 What made them give up?[br]
 [Yield][End]
 }
+
+
+
+
+
 
 
 
@@ -102,6 +152,11 @@ What made them give up?[br]
 [DelayOn][EndChoice 3][End]
 }
 
+
+
+
+
+
 #message:2F:(Personality_End)
 {
 [Next]
@@ -111,12 +166,22 @@ What's your name?[br]
 }
 
 
+
+
+
+
+
 #message:2F:(Personality_Question_Precise)
 {
 [Next]
 Are save states cheating?[br]
 [Yield][End]
 }
+
+
+
+
+
 
 
 #message:2F:(Personality_Choice_Precise)
@@ -130,6 +195,11 @@ Are save states cheating?[br]
 }
 
 
+
+
+
+
+
 #message:2F:(Personality_Question_Resilient)
 {
 [Next]
@@ -139,6 +209,11 @@ in the deck![br][pause 10]
 What do you do?[br]
 [Yield][End]
 }
+
+
+
+
+
 
 
 #message:2F:(Personality_Choice_Resilient)
@@ -153,12 +228,22 @@ What do you do?[br]
 }
 
 
+
+
+
+
+
 #message:2F:(Personality_Question_Methodical)
 {
 [Next]
 How is your mental health?[br]
 [Yield][End]
 }
+
+
+
+
+
 
 
 #message:2F:(Personality_Choice_Methodical)
@@ -171,6 +256,11 @@ How is your mental health?[br]
 }
 
 
+
+
+
+
+
 #message:2F:(Personality_Question_Strategic)
 {
 [Next]
@@ -178,6 +268,11 @@ There are strange noises[br]
 coming from below deck...[br]
 [Yield][End]
 }
+
+
+
+
+
 
 
 #message:2F:(Personality_Choice_Strategic)
@@ -191,6 +286,11 @@ coming from below deck...[br]
 }
 
 
+
+
+
+
+
 #message:2F:(Personality_Question_Creative)
 {
 [Next]
@@ -198,6 +298,11 @@ Your captain gives you a task[br]
 with very strict instructions.[br]
 [Yield][End]
 }
+
+
+
+
+
 
 
 #message:2F:(Personality_Choice_Creative)
@@ -211,6 +316,11 @@ with very strict instructions.[br]
 }
 
 
+
+
+
+
+
 #message:2F:(Personality_Question_Greedy)
 {
 [Next]
@@ -218,6 +328,11 @@ Have you ever stolen something?[br][pause 20]
 Be honest.[br]
 [Yield][End]
 }
+
+
+
+
+
 
 
 #message:2F:(Personality_Choice_Greedy)
@@ -231,15 +346,25 @@ Be honest.[br]
 }
 
 
+
+
+
+
+
 #message:2F:(Personality_Question_Mischievous)
 {
 [Next]
 [Shake]A runaway train is headed for[br]
-a family of Piranha Plants![/fx][br][pause 10]
+a family of Piranha Plants!
 You find a lever that can divert[br]
 the train.[pause 10] Do you pull it?[br]
 [Yield][End]
 }
+
+
+
+
+
 
 
 #message:2F:(Personality_Choice_Mischievous)
@@ -251,6 +376,11 @@ the train.[pause 10] Do you pull it?[br]
 [Cursor 2][Option 2]Let them game over[BR]
 [DelayOn][EndChoice 3][End]
 }
+
+
+
+
+
 
 
 #message:2F:(Personality_Result_Opportunistic)
@@ -280,6 +410,11 @@ would be...[br]
 }
 
 
+
+
+
+
+
 #message:2F:(Personality_Result_Tenacious)
 {
 [Next]
@@ -301,10 +436,15 @@ would be...[br]
 }
 
 
+
+
+
+
+
 #message:2F:(Personality_Result_Impulsive)
 {
 [Next]
-[Wave]Ah, the heat of the moment.[/fx][br][pause 10]
+[Wave]Ah, the heat of the moment.
 That's what you live for.[br][pause 10]
 You're a master of jumping into[br]
 action without overthinking.[br]
@@ -323,6 +463,11 @@ An impulsive person like you[br]
 would be...[br]
 [yield][END]
 }
+
+
+
+
+
 
 
 #message:2F:(Personality_Result_Precise)
@@ -346,6 +491,11 @@ would be...[br]
 }
 
 
+
+
+
+
+
 #message:2F:(Personality_Result_Resilient)
 {
 [Next]
@@ -365,6 +515,11 @@ A resilient person like you[br]
 would be...[br]
 [yield][END]
 }
+
+
+
+
+
 
 
 #message:2F:(Personality_Result_Methodical)
@@ -390,6 +545,11 @@ would be...[br]
 }
 
 
+
+
+
+
+
 #message:2F:(Personality_Result_Strategic)
 {
 [Next]
@@ -410,6 +570,11 @@ A strategic person like you[br]
 would be...[br]
 [yield][END]
 }
+
+
+
+
+
 
 
 #message:2F:(Personality_Result_Creative)
@@ -436,6 +601,11 @@ would be...[br]
 }
 
 
+
+
+
+
+
 #message:2F:(Personality_Result_Mischievous)
 {
 [Next]
@@ -460,11 +630,16 @@ would be...[br]
 }
 
 
+
+
+
+
+
 #message:2F:(Personality_Result_Greedy)
 {
 [Next]
 [PrintRising][Shake]More! More! More!!!!!![br]
-[SizeReset][/fx][/fx]
+[SizeReset]
 [wait][next]
 That was my impression of you.[br][pause 10]
 What do you think?[br]
@@ -480,12 +655,22 @@ would be...[br]
 }
 
 
+
+
+
+
+
 #message:2F:(Personality_CharacterResult_Goomba)
 {
 [Next]
 [PrintRising]A Goomba![br]
 [Wait][END]
 }
+
+
+
+
+
 
 
 #message:2F:(Personality_CharacterResult_Koopa)
@@ -495,12 +680,22 @@ would be...[br]
 [Wait][END]
 }
 
+
+
+
+
+
 #message:2F:(Personality_CharacterResult_BobOmb)
 {
 [Next]
 [PrintRising]A Bob-Omb![br]
 [Wait][END]
 }
+
+
+
+
+
 
 #message:2F:(Personality_CharacterResult_Parakoopa)
 {
@@ -509,12 +704,22 @@ would be...[br]
 [Wait][END]
 }
 
+
+
+
+
+
 #message:2F:(Personality_CharacterResult_Boo)
 {
 [Next]
 [PrintRising]A Boo![br]
 [Wait][END]
 }
+
+
+
+
+
 
 #message:2F:(Personality_CharacterResult_Lakitu)
 {
@@ -523,12 +728,22 @@ would be...[br]
 [Wait][END]
 }
 
+
+
+
+
+
 #message:2F:(Personality_CharacterResult_CheepCheep)
 {
 [Next]
 [PrintRising]A Cheep-Cheep![br]
 [Wait][END]
 }
+
+
+
+
+
 
 #message:2F:(Personality_CharacterResult_Bandit)
 {
@@ -537,6 +752,11 @@ would be...[br]
 [Wait][END]
 }
 
+
+
+
+
+
 #message:2F:(Personality_CharacterResult_DryBones)
 {
 [Next]
@@ -544,9 +764,268 @@ would be...[br]
 [Wait][END]
 }
 
+
+
+
+
+
 #message:2F:(Personality_CharacterResult_Fuzzy)
 {
 [Next]
 [PrintRising]A Fuzzy![br]
+[Wait][END]
+}
+
+
+
+
+
+#message:2F:(Intro_WorldCK_Talk_Zero)
+{
+[Style Right]
+[Size 32,32][Shake]AHHHHHH!!!!!![BR]
+[Wait][END]
+}
+
+
+
+
+
+
+#message:2F:(Intro_WorldCK_Talk_One)
+{
+[Style Right]
+Where are we!?! And... Oh no...[BR]
+NOT YOU TWO! Why did it have to[BR]
+be you two? My worst men.[BR]
+[Wait][END]
+}
+
+
+
+
+
+
+#message:2F:(Intro_WorldRM_Talk_Zero)
+{
+[Style Right]
+Sir that's hurtful. I thought we[BR]
+were your best men at your-[BR]
+[Wait][END]
+}
+
+
+
+
+
+
+#message:2F:(Intro_WorldCK_Talk_Two)
+{
+[Style Right]
+DON'T EVEN THINK ABOUT[BR]
+FINISHING THAT SENTENCE![BR]
+[Wait][Next]
+Sigh... It didn't go well. I don't[BR]
+want to be reminded of that day.[BR]
+[Wait][END]
+}
+
+
+
+
+
+
+#message:2F:(Intro_WorldBM_Talk_Zero)
+{
+[Style Right]
+Well that happened.[BR]
+[Wait][Next]
+Captain as to answer your[BR]
+question. We appear to be in a[BR]
+[Color 0x1]Alternate [Color 0x5]Timeline[Color 0xA].[BR]
+[Wait][Next]
+We are currently in [Color 0x1]A[Color 0x5]T [Color 0xA]7. We are[BR]
+from [Color 0x1]A[Color 0x5]T [Color 0xA]5. But besides that.[BR]
+[Wait][Next]
+We are at a ocean with no[BR]
+land insight. However we aren't[BR]
+stranded. We just have to take[BR]
+control of this ship.[BR]
+[Wait][END]
+}
+
+
+
+
+
+
+#message:2F:(Intro_WorldCK_Talk_Three)
+{
+[Style Right]
+ARGHHHH!!![BR]
+[Wait][Next]
+So you are telling me we did in[BR]
+fact fall into a wormhole...[BR]
+[Wait][Next]
+First that wretched [Color 0x7]Mario [Color 0xA]beats[BR]
+me and my men. That drink was[BR]
+ineffective against him and that[BR]
+robot.[BR]
+[Wait][Next]
+And now we are as you put it 2[BR]
+[Color 0x5]A[Color 0x1]T[Color 0xA]s away from our own... This[BR]
+can't get any worse![BR]
+[Wait][END]
+}
+
+
+
+
+
+
+#message:2F:(Intro_WorldRM_Talk_One)
+{
+[Style Right]
+Uh sir. Is that-[BR]
+[Wait][END]
+}
+
+
+
+
+
+
+#message:2F:(Intro_WorldCK_Talk_Four)
+{
+[Style Right]
+[Color 0x7]MARIO[Color 0xA]![BR]
+[Wait][Next]
+So you followed me huh? Well you-[BR]
+[Wait][END]
+}
+
+
+
+
+
+
+#message:2F:(Intro_WorldBM_Talk_One)
+{
+[Style Right]
+Captain that's not our [Color 0x7]Mario[Color 0xA].[BR]
+[Wait][Next]
+The wormhole closed as soon as[BR]
+we fell in it. It is improbable that[BR]
+he could follow us. I don't even[BR]
+think he would follow us here.[BR]
+[Wait][END]
+}
+
+
+
+
+
+
+#message:2F:(Intro_WorldCK_Talk_Five)
+{
+[Style Right]
+ENOUGH![BR]
+[Wait][Next]
+I don't care if this is not the[BR]
+same man who beat me![BR]
+[Wait][Next]
+I'll make you pay [Color 0x7]Mario[Color 0xA]![BR]
+[Wait][END]
+}
+
+
+
+
+
+
+#message:2F:(Intro_BattleBM_Talk_Zero)
+{
+[Style Right]
+This won't do. He could beat us.[BR]
+Even though he doesn't have any[BR]
+badges. Our [Color 0x7]Mario[Color 0xA] forgot to equip[BR]
+his badges for some reason...[BR]
+[Wait][Next]
+Either way he was able to beat[BR]
+us even without badges so I won't[BR]
+be underestimating you![BR]
+[Wait][Next]
+[Pause 5]VALOR UP![BR]
+[Wait][END]
+}
+
+
+
+
+
+
+#message:2F:(Intro_BattleBM_Talk_One)
+{
+[Style Right]
+The probability of us succeeding[BR]
+has been increased immensely![BR]
+[Wait][END]
+}
+
+
+
+
+
+
+#message:2F:(Intro_BattleRM_Talk_Zero)
+{
+[Style Right]
+Blue If he smashes your pretty[BR]
+face. I will burn his head![BR]
+[Wait][Next]
+Nobody messes with my beloved[BR]
+Blue![BR]
+[Wait][END]
+}
+
+
+
+
+
+
+#message:2F:(Intro_BattleRM_Talk_One)
+{
+[Style Right]
+[Shake]BLUE NO!!![/fx][BR]
+[Wait][Next]
+That's it! I have had enough of[BR]
+this! I will get revenge for Blue![BR]
+Even if I have to use-[BR]
+[Wait][Next]
+[Size 32,32][CenterX 160][Down 5]FIRE BURST![BR]
+[Wait][END]
+}
+
+
+
+
+
+
+#message:2F:(Intro_BattleCK_Talk_Zero)
+{
+[Style Right]
+He really just did that. The both[BR]
+of them were useless as always.[BR]
+I will destroy them[Pause 5] after I am[BR]
+done with you [Color 0x7]MARIO!
+[Wait][END]
+}
+
+
+
+#message:2F:(Intro_BattleCK_Talk_One)
+{
+[Style Right]
+[Pause 5]Why [Pause 5]can't [Pause 10]I WIN!?![BR]
 [Wait][END]
 }

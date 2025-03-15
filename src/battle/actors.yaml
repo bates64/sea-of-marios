@@ -2335,7 +2335,7 @@
     tattleCamOffset: [ 0, 0, 0 ]
     shadowOffset: 0
 - BlueMate:
-    level: 20
+    level: 0
     nameMsg: MSG_EnemyName_BlueMate
     tattleMsg: MSG_EnemyTattle_BlueMate
     walkSound: [ SOUND_GOOMBA_BROS_STEP, SOUND_GOOMBA_BROS_STEP ]
@@ -2346,7 +2346,7 @@
     tattleCamOffset: [ 0, 4, 0 ]
     shadowOffset: 0
 - RedMate:
-    level: 20
+    level: 0
     nameMsg: MSG_EnemyName_RedMate
     tattleMsg: MSG_EnemyTattle_RedMate
     walkSound: [ SOUND_GOOMBA_BROS_STEP, SOUND_GOOMBA_BROS_STEP ]
@@ -2357,7 +2357,7 @@
     tattleCamOffset: [ 0, 4, 0 ]
     shadowOffset: 0
 - CaptainKuribo:
-    level: 49
+    level: 100
     nameMsg: MSG_EnemyName_CaptainKuribo
     tattleMsg: MSG_EnemyTattle_CaptainKuribo
     walkSound: [ SOUND_HEAVY_NPC_STEP_A, SOUND_HEAVY_NPC_STEP_A ]

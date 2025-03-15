@@ -10,6 +10,7 @@
 		<Palette id="6" src="Red_Shocked.png"/>
 		<Palette id="7" src="Blue_Shocked.png"/>
 		<Palette id="8" src="Burnt.png"/>
+        <Palette id="9" src="Red_Fire.png"/>
 	</PaletteList>
 	<RasterList>
 		<Raster id="0" name="Step1" palette="0" src="Step1.png"/>
