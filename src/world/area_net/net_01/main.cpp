@@ -9,19 +9,18 @@ EntryList Entrances = { GEN_ENTRY_LIST };
 EvtScript EVS_Scene_MeetCaptainKuribo = {
     Set(GB_NET01_Intro, 1)
     Call(DisablePlayerInput, TRUE)
-    Call(GetNpcPos, NPC_CaptainKuribo, LVar0, LVar1, LVar2)
-    Call(UseSettingsFrom, CAM_DEFAULT, LVar0, LVar1, LVar2)
-    Call(SetCamDistance, CAM_DEFAULT, 325)
-    Call(SetCamSpeed, CAM_DEFAULT, Float(4.0))
-    Call(SetPanTarget, CAM_DEFAULT, LVar0, LVar1, LVar2)
-    Call(PanToTarget, CAM_DEFAULT, 0, TRUE)
-    Call(WaitForCam, CAM_DEFAULT, Float(1.0))
+    // Call(WaitForCam, CAM_DEFAULT, Float(1.0))
     Call(SpeakToNpc, NPC_CaptainKuribo, ANIM_CaptainKuribo_Talk, ANIM_CaptainKuribo_Idle, 0, NPC_CaptainKuribo, MSG_Intro_WorldCK_Talk_One)
     Call(SpeakToNpc, NPC_Goomate_Red, ANIM_Goomates_Red_Talk, ANIM_Goomates_Red_Idle, 0, NPC_CaptainKuribo, MSG_Intro_WorldRM_Talk_Zero)
     Call(SpeakToNpc, NPC_CaptainKuribo, ANIM_CaptainKuribo_Talk, ANIM_CaptainKuribo_Angry, 0, NPC_Goomate_Red, MSG_Intro_WorldCK_Talk_Two)
     Call(SpeakToNpc, NPC_Goomate_Blue, ANIM_Goomates_Blue_Talk, ANIM_Goomates_Blue_Idle, 0, NPC_CaptainKuribo, MSG_Intro_WorldBM_Talk_Zero)
     Call(SpeakToNpc, NPC_CaptainKuribo, ANIM_CaptainKuribo_Talk, ANIM_CaptainKuribo_Angry, 0, NPC_Goomate_Blue, MSG_Intro_WorldCK_Talk_Three)
     Call(SpeakToNpc, NPC_Goomate_Red, ANIM_Goomates_Red_Talk, ANIM_Goomates_Red_Idle, 0, NPC_CaptainKuribo, MSG_Intro_WorldRM_Talk_One)
+    Call(UseSettingsFrom, CAM_DEFAULT, GEN_CAMERA1_VEC)
+    Call(SetCamSpeed, CAM_DEFAULT, Float(90.0))
+    Call(SetPanTarget, CAM_DEFAULT, GEN_CAMERA1_VEC)
+    Call(PanToTarget, CAM_DEFAULT, 0, TRUE)
+    // Call(WaitForCam, CAM_DEFAULT, Float(1.0))
     Call(SpeakToPlayer, NPC_CaptainKuribo, ANIM_CaptainKuribo_Talk, ANIM_CaptainKuribo_Angry, 0, MSG_Intro_WorldCK_Talk_Four)
     Call(SpeakToNpc, NPC_Goomate_Blue, ANIM_Goomates_Blue_Talk, ANIM_Goomates_Blue_Idle, 0, NPC_CaptainKuribo, MSG_Intro_WorldBM_Talk_One)
     Call(SpeakToPlayer, NPC_CaptainKuribo, ANIM_CaptainKuribo_Talk, ANIM_CaptainKuribo_Angry, 0, MSG_Intro_WorldCK_Talk_Five)
@@ -82,6 +81,7 @@ API_CALLABLE(MakeLensFlare) {
 EvtScript EVS_Scene_BossDefeated = {
     Call(DisablePlayerInput, TRUE)
     Call(SetEncounterStatusFlags, ENCOUNTER_FLAG_THUMBS_UP, FALSE)
+    Call(SetPlayerAnimation, ANIM_Mario1_Still)
     Call(SetNpcAnimation, NPC_CaptainKuribo, ANIM_CaptainKuribo_Dead)
     Call(SetNpcAnimation, NPC_Goomate_Red, ANIM_Goomates_Red_BurnStill)
     Call(SetNpcAnimation, NPC_Goomate_Blue, ANIM_Goomates_Blue_CryStill)
@@ -95,17 +95,17 @@ EvtScript EVS_Scene_BossDefeated = {
     Call(SetNpcPos, NPC_Goomate_Blue, NPC_DISPOSE_LOCATION)
     Wait(30)
     Call(N(FadeBackgroundLighten))
-    Call(SetZoneEnabled, ZONE_Floor, TRUE)
-    Call(SetZoneEnabled, ZONE_FloorCutscene, FALSE)
     Call(GetPlayerPos, LVar0, LVar1, LVar2)
     Call(UseSettingsFrom, CAM_DEFAULT, LVar0, LVar1, LVar2)
     Call(SetCamSpeed, CAM_DEFAULT, Float(4.0))
     Call(SetPanTarget, CAM_DEFAULT, LVar0, LVar1, LVar2)
     Call(PanToTarget, CAM_DEFAULT, 0, TRUE)
-    Call(WaitForCam, CAM_DEFAULT, Float(1.0))
+    // Call(WaitForCam, CAM_DEFAULT, Float(1.0))
+    // Call(ResetCam, CAM_DEFAULT, Float(3.0))
     Call(RemoveNpc, NPC_CaptainKuribo)
     Call(RemoveNpc, NPC_Goomate_Red)
     Call(RemoveNpc, NPC_Goomate_Blue)
+    Call(SetPlayerAnimation, ANIM_Mario1_Idle)
     Call(DisablePlayerInput, FALSE)
     Return
     End
@@ -151,7 +151,7 @@ EvtScript EVS_NpcDefeat_CaptainKuribo = {
         CaseEq(OUTCOME_PLAYER_LOST)
         CaseEq(OUTCOME_PLAYER_FLED)
     EndSwitch
-    Call(DisablePlayerInput, FALSE)
+    // Call(DisablePlayerInput, FALSE)
     Return
     End
 };
@@ -304,12 +304,14 @@ EvtScript EVS_EnterMap = {
     CaseEq(0)
         Switch(GB_NET01_Intro)
         CaseEq(0)
-            Call(SetZoneEnabled, ZONE_FloorCutscene, TRUE)
-            Call(SetZoneEnabled, ZONE_Floor, FALSE)
+            Call(UseSettingsFrom, CAM_DEFAULT, GEN_CAMERA0_VEC)
+            Call(SetCamSpeed, CAM_DEFAULT, Float(90.0))
+            Call(SetPanTarget, CAM_DEFAULT, GEN_CAMERA0_VEC)
+            Call(PanToTarget, CAM_DEFAULT, 0, TRUE)
             Call(MakeNpcs, TRUE, Ref(IntroNPCs))
+            Call(SetPlayerPos, GEN_MARIO_POS_VEC)
             ExecWait(EVS_Scene_MeetCaptainKuribo)
         CaseEq(1)
-            Call(SetZoneEnabled, ZONE_FloorCutscene, FALSE)
             Return
         EndSwitch
     EndSwitch
@@ -325,6 +327,7 @@ EvtScript EVS_Main = {
     Call(PlayAmbientSounds, AMBIENT_SEA)
     Call(EnableGroup, MODEL_SmallShip, FALSE)
     Exec(EVS_EnterMap)
+    Wait(1)
     Return
     End
 };

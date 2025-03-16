@@ -7,6 +7,7 @@
 #include "mapfs/net_01_shape.h"
 #include "mapfs/net_01_hit.h"
 
+#include "sprite/player.h"
 #include "sprite/npc/CaptainKuribo.h"
 #include "sprite/npc/Goomates.h"
 

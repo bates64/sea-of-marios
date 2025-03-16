@@ -32,9 +32,9 @@
 // anim: ANIM_Goomates_Red_Idle
 #define GEN_RED_MATE_X 97
 #define GEN_RED_MATE_Y 0
-#define GEN_RED_MATE_Z 198
+#define GEN_RED_MATE_Z 223
 #define GEN_RED_MATE_DIR 0
-#define GEN_RED_MATE_VEC 97,0,198
+#define GEN_RED_MATE_VEC 97,0,223
 #define GEN_RED_MATE_TERRITORY \
 {}
 
@@ -43,9 +43,9 @@
 // anim: ANIM_Goomates_Blue_Idle
 #define GEN_BLUE_MATE_X 97
 #define GEN_BLUE_MATE_Y 0
-#define GEN_BLUE_MATE_Z 138
+#define GEN_BLUE_MATE_Z 113
 #define GEN_BLUE_MATE_DIR 0
-#define GEN_BLUE_MATE_VEC 97,0,138
+#define GEN_BLUE_MATE_VEC 97,0,113
 #define GEN_BLUE_MATE_TERRITORY \
 {}
 
@@ -56,4 +56,20 @@
 #define GEN_MARIO_POS_Z 167
 #define GEN_MARIO_POS_DIR 0
 #define GEN_MARIO_POS_VEC -27,0,167
+
+// type: Marker:Position
+// name: Camera0
+#define GEN_CAMERA0_X -27
+#define GEN_CAMERA0_Y 87
+#define GEN_CAMERA0_Z 167
+#define GEN_CAMERA0_DIR 0
+#define GEN_CAMERA0_VEC -27,87,167
+
+// type: Marker:Position
+// name: Camera1
+#define GEN_CAMERA1_X -27
+#define GEN_CAMERA1_Y 248
+#define GEN_CAMERA1_Z 167
+#define GEN_CAMERA1_DIR 0
+#define GEN_CAMERA1_VEC -27,248,167
 
