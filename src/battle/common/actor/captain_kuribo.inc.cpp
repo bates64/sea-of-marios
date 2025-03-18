@@ -98,8 +98,8 @@ s32 FuryAnims[] = {
 };
 
 s32 DefenseTable[] = {
-    ELEMENT_NORMAL,   -2,
-    ELEMENT_FIRE,     -3,
+    ELEMENT_NORMAL,   0,
+    ELEMENT_FIRE,     -1,
     ELEMENT_END,
 };
 
@@ -182,46 +182,48 @@ EvtScript EVS_Init = {
 };
 
 EvtScript EVS_Idle = {
-    Call(GetActorVar, ACTOR_SELF, AVAR_RedDead, LVar5)
-    IfEq(LVar5, 2)
-        Call(SetIdleAnimations, ACTOR_SELF, PRT_MAIN, Ref(FuryAnims))
-        Return
-    Else
-        Label(0)
-        Call(RandInt, 80, LVar0)
-        Add(LVar0, 80)
-        Wait(LVar0)
-        Label(1)
-            Call(GetStatusFlags, ACTOR_SELF, LVar0)
-            IfFlag(LVar0, STATUS_FLAGS_IMMOBILIZED)
-                Wait(1)
-                Goto(1)
-            EndIf
-        Call(SetGoalToHome, ACTOR_SELF)
-        Call(GetGoalPos, ACTOR_SELF, LVar0, LVar1, LVar2)
-        Add(LVar0, 5)
-        Call(SetActorIdleSpeed, ACTOR_SELF, Float(1.0))
-        Call(SetIdleAnimations, ACTOR_SELF, PRT_MAIN, Ref(ShuffleAnims))
-        Call(SetIdleGoal, ACTOR_SELF, LVar0, LVar1, LVar2)
-        Call(IdleRunToGoal, ACTOR_SELF, 0)
-        Call(SetIdleAnimations, ACTOR_SELF, PRT_MAIN, Ref(DefaultAnims))
-        Wait(20)
-        Label(2)
-            Call(GetStatusFlags, ACTOR_SELF, LVar0)
-            IfFlag(LVar0, STATUS_FLAGS_IMMOBILIZED)
-                Wait(1)
-                Goto(2)
-            EndIf
-        Call(SetGoalToHome, ACTOR_SELF)
-        Call(GetGoalPos, ACTOR_SELF, LVar0, LVar1, LVar2)
-        Call(SetActorIdleSpeed, ACTOR_SELF, Float(1.0))
-        Call(SetIdleAnimations, ACTOR_SELF, PRT_MAIN, Ref(ShuffleAnims))
-        Call(SetIdleGoal, ACTOR_SELF, LVar0, LVar1, LVar2)
-        Call(IdleRunToGoal, ACTOR_SELF, 0)
-        Call(SetIdleAnimations, ACTOR_SELF, PRT_MAIN, Ref(DefaultAnims))
-        Wait(80)
-        Goto(0)
-    EndIf
+    Call(SetIdleAnimations, ACTOR_SELF, PRT_MAIN, Ref(FuryAnims))
+
+    Label(0)
+    Call(RandInt, 80, LVar0)
+    Add(LVar0, 80)
+    Wait(LVar0)
+    Label(1)
+        Call(GetStatusFlags, ACTOR_SELF, LVar0)
+        IfFlag(LVar0, STATUS_FLAGS_IMMOBILIZED)
+            Wait(1)
+            Goto(1)
+        EndIf
+    Call(SetGoalToHome, ACTOR_SELF)
+    Call(GetGoalPos, ACTOR_SELF, LVar0, LVar1, LVar2)
+    Add(LVar0, 5)
+    Call(SetActorIdleSpeed, ACTOR_SELF, Float(1.0))
+    Call(SetIdleAnimations, ACTOR_SELF, PRT_MAIN, Ref(ShuffleAnims))
+    Call(SetIdleGoal, ACTOR_SELF, LVar0, LVar1, LVar2)
+    Call(IdleRunToGoal, ACTOR_SELF, 0)
+    Call(SetIdleAnimations, ACTOR_SELF, PRT_MAIN, Ref(DefaultAnims))
+    Wait(20)
+    Label(2)
+        Call(GetStatusFlags, ACTOR_SELF, LVar0)
+        IfFlag(LVar0, STATUS_FLAGS_IMMOBILIZED)
+            Wait(1)
+            Goto(2)
+        EndIf
+    Call(SetGoalToHome, ACTOR_SELF)
+    Call(GetGoalPos, ACTOR_SELF, LVar0, LVar1, LVar2)
+    Call(SetActorIdleSpeed, ACTOR_SELF, Float(1.0))
+    Call(SetIdleAnimations, ACTOR_SELF, PRT_MAIN, Ref(ShuffleAnims))
+    Call(SetIdleGoal, ACTOR_SELF, LVar0, LVar1, LVar2)
+    Call(IdleRunToGoal, ACTOR_SELF, 0)
+    Call(SetIdleAnimations, ACTOR_SELF, PRT_MAIN, Ref(DefaultAnims))
+    Wait(80)
+    Goto(0)
+    Return
+    End
+};
+
+EvtScript EVS_FuryIdle = {
+    Call(SetIdleAnimations, ACTOR_SELF, PRT_MAIN, Ref(FuryAnims))
     Return
     End
 };
@@ -374,9 +376,8 @@ EvtScript EVS_TakeTurn = {
         Call(UseBattleCamPreset, BTL_CAM_ACTOR)
         Call(BattleCamTargetActor, ACTOR_SELF)
         Call(MoveBattleCamOver, 30)
+        Call(BindIdle, ACTOR_SELF, Ref(EVS_FuryIdle))
         Wait(30)
-        Call(ActorSpeak, MSG_Intro_BattleCK_Talk_Zero, ACTOR_SELF, PRT_MAIN, ANIM_CaptainKuribo_Talk, ANIM_CaptainKuribo_Angry)
-        Call(SetIdleAnimations, ACTOR_SELF, PRT_MAIN, Ref(FuryAnims))
         ExecWait(EVS_Attack_SpinKick)
         Return
     EndIf
@@ -486,13 +487,45 @@ EvtScript EVS_Attack_SpinKick = {
         Call(SetActorRotation, ACTOR_SELF, 0, 0, 0)
         Call(SetActorYaw, ACTOR_SELF, 0)
         Call(SetActorDispOffset, ACTOR_SELF, 0, 0, 0)
-        Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_CaptainKuribo_Idle)
         Call(GetActorPos, ACTOR_SELF, LVar0, LVar1, LVar2)
-        Add(LVar0, 20)
+        Add(LVar0, 30)
         Set(LVar1, 0)
+        Add(LVar2, 30)
         Call(SetGoalPos, ACTOR_SELF, LVar0, LVar1, LVar2)
         Call(SetActorJumpGravity, ACTOR_SELF, Float(0.8))
+        Thread
+            Wait(3)
+            Set(LVar0, 90)
+            Loop(3)
+                Sub(LVar0, 30)
+                Call(SetActorRotation, ACTOR_SELF, 0, 0, LVar0)
+                Wait(1)
+            EndLoop
+            Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_CaptainKuribo_Dead)
+        EndThread
         Call(JumpToGoal, ACTOR_SELF, 20, FALSE, TRUE, FALSE)
+        Call(SetOwnerTarget, ACTOR_SELF, PRT_MAIN)
+        Call(SetGoalToTarget, ACTOR_SELF)
+        Call(EnemyDamageTarget, ACTOR_SELF, LVarA, 0, 0, 0, dmgStomp, BS_FLAGS1_TRIGGER_EVENTS)
+        Call(GetActorPos, ACTOR_SELF, LVar0, LVar1, LVar2)
+        Add(LVar0, 30)
+        Set(LVar1, 0)
+        Call(SetGoalPos, ACTOR_SELF, LVar0, LVar1, LVar2)
+        Call(JumpToGoal, ACTOR_SELF, 20, FALSE, TRUE, FALSE)
+        Call(SetOwnerTarget, ACTOR_SELF, PRT_MAIN)
+        Call(SetGoalToTarget, ACTOR_SELF)
+        Call(EnemyDamageTarget, ACTOR_SELF, LVarA, 0, 0, 0, dmgStomp, BS_FLAGS1_TRIGGER_EVENTS)
+        Thread
+            Wait(3)
+            Set(LVar0, 90)
+            Loop(3)
+                Add(LVar0, 30)
+                Call(SetActorRotation, ACTOR_SELF, 0, 0, LVar0)
+                Wait(1)
+            EndLoop
+            Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_CaptainKuribo_Dead)
+        EndThread
+        Call(SetActorRotation, ACTOR_SELF, 0, 0, 0)
         ExecWait(EVS_ReturnHome)
     EndIf
     Call(EnableIdleScript, ACTOR_SELF, IDLE_SCRIPT_ENABLE)
@@ -777,7 +810,6 @@ EvtScript EVS_HandlePhase = {
     //         Call(GetActorVar, ACTOR_SELF, AVAR_RedDead, LVar3)
     //         IfEq(LVar3, TRUE)
     //             Call(SetActorVar, ACTOR_SELF, AVAR_RedDead, 2)
-    //             Call(ActorSpeak, MSG_Intro_BattleCK_Talk_Zero, ACTOR_SELF, PRT_MAIN, ANIM_CaptainKuribo_Talk, ANIM_CaptainKuribo_Idle)
     //             Call(SetIdleAnimations, ACTOR_SELF, PRT_MAIN, Ref(FuryAnims))
     //             ExecWait(EVS_Attack_SpinKick)
     //         EndIf
@@ -828,7 +860,6 @@ EvtScript EVS_Death = {
     Call(BattleCamTargetActor, ACTOR_SELF)
     Call(MoveBattleCamOver, 30)
     Wait(30)
-    Call(ActorSpeak, MSG_Intro_BattleCK_Talk_One, ACTOR_SELF, PRT_MAIN, ANIM_CaptainKuribo_Talk, ANIM_CaptainKuribo_Dead)
     Set(LVar2, 0)
     Call(SetAnimation, ACTOR_SELF, LVar0, LVar1)
     Wait(10)

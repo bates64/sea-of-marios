@@ -29,8 +29,8 @@
 #include "battle/common/actor/red_and_blue_mate.hpp"
 #include "battle/common/actor/red_and_blue_mate.inc.cpp"
 
-#include "battle/common/actor/mecha_blooper_and_baby_blooper.hpp"
-#include "battle/common/actor/mecha_blooper_and_baby_blooper.inc.cpp"
+#include "battle/common/actor/super_blooper_and_baby_blooper.hpp"
+#include "battle/common/actor/super_blooper_and_baby_blooper.inc.cpp"
 
 using namespace battle::actor;
 
@@ -70,8 +70,8 @@ Formation Formation_Cleft = {
     ACTOR_BY_IDX(Cleft, BTL_POS_GROUND_B, 10),
 };
 
-Formation Formation_MechaBlooper = {
-    ACTOR_BY_POS(MechaBlooper, BlooperPos, 10),
+Formation Formation_SuperBlooper = {
+    ACTOR_BY_POS(SuperBlooper, BlooperPos, 10),
 };
 
 Formation Formation_CaptainKuribo = {
@@ -82,14 +82,14 @@ Formation Formation_CaptainKuribo = {
 
 BattleList Battles = {
     BATTLE(Formation_Goomba, ForestPath, "Goomba"),
-    BATTLE(Formation_KoopaTroopa, ForestPath, "KoopaTroopa"),
-    BATTLE(Formation_SpearGuy, ForestPath, "SpearGuy"),
-    BATTLE(Formation_JungleFuzzy, ForestPath, "JungleFuzzy"),
+    BATTLE(Formation_KoopaTroopa, ForestPath, "Koopa Troopa"),
+    BATTLE(Formation_SpearGuy, ForestPath, "Spear Guy"),
+    BATTLE(Formation_JungleFuzzy, ForestPath, "Jungle Fuzzy"),
     BATTLE(Formation_Pokey, ForestPath, "Pokey"),
     BATTLE(Formation_Bandit, ForestPath, "Bandit"),
     BATTLE(Formation_Cleft, ForestPath, "Cleft"),
-    BATTLE(Formation_MechaBlooper, ForestPath, "MechaBlooper"),
-    BATTLE(Formation_CaptainKuribo, ShipDeck, "CaptainKuribo"),
+    BATTLE(Formation_SuperBlooper, ForestPath, "Super Blooper"),
+    BATTLE(Formation_CaptainKuribo, ShipDeck, "Captain Kuribo"),
     {},
 };
 

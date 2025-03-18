@@ -4,7 +4,7 @@
 
 namespace battle::actor {
 
-extern ActorBlueprint MechaBlooper;
+extern ActorBlueprint SuperBlooper;
 extern ActorBlueprint BabyBlooper;
 
 }; // namespace battle::actor

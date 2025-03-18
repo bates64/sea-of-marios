@@ -2,14 +2,14 @@
 #include "effects.h"
 #include "battle/battle.h"
 #include "script_api/battle.h"
-#include "sprite/npc/MechaBlooper.h"
+#include "sprite/npc/Blooper.h"
 #include "sprite/npc/BabyBlooper.h"
 #include "battle/action_cmd/stop_leech.h"
 #include "sprite/player.h"
 
 namespace battle::actor {
 
-namespace mecha_blooper {
+namespace super_blooper {
 
 extern EvtScript EVS_Init;
 extern EvtScript EVS_Idle;
@@ -48,8 +48,8 @@ constexpr s32 dmgInkBlast = 5;
 constexpr s32 dmgChargedDrop = 10;
 
 EvtScript EVS_FloatToPos = {
-    Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_MechaBlooper_Still)
-    Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_MechaBlooper_IdleRise)
+    Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_Blooper_Anim00)
+    Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_Blooper_Anim0C)
     Call(GetActorPos, ACTOR_SELF, LVarA, LVarB, LVarC)
     IfGt(LVarB, 20)
         Sub(LVarB, 20)
@@ -76,8 +76,8 @@ EvtScript EVS_FloatToPos = {
     Call(SetActorSpeed, ACTOR_SELF, Float(3.0))
     Call(SetGoalPos, ACTOR_SELF, LVar7, LVar8, LVar9)
     Call(FlyToGoal, ACTOR_SELF, LVar3, -2, EASING_CUBIC_OUT)
-    Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_MechaBlooper_Still)
-    Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_MechaBlooper_IdleRise)
+    Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_Blooper_Anim00)
+    Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_Blooper_Anim0C)
     Call(GetActorPos, ACTOR_SELF, LVarA, LVarB, LVarC)
     Sub(LVarB, 20)
     Call(SetGoalPos, ACTOR_SELF, LVarA, LVarB, LVarC)
@@ -99,8 +99,8 @@ EvtScript EVS_FloatToPos = {
     Call(SetActorSpeed, ACTOR_SELF, Float(3.0))
     Call(SetGoalPos, ACTOR_SELF, LVar7, LVar8, LVar9)
     Call(FlyToGoal, ACTOR_SELF, LVar3, -2, EASING_CUBIC_OUT)
-    Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_MechaBlooper_Still)
-    Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_MechaBlooper_IdleRise)
+    Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_Blooper_Anim00)
+    Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_Blooper_Anim0C)
     Call(GetActorPos, ACTOR_SELF, LVarA, LVarB, LVarC)
     Sub(LVarB, 20)
     Call(SetGoalPos, ACTOR_SELF, LVarA, LVarB, LVarC)
@@ -124,35 +124,35 @@ EvtScript EVS_FloatToHome = {
 };
 
 s32 DefaultAnims[] = {
-    STATUS_KEY_NORMAL,    ANIM_MechaBlooper_Still,
-    STATUS_KEY_STOP,      ANIM_MechaBlooper_Still,
-    STATUS_KEY_SLEEP,     ANIM_MechaBlooper_Sleep,
-    STATUS_KEY_PARALYZE,  ANIM_MechaBlooper_Dizzy,
-    STATUS_KEY_PARALYZE,  ANIM_MechaBlooper_Still,
-    STATUS_KEY_DIZZY,     ANIM_MechaBlooper_Dizzy,
-    STATUS_KEY_SHRINK,    ANIM_MechaBlooper_Still,
+    STATUS_KEY_NORMAL,    ANIM_Blooper_Anim00,
+    STATUS_KEY_STOP,      ANIM_Blooper_Anim00,
+    STATUS_KEY_SLEEP,     ANIM_Blooper_Anim07,
+    STATUS_KEY_PARALYZE,  ANIM_Blooper_Anim08,
+    STATUS_KEY_PARALYZE,  ANIM_Blooper_Anim00,
+    STATUS_KEY_DIZZY,     ANIM_Blooper_Anim08,
+    STATUS_KEY_SHRINK,    ANIM_Blooper_Anim00,
     STATUS_END,
 };
 
 s32 AscendAnims[] = {
-    STATUS_KEY_NORMAL,    ANIM_MechaBlooper_IdleRise,
-    STATUS_KEY_STOP,      ANIM_MechaBlooper_Still,
-    STATUS_KEY_SLEEP,     ANIM_MechaBlooper_Sleep,
-    STATUS_KEY_PARALYZE,  ANIM_MechaBlooper_Dizzy,
-    STATUS_KEY_PARALYZE,  ANIM_MechaBlooper_Still,
-    STATUS_KEY_DIZZY,     ANIM_MechaBlooper_Dizzy,
-    STATUS_KEY_SHRINK,    ANIM_MechaBlooper_IdleRise,
+    STATUS_KEY_NORMAL,    ANIM_Blooper_Anim0C,
+    STATUS_KEY_STOP,      ANIM_Blooper_Anim00,
+    STATUS_KEY_SLEEP,     ANIM_Blooper_Anim07,
+    STATUS_KEY_PARALYZE,  ANIM_Blooper_Anim08,
+    STATUS_KEY_PARALYZE,  ANIM_Blooper_Anim00,
+    STATUS_KEY_DIZZY,     ANIM_Blooper_Anim08,
+    STATUS_KEY_SHRINK,    ANIM_Blooper_Anim0C,
     STATUS_END,
 };
 
 s32 DescendAnims[] = {
-    STATUS_KEY_NORMAL,    ANIM_MechaBlooper_Still,
-    STATUS_KEY_STOP,      ANIM_MechaBlooper_Still,
-    STATUS_KEY_SLEEP,     ANIM_MechaBlooper_Sleep,
-    STATUS_KEY_PARALYZE,  ANIM_MechaBlooper_Dizzy,
-    STATUS_KEY_PARALYZE,  ANIM_MechaBlooper_Still,
-    STATUS_KEY_DIZZY,     ANIM_MechaBlooper_Dizzy,
-    STATUS_KEY_SHRINK,    ANIM_MechaBlooper_Still,
+    STATUS_KEY_NORMAL,    ANIM_Blooper_Anim00,
+    STATUS_KEY_STOP,      ANIM_Blooper_Anim00,
+    STATUS_KEY_SLEEP,     ANIM_Blooper_Anim07,
+    STATUS_KEY_PARALYZE,  ANIM_Blooper_Anim08,
+    STATUS_KEY_PARALYZE,  ANIM_Blooper_Anim00,
+    STATUS_KEY_DIZZY,     ANIM_Blooper_Anim08,
+    STATUS_KEY_SHRINK,    ANIM_Blooper_Anim00,
     STATUS_END,
 };
 
@@ -271,9 +271,9 @@ EvtScript EVS_Idle = {
             Goto(11)
         EndIf
         Call(SetIdleAnimations, ACTOR_SELF, PRT_MAIN, Ref(AscendAnims))
-        Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_MechaBlooper_Still)
+        Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_Blooper_Anim00)
         Wait(9)
-        Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_MechaBlooper_IdleRise)
+        Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_Blooper_Anim0C)
         Call(SetActorIdleJumpGravity, ACTOR_SELF, Float(1.0))
         Call(SetActorIdleSpeed, ACTOR_SELF, Float(1.0))
         Call(SetIdleGoal, ACTOR_SELF, LVar0, LVar1, LVar2)
@@ -292,9 +292,9 @@ EvtScript EVS_Idle = {
             Goto(12)
         EndIf
         Call(SetIdleAnimations, ACTOR_SELF, PRT_MAIN, Ref(AscendAnims))
-        Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_MechaBlooper_Still)
+        Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_Blooper_Anim00)
         Wait(9)
-        Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_MechaBlooper_IdleRise)
+        Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_Blooper_Anim0C)
         Call(SetActorIdleJumpGravity, ACTOR_SELF, Float(1.0))
         Call(SetActorIdleSpeed, ACTOR_SELF, Float(1.0))
         Call(SetIdleGoal, ACTOR_SELF, LVar0, LVar1, LVar2)
@@ -328,41 +328,41 @@ EvtScript EVS_HandleEvent = {
         CaseOrEq(EVENT_HIT_COMBO)
         CaseOrEq(EVENT_HIT)
             SetConst(LVar0, PRT_MAIN)
-            SetConst(LVar1, ANIM_MechaBlooper_Hurt)
+            SetConst(LVar1, ANIM_Blooper_Anim04)
             ExecWait(EVS_Enemy_Hit)
         EndCaseGroup
         CaseEq(EVENT_DEATH)
             SetConst(LVar0, PRT_MAIN)
-            SetConst(LVar1, ANIM_MechaBlooper_Hurt)
+            SetConst(LVar1, ANIM_Blooper_Anim04)
             ExecWait(EVS_Enemy_Hit)
             SetConst(LVar0, PRT_MAIN)
-            SetConst(LVar1, ANIM_MechaBlooper_Hurt)
+            SetConst(LVar1, ANIM_Blooper_Anim04)
             ExecWait(EVS_Death)
             Return
         CaseEq(EVENT_BURN_HIT)
             Set(LVar0, PRT_MAIN)
-            Set(LVar1, ANIM_MechaBlooper_HurtBurn)
-            Set(LVar2, ANIM_MechaBlooper_HurtBurnStill)
+            Set(LVar1, ANIM_Blooper_Anim05)
+            Set(LVar2, ANIM_Blooper_Anim06)
             ExecWait(EVS_Enemy_BurnHit)
         CaseEq(EVENT_BURN_DEATH)
             Set(LVar0, PRT_MAIN)
-            Set(LVar1, ANIM_MechaBlooper_HurtBurn)
-            Set(LVar2, ANIM_MechaBlooper_HurtBurnStill)
+            Set(LVar1, ANIM_Blooper_Anim05)
+            Set(LVar2, ANIM_Blooper_Anim06)
             ExecWait(EVS_Enemy_BurnHit)
             SetConst(LVar0, PRT_MAIN)
-            SetConst(LVar1, ANIM_MechaBlooper_HurtBurnStill)
+            SetConst(LVar1, ANIM_Blooper_Anim06)
             ExecWait(EVS_Death)
             Return
         CaseEq(EVENT_SPIN_SMASH_HIT)
             SetConst(LVar0, PRT_MAIN)
-            SetConst(LVar1, ANIM_MechaBlooper_Hurt)
+            SetConst(LVar1, ANIM_Blooper_Anim04)
             ExecWait(EVS_Enemy_SpinSmashHit)
         CaseEq(EVENT_SPIN_SMASH_DEATH)
             SetConst(LVar0, PRT_MAIN)
-            SetConst(LVar1, ANIM_MechaBlooper_Hurt)
+            SetConst(LVar1, ANIM_Blooper_Anim04)
             ExecWait(EVS_Enemy_SpinSmashHit)
             SetConst(LVar0, PRT_MAIN)
-            SetConst(LVar1, ANIM_MechaBlooper_Hurt)
+            SetConst(LVar1, ANIM_Blooper_Anim04)
             ExecWait(EVS_Death)
             Return
         CaseOrEq(EVENT_ZERO_DAMAGE)
@@ -371,42 +371,42 @@ EvtScript EVS_HandleEvent = {
         CaseOrEq(EVENT_INVUNERABLE_TAUNT)
         CaseOrEq(EVENT_1E)
             SetConst(LVar0, PRT_MAIN)
-            SetConst(LVar1, ANIM_MechaBlooper_Still)
+            SetConst(LVar1, ANIM_Blooper_Anim00)
             ExecWait(EVS_Enemy_NoDamageHit)
         EndCaseGroup
         CaseOrEq(EVENT_STAR_BEAM)
         CaseOrEq(EVENT_PEACH_BEAM)
             ExecWait(EVS_LoseRage)
             SetConst(LVar0, PRT_MAIN)
-            SetConst(LVar1, ANIM_MechaBlooper_Hurt)
+            SetConst(LVar1, ANIM_Blooper_Anim04)
             ExecWait(EVS_Enemy_Hit)
         EndCaseGroup
         CaseEq(EVENT_SHOCK_HIT)
             ExecWait(EVS_LoseRage)
             SetConst(LVar0, PRT_MAIN)
-            SetConst(LVar1, ANIM_MechaBlooper_Hurt)
+            SetConst(LVar1, ANIM_Blooper_Anim04)
             ExecWait(EVS_Enemy_ShockHit)
             SetConst(LVar0, PRT_MAIN)
-            SetConst(LVar1, ANIM_MechaBlooper_Hurt)
+            SetConst(LVar1, ANIM_Blooper_Anim04)
             ExecWait(EVS_Enemy_Knockback)
             ExecWait(EVS_FloatToHome)
         CaseEq(EVENT_SHOCK_DEATH)
             ExecWait(EVS_LoseRage)
             SetConst(LVar0, PRT_MAIN)
-            SetConst(LVar1, ANIM_MechaBlooper_Hurt)
+            SetConst(LVar1, ANIM_Blooper_Anim04)
             ExecWait(EVS_Enemy_ShockHit)
             SetConst(LVar0, PRT_MAIN)
-            SetConst(LVar1, ANIM_MechaBlooper_Hurt)
+            SetConst(LVar1, ANIM_Blooper_Anim04)
             ExecWait(EVS_Enemy_Knockback)
             SetConst(LVar0, PRT_MAIN)
-            SetConst(LVar1, ANIM_MechaBlooper_Hurt)
+            SetConst(LVar1, ANIM_Blooper_Anim04)
             ExecWait(EVS_Death)
             Return
         CaseEq(EVENT_END_FIRST_STRIKE)
             ExecWait(EVS_FloatToHome)
         CaseEq(EVENT_RECOVER_STATUS)
             SetConst(LVar0, PRT_MAIN)
-            SetConst(LVar1, ANIM_MechaBlooper_Still)
+            SetConst(LVar1, ANIM_Blooper_Anim00)
             ExecWait(EVS_Enemy_Recover)
         CaseDefault
     EndSwitch
@@ -499,7 +499,7 @@ EvtScript EVS_Attack_SpinDrop = {
                 EndLoop
                 Call(SetActorYaw, ACTOR_SELF, 0)
             EndThread
-            Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_MechaBlooper_Drill1)
+            Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_Blooper_Anim0D)
             Call(GetActorPos, ACTOR_PLAYER, LVar0, LVar1, LVar2)
             Call(SetActorJumpGravity, ACTOR_SELF, Float(1.5))
             Call(SetGoalPos, ACTOR_SELF, LVar0, LVar1, LVar2)
@@ -528,7 +528,7 @@ EvtScript EVS_Attack_SpinDrop = {
         EndLoop
         Call(SetActorYaw, ACTOR_SELF, 0)
     EndThread
-    Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_MechaBlooper_Drill1)
+    Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_Blooper_Anim0D)
     Call(SetActorJumpGravity, ACTOR_SELF, Float(1.5))
     Call(GetActorPos, ACTOR_PLAYER, LVar0, LVar1, LVar2)
     Add(LVar1, 30)
@@ -538,9 +538,9 @@ EvtScript EVS_Attack_SpinDrop = {
     Call(EnemyDamageTarget, ACTOR_SELF, LVar0, 0, 0, 0, dmgSpinDrop, BS_FLAGS1_TRIGGER_EVENTS)
     Call(GetStatusFlags, ACTOR_PLAYER, LVar0)
     IfFlag(LVar0, STATUS_FLAG_STONE)
-        Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_MechaBlooper_Hurt)
+        Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_Blooper_Anim04)
     Else
-        Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_MechaBlooper_Still)
+        Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_Blooper_Anim00)
     EndIf
     Call(GetActorPos, ACTOR_SELF, LVar0, LVar1, LVar2)
     Add(LVar0, 30)
@@ -563,8 +563,8 @@ EvtScript EVS_Attack_InkBlast = {
     Call(GetGoalPos, ACTOR_SELF, LVar0, LVar1, LVar2)
     Add(LVar0, 85)
     Add(LVar1, 45)
-    Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_MechaBlooper_Still)
-    Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_MechaBlooper_IdleRise)
+    Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_Blooper_Anim00)
+    Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_Blooper_Anim0C)
     Call(GetActorPos, ACTOR_SELF, LVarA, LVarB, LVarC)
     IfGt(LVarB, 30)
         Sub(LVarB, 30)
@@ -588,8 +588,8 @@ EvtScript EVS_Attack_InkBlast = {
     Call(SetActorSpeed, ACTOR_SELF, Float(3.0))
     Call(SetGoalPos, ACTOR_SELF, LVar7, LVar8, LVar9)
     Call(FlyToGoal, ACTOR_SELF, 15, -2, EASING_CUBIC_OUT)
-    Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_MechaBlooper_Still)
-    Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_MechaBlooper_IdleRise)
+    Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_Blooper_Anim00)
+    Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_Blooper_Anim0C)
     Call(GetActorPos, ACTOR_SELF, LVarA, LVarB, LVarC)
     Sub(LVarB, 20)
     Call(SetGoalPos, ACTOR_SELF, LVarA, LVarB, LVarC)
@@ -599,7 +599,7 @@ EvtScript EVS_Attack_InkBlast = {
     Call(SetActorSpeed, ACTOR_SELF, Float(3.0))
     Call(SetGoalPos, ACTOR_SELF, LVar0, LVar1, LVar2)
     Call(FlyToGoal, ACTOR_SELF, 15, -2, EASING_CUBIC_OUT)
-    Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_MechaBlooper_Ink)
+    Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_Blooper_Anim03)
     Call(GetActorPos, ACTOR_SELF, LVarA, LVarB, LVarC)
     Sub(LVarB, 30)
     Call(SetActorJumpGravity, ACTOR_SELF, Float(0.2))
@@ -623,7 +623,7 @@ EvtScript EVS_Attack_InkBlast = {
                 Call(EnemyTestTarget, ACTOR_SELF, LVarF, DAMAGE_TYPE_TRIGGER_LUCKY, 0, 0, 0)
             EndIf
             Wait(30)
-            Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_MechaBlooper_Still)
+            Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_Blooper_Anim00)
             Call(SetActorRotation, ACTOR_SELF, 0, 0, 0)
             Call(SetActorRotationOffset, ACTOR_SELF, 0, 0, 0)
             ExecWait(EVS_FloatToHome)
@@ -637,7 +637,7 @@ EvtScript EVS_Attack_InkBlast = {
     Call(SetDamageSource, DMG_SRC_INK_BLAST)
     Call(EnemyDamageTarget, ACTOR_SELF, LVarF, DAMAGE_TYPE_NO_CONTACT, 0, 0, dmgInkBlast, BS_FLAGS1_TRIGGER_EVENTS)
     Wait(30)
-    Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_MechaBlooper_Still)
+    Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_Blooper_Anim00)
     Call(SetActorRotation, ACTOR_SELF, 0, 0, 0)
     Call(SetActorRotationOffset, ACTOR_SELF, 0, 0, 0)
     ExecWait(EVS_FloatToHome)
@@ -669,7 +669,7 @@ EvtScript EVS_Move_MakeBabies = {
     Call(SetBattleCamOffsetY, 65)
     Call(SetBattleCamDist, 240)
     Call(MoveBattleCamOver, 15)
-    Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_MechaBlooper_Baby1)
+    Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_Blooper_Anim09)
     Wait(15)
     Call(N(StartRumbleWithParams), 100, 20)
     Thread
@@ -680,7 +680,7 @@ EvtScript EVS_Move_MakeBabies = {
     Call(SetBattleCamOffsetY, 80)
     Call(SetBattleCamDist, 150)
     Call(MoveBattleCamOver, 15)
-    Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_MechaBlooper_Baby2)
+    Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_Blooper_Anim0A)
     Wait(15)
     Call(N(StartRumbleWithParams), 150, 20)
     Thread
@@ -691,11 +691,11 @@ EvtScript EVS_Move_MakeBabies = {
     Call(SetBattleCamOffsetY, 95)
     Call(SetBattleCamDist, 60)
     Call(MoveBattleCamOver, 15)
-    Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_MechaBlooper_Baby3)
+    Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_Blooper_Anim0B)
     Wait(30)
     Call(UseBattleCamPreset, BTL_CAM_DEFAULT)
     Call(MoveBattleCamOver, 20)
-    Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_MechaBlooper_Ink)
+    Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_Blooper_Anim03)
     Wait(10)
     Call(ActorExists, ACTOR_ENEMY1, LVar1)
     IfFalse(LVar1)
@@ -708,7 +708,7 @@ EvtScript EVS_Move_MakeBabies = {
         Call(SummonEnemy, Ref(BabyFormation2), FALSE)
     EndIf
     Wait(2)
-    Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_MechaBlooper_IdleRise)
+    Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_Blooper_Anim0C)
     Call(N(FadeBackgroundLighten))
     Call(EnableIdleScript, ACTOR_SELF, IDLE_SCRIPT_RESTART)
     Call(UseIdleAnimation, ACTOR_SELF, TRUE)
@@ -734,11 +734,11 @@ EvtScript EVS_Move_Enrage = {
     Thread
         Call(ShakeCam, CAM_BATTLE, 0, 40, Float(0.3))
     EndThread
-    Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_MechaBlooper_Baby1)
+    Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_Blooper_Anim09)
     Wait(10)
-    Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_MechaBlooper_Baby2)
+    Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_Blooper_Anim0A)
     Wait(10)
-    Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_MechaBlooper_Baby3)
+    Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_Blooper_Anim0B)
     Wait(10)
     ExecWait(EVS_Enrage)
     Call(UseBattleCamPreset, BTL_CAM_DEFAULT)
@@ -773,7 +773,7 @@ EvtScript EVS_Attack_RageDrop = {
                 EndLoop
                 Call(SetActorYaw, ACTOR_SELF, 0)
             EndThread
-            Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_MechaBlooper_Drill1)
+            Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_Blooper_Anim0D)
             Call(GetActorPos, ACTOR_PLAYER, LVar0, LVar1, LVar2)
             Call(SetActorJumpGravity, ACTOR_SELF, Float(1.5))
             Call(SetGoalPos, ACTOR_SELF, LVar0, LVar1, LVar2)
@@ -803,7 +803,7 @@ EvtScript EVS_Attack_RageDrop = {
         EndLoop
         Call(SetActorYaw, ACTOR_SELF, 0)
     EndThread
-    Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_MechaBlooper_Drill1)
+    Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_Blooper_Anim0D)
     Call(SetActorJumpGravity, ACTOR_SELF, Float(1.5))
     Call(GetActorPos, ACTOR_PLAYER, LVar0, LVar1, LVar2)
     Add(LVar1, 30)
@@ -837,9 +837,9 @@ EvtScript EVS_Attack_RageDrop = {
     Label(1)
     Call(GetStatusFlags, ACTOR_PLAYER, LVar0)
     IfFlag(LVar0, STATUS_FLAG_STONE)
-        Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_MechaBlooper_Hurt)
+        Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_Blooper_Anim04)
     Else
-        Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_MechaBlooper_Still)
+        Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_Blooper_Anim00)
     EndIf
     Call(GetActorPos, ACTOR_SELF, LVar0, LVar1, LVar2)
     Add(LVar0, 30)
@@ -858,7 +858,7 @@ EvtScript EVS_Attack_RageDrop = {
 EvtScript EVS_Enrage = {
     Call(SetActorVar, ACTOR_SELF, AVAR_Enraged, TRUE)
     Call(EnableActorPaletteEffects, ACTOR_SELF, PRT_MAIN, TRUE)
-    Call(SetActorPaletteSwapParams, ACTOR_SELF, PRT_MAIN, SPR_PAL_MechaBlooper, SPR_PAL_MechaBlooper_Charged, 0, 6, 12, 6, 0, 0)
+    Call(SetActorPaletteSwapParams, ACTOR_SELF, PRT_MAIN, SPR_PAL_Blooper, SPR_PAL_Blooper_Supercharged, 0, 6, 12, 6, 0, 0)
     Call(SetActorPaletteEffect, ACTOR_SELF, PRT_MAIN, ACTOR_PAL_ADJUST_BLEND_PALETTES_VARYING_INTERVALS)
     Call(SetStatusTable, ACTOR_SELF, Ref(EnragedStatusTable))
     Call(SetPartEventBits, ACTOR_SELF, PRT_TARGET, ACTOR_EVENT_FLAG_ATTACK_CHARGED, TRUE)
@@ -885,7 +885,7 @@ Formation BabyFormation2 = {
     ACTOR_BY_POS(battle::actor::BabyBlooper, SummonPos, 94, .var0 = 134, .var1 = 45),
 };
 
-}; // namespace mecha_blooper
+}; // namespace super_blooper
 
 namespace baby_blooper {
 
@@ -1555,13 +1555,13 @@ EvtScript EVS_TakeTurn = {
 
 ActorBlueprint MechaBlooper = {
     .flags = ACTOR_FLAG_FLYING,
-    .maxHP = mecha_blooper::hp,
-    .type = ACTOR_TYPE_MECHA_BLOOPER,
-    .level = ACTOR_LEVEL_MECHA_BLOOPER,
-    .partCount = ARRAY_COUNT(mecha_blooper::ActorParts),
-    .partsData = mecha_blooper::ActorParts,
-    .initScript = &mecha_blooper::EVS_Init,
-    .statusTable = mecha_blooper::StatusTable,
+    .maxHP = super_blooper::hp,
+    .type = ACTOR_TYPE_super_blooper,
+    .level = ACTOR_LEVEL_super_blooper,
+    .partCount = ARRAY_COUNT(super_blooper::ActorParts),
+    .partsData = super_blooper::ActorParts,
+    .initScript = &super_blooper::EVS_Init,
+    .statusTable = super_blooper::StatusTable,
     .escapeChance = 0,
     .airLiftChance = 0,
     .hurricaneChance = 0,
