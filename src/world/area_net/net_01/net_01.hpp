@@ -8,15 +8,14 @@
 #include "mapfs/net_01_hit.h"
 
 #include "sprite/player.h"
-#include "sprite/npc/CaptainKuribo.h"
-#include "sprite/npc/Goomates.h"
+#include "sprite/npc/JrTroopa.h"
+// #include "sprite/npc/CaptainKuribo.h"
+// #include "sprite/npc/Goomates.h"
 
 namespace net_01 {
 
 enum {
-    NPC_CaptainKuribo,
-    NPC_Goomate_Red,
-    NPC_Goomate_Blue,
+    NPC_JrTroopa,
 };
 
 enum {

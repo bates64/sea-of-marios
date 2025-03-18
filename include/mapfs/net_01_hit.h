@@ -15,8 +15,6 @@
 #define COLLIDER_Wall           0x1
 #define COLLIDER_Floor          0x0
 
-#define ZONE_Root               0x3
-#define ZONE_FloorCutscene1     0x2
-#define ZONE_FloorCutscene0     0x1
+#define ZONE_Root               0x1
 #define ZONE_Floor              0x0
 
