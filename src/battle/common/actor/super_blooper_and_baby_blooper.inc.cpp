@@ -2,6 +2,7 @@
 #include "effects.h"
 #include "battle/battle.h"
 #include "script_api/battle.h"
+#include "model.h"
 #include "sprite/npc/Blooper.h"
 #include "sprite/npc/BabyBlooper.h"
 #include "battle/action_cmd/stop_leech.h"
@@ -239,8 +240,43 @@ ActorPartBlueprint ActorParts[] = {
 };
 
 #include "common/StartRumbleWithParams.inc.c"
-#include "common/FadeBackgroundDarken.inc.c"
-#include "common/FadeBackgroundLighten.inc.c"
+// #include "common/FadeBackgroundDarken.inc.c"
+
+API_CALLABLE((FadeBackgroundDarken)) {
+    if (isInitialCall) {
+        mdl_set_all_tint_type(ENV_TINT_SHROUD);
+        *gBackgroundTintModePtr = ENV_TINT_SHROUD;
+        mdl_set_shroud_tint_params(0, 0, 0, 0);
+        script->functionTemp[0] = 20;
+    }
+
+    mdl_set_shroud_tint_params(0, 0, 0, ((20 - script->functionTemp[0]) * 10) & 254);
+    script->functionTemp[0]--;
+
+    if (script->functionTemp[0] == 0) {
+        return ApiStatus_DONE2;
+    } else {
+        return ApiStatus_BLOCK;
+    }
+}
+
+// #include "common/FadeBackgroundLighten.inc.c"
+
+API_CALLABLE((FadeBackgroundLighten)) {
+    if (isInitialCall) {
+        script->functionTemp[0] = 20;
+    }
+
+    mdl_set_shroud_tint_params(0, 0, 0, (script->functionTemp[0] * 10) & 254);
+
+    script->functionTemp[0]--;
+    if (script->functionTemp[0] == 0) {
+        mdl_set_shroud_tint_params(0, 0, 0, 0);
+        return ApiStatus_DONE2;
+    }
+    return ApiStatus_BLOCK;
+}
+
 #include "common/SpitInk.inc.c"
 
 EvtScript EVS_Init = {
@@ -659,7 +695,7 @@ EvtScript EVS_Move_MakeBabies = {
     Call(MoveBattleCamOver, 40)
     Wait(20)
     Call(PlaySoundAtActor, ACTOR_SELF, SOUND_BIG_POWER_UP)
-    Call(N(FadeBackgroundDarken))
+    Call((FadeBackgroundDarken))
     Call(N(StartRumbleWithParams), 50, 20)
     Thread
         Call(ShakeCam, CAM_BATTLE, 0, 10, Float(0.3))
@@ -709,7 +745,7 @@ EvtScript EVS_Move_MakeBabies = {
     EndIf
     Wait(2)
     Call(SetAnimation, ACTOR_SELF, PRT_MAIN, ANIM_Blooper_Anim0C)
-    Call(N(FadeBackgroundLighten))
+    Call((FadeBackgroundLighten))
     Call(EnableIdleScript, ACTOR_SELF, IDLE_SCRIPT_RESTART)
     Call(UseIdleAnimation, ACTOR_SELF, TRUE)
     Return
@@ -729,7 +765,7 @@ EvtScript EVS_Move_Enrage = {
     Call(MoveBattleCamOver, 50)
     Wait(20)
     Call(PlaySoundAtActor, ACTOR_SELF, SOUND_BIG_POWER_UP)
-    Call(N(FadeBackgroundDarken))
+    Call((FadeBackgroundDarken))
     Call(N(StartRumbleWithParams), 70, 80)
     Thread
         Call(ShakeCam, CAM_BATTLE, 0, 40, Float(0.3))
@@ -743,7 +779,7 @@ EvtScript EVS_Move_Enrage = {
     ExecWait(EVS_Enrage)
     Call(UseBattleCamPreset, BTL_CAM_DEFAULT)
     Call(MoveBattleCamOver, 30)
-    Call(N(FadeBackgroundLighten))
+    Call((FadeBackgroundLighten))
     Call(EnableIdleScript, ACTOR_SELF, IDLE_SCRIPT_RESTART)
     Call(UseIdleAnimation, ACTOR_SELF, TRUE)
     Return
@@ -1553,11 +1589,11 @@ EvtScript EVS_TakeTurn = {
 
 }; // namespace baby_blooper
 
-ActorBlueprint MechaBlooper = {
+ActorBlueprint SuperBlooper = {
     .flags = ACTOR_FLAG_FLYING,
     .maxHP = super_blooper::hp,
-    .type = ACTOR_TYPE_super_blooper,
-    .level = ACTOR_LEVEL_super_blooper,
+    .type = ACTOR_TYPE_SUPER_BLOOPER1,
+    .level = ACTOR_LEVEL_SUPER_BLOOPER1,
     .partCount = ARRAY_COUNT(super_blooper::ActorParts),
     .partsData = super_blooper::ActorParts,
     .initScript = &super_blooper::EVS_Init,

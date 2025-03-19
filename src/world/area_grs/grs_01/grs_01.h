@@ -20,9 +20,15 @@ enum {
     NPC_KoopaTroopa2,
 };
 
+enum {
+    MV_EnemiesDefeated = MapVar(0),
+};
+
 extern EvtScript EVS_Main;
 extern EvtScript EVS_BindExitTriggers;
 extern EvtScript EVS_TexPan;
 extern EvtScript EVS_SetFoliage;
+extern EvtScript EVS_MakeEntities;
+extern EvtScript EVS_SpawnChest;
 
 }; // namespace grs_01

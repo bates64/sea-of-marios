@@ -25,11 +25,31 @@ EvtScript EVS_TexPan = {
 
 #include "world/common/enemy/Goomba_Wander.inc.c"
 
+EvtScript EVS_NpcDefeat_Goomba1 = {
+    Call(GetBattleOutcome, LVar0)
+    Switch(LVar0)
+        CaseEq(OUTCOME_PLAYER_WON)
+            Add(MV_EnemiesDefeated, 1)
+            Call(DoNpcDefeat)
+        CaseEq(OUTCOME_PLAYER_LOST)
+        CaseEq(OUTCOME_PLAYER_FLED)
+    EndSwitch
+    Return
+    End
+};
+
+EvtScript EVS_NpcInit_Goomba1 = {
+    Call(BindNpcDefeat, NPC_SELF, Ref(EVS_NpcDefeat_Goomba1))
+    Return
+    End
+};
+
 NpcData NpcData_Goomba1 = {
     .id = NPC_Goomba1,
     .settings = &N(NpcSettings_Goomba_Wander),
     .pos = { GEN_GOOMBA1_VEC },
     .flags = ENEMY_FLAG_IGNORE_ENTITY_COLLISION | ENEMY_FLAG_FLYING,
+    .init = &EVS_NpcInit_Goomba1,
     .yaw = GEN_GOOMBA1_DIR,
     .drops = GOOMBA_DROPS,
     .territory = GEN_GOOMBA1_TERRITORY,
@@ -37,11 +57,31 @@ NpcData NpcData_Goomba1 = {
     .aiDetectFlags = AI_DETECT_SIGHT,
 };
 
+EvtScript EVS_NpcDefeat_Goomba2 = {
+    Call(GetBattleOutcome, LVar0)
+    Switch(LVar0)
+        CaseEq(OUTCOME_PLAYER_WON)
+            Add(MV_EnemiesDefeated, 1)
+            Call(DoNpcDefeat)
+        CaseEq(OUTCOME_PLAYER_LOST)
+        CaseEq(OUTCOME_PLAYER_FLED)
+    EndSwitch
+    Return
+    End
+};
+
+EvtScript EVS_NpcInit_Goomba2 = {
+    Call(BindNpcDefeat, NPC_SELF, Ref(EVS_NpcDefeat_Goomba2))
+    Return
+    End
+};
+
 NpcData NpcData_Goomba2 = {
     .id = NPC_Goomba2,
     .settings = &N(NpcSettings_Goomba_Wander),
     .pos = { GEN_GOOMBA2_VEC },
     .flags = ENEMY_FLAG_IGNORE_ENTITY_COLLISION | ENEMY_FLAG_FLYING,
+    .init = &EVS_NpcInit_Goomba2,
     .yaw = GEN_GOOMBA2_DIR,
     .drops = GOOMBA_DROPS,
     .territory = GEN_GOOMBA2_TERRITORY,
@@ -49,11 +89,31 @@ NpcData NpcData_Goomba2 = {
     .aiDetectFlags = AI_DETECT_SIGHT,
 };
 
+EvtScript EVS_NpcDefeat_Goomba3 = {
+    Call(GetBattleOutcome, LVar0)
+    Switch(LVar0)
+        CaseEq(OUTCOME_PLAYER_WON)
+            Add(MV_EnemiesDefeated, 1)
+            Call(DoNpcDefeat)
+        CaseEq(OUTCOME_PLAYER_LOST)
+        CaseEq(OUTCOME_PLAYER_FLED)
+    EndSwitch
+    Return
+    End
+};
+
+EvtScript EVS_NpcInit_Goomba3 = {
+    Call(BindNpcDefeat, NPC_SELF, Ref(EVS_NpcDefeat_Goomba3))
+    Return
+    End
+};
+
 NpcData NpcData_Goomba3 = {
     .id = NPC_Goomba3,
     .settings = &N(NpcSettings_Goomba_Wander),
     .pos = { GEN_GOOMBA3_VEC },
     .flags = ENEMY_FLAG_IGNORE_ENTITY_COLLISION | ENEMY_FLAG_FLYING,
+    .init = &EVS_NpcInit_Goomba3,
     .yaw = GEN_GOOMBA3_DIR,
     .drops = GOOMBA_DROPS,
     .territory = GEN_GOOMBA3_TERRITORY,
@@ -61,11 +121,31 @@ NpcData NpcData_Goomba3 = {
     .aiDetectFlags = AI_DETECT_SIGHT,
 };
 
+EvtScript EVS_NpcDefeat_Goomba4 = {
+    Call(GetBattleOutcome, LVar0)
+    Switch(LVar0)
+        CaseEq(OUTCOME_PLAYER_WON)
+            Add(MV_EnemiesDefeated, 1)
+            Call(DoNpcDefeat)
+        CaseEq(OUTCOME_PLAYER_LOST)
+        CaseEq(OUTCOME_PLAYER_FLED)
+    EndSwitch
+    Return
+    End
+};
+
+EvtScript EVS_NpcInit_Goomba4 = {
+    Call(BindNpcDefeat, NPC_SELF, Ref(EVS_NpcDefeat_Goomba4))
+    Return
+    End
+};
+
 NpcData NpcData_Goomba4 = {
     .id = NPC_Goomba4,
     .settings = &N(NpcSettings_Goomba_Wander),
     .pos = { GEN_GOOMBA4_VEC },
     .flags = ENEMY_FLAG_IGNORE_ENTITY_COLLISION | ENEMY_FLAG_FLYING,
+    .init = &EVS_NpcInit_Goomba4,
     .yaw = GEN_GOOMBA4_DIR,
     .drops = GOOMBA_DROPS,
     .territory = GEN_GOOMBA4_TERRITORY,
@@ -75,30 +155,31 @@ NpcData NpcData_Goomba4 = {
 
 #include "world/common/enemy/KoopaTroopa_Wander.inc.c"
 
-// EvtScript EVS_NpcDefeat_SpearGuy = {
-//     Call(GetBattleOutcome, LVar0)
-//     Switch(LVar0)
-//         CaseEq(OUTCOME_PLAYER_WON)
-//             Set(MapVar(0), TRUE)
-//             Call(DoNpcDefeat)
-//         CaseEq(OUTCOME_PLAYER_LOST)
-//         CaseEq(OUTCOME_PLAYER_FLED)
-//     EndSwitch
-//     Return
-//     End
-// };
+EvtScript EVS_NpcDefeat_KoopaTroopa1 = {
+    Call(GetBattleOutcome, LVar0)
+    Switch(LVar0)
+        CaseEq(OUTCOME_PLAYER_WON)
+            Add(MV_EnemiesDefeated, 1)
+            Call(DoNpcDefeat)
+        CaseEq(OUTCOME_PLAYER_LOST)
+        CaseEq(OUTCOME_PLAYER_FLED)
+    EndSwitch
+    Return
+    End
+};
 
-// EvtScript EVS_NpcInit_SpearGuy = {
-//     Call(BindNpcDefeat, NPC_SELF, Ref(EVS_NpcDefeat_SpearGuy))
-//     Return
-//     End
-// };
+EvtScript EVS_NpcInit_KoopaTroopa1 = {
+    Call(BindNpcDefeat, NPC_SELF, Ref(EVS_NpcDefeat_KoopaTroopa1))
+    Return
+    End
+};
 
 NpcData NpcData_KoopaTroopa1 = {
     .id = NPC_KoopaTroopa1,
     .settings = &N(NpcSettings_KoopaTroopa_Wander),
     .pos = { GEN_KOOPA_TROOPA1_VEC },
     .flags = ENEMY_FLAG_IGNORE_ENTITY_COLLISION | ENEMY_FLAG_FLYING,
+    .init = &EVS_NpcInit_KoopaTroopa1,
     .yaw = GEN_KOOPA_TROOPA1_DIR,
     .drops = KOOPA_TROOPA_NOK_DROPS,
     .territory = GEN_KOOPA_TROOPA1_TERRITORY,
@@ -106,11 +187,31 @@ NpcData NpcData_KoopaTroopa1 = {
     .aiDetectFlags = AI_DETECT_SIGHT,
 };
 
+EvtScript EVS_NpcDefeat_KoopaTroopa2 = {
+    Call(GetBattleOutcome, LVar0)
+    Switch(LVar0)
+        CaseEq(OUTCOME_PLAYER_WON)
+            Add(MV_EnemiesDefeated, 1)
+            Call(DoNpcDefeat)
+        CaseEq(OUTCOME_PLAYER_LOST)
+        CaseEq(OUTCOME_PLAYER_FLED)
+    EndSwitch
+    Return
+    End
+};
+
+EvtScript EVS_NpcInit_KoopaTroopa2 = {
+    Call(BindNpcDefeat, NPC_SELF, Ref(EVS_NpcDefeat_KoopaTroopa2))
+    Return
+    End
+};
+
 NpcData NpcData_KoopaTroopa2 = {
     .id = NPC_KoopaTroopa2,
     .settings = &N(NpcSettings_KoopaTroopa_Wander),
     .pos = { GEN_KOOPA_TROOPA2_VEC },
     .flags = ENEMY_FLAG_IGNORE_ENTITY_COLLISION | ENEMY_FLAG_FLYING,
+    .init = &EVS_NpcInit_KoopaTroopa2,
     .yaw = GEN_KOOPA_TROOPA2_DIR,
     .drops = KOOPA_TROOPA_NOK_DROPS,
     .territory = GEN_KOOPA_TROOPA2_TERRITORY,
@@ -119,12 +220,12 @@ NpcData NpcData_KoopaTroopa2 = {
 };
 
 NpcGroupList DefaultNPCs = {
-    NPC_GROUP((NpcData_Goomba1), BTL_KMR_1_FORMATION_00, BTL_KMR_1_STAGE_00),
-    NPC_GROUP((NpcData_Goomba2), BTL_KMR_1_FORMATION_00, BTL_KMR_1_STAGE_00),
-    NPC_GROUP((NpcData_Goomba3), BTL_KMR_1_FORMATION_00, BTL_KMR_1_STAGE_00),
-    NPC_GROUP((NpcData_Goomba4), BTL_KMR_1_FORMATION_00, BTL_KMR_1_STAGE_00),
-    NPC_GROUP((NpcData_KoopaTroopa1), BTL_KMR_1_FORMATION_01, BTL_KMR_1_STAGE_00),
-    NPC_GROUP((NpcData_KoopaTroopa2), BTL_KMR_1_FORMATION_01, BTL_KMR_1_STAGE_00),
+    NPC_GROUP((NpcData_Goomba1), 0, 2),
+    NPC_GROUP((NpcData_Goomba2), 1, 2),
+    NPC_GROUP((NpcData_Goomba3), 2, 2),
+    NPC_GROUP((NpcData_Goomba4), 3, 2),
+    NPC_GROUP((NpcData_KoopaTroopa1), 4, 2),
+    NPC_GROUP((NpcData_KoopaTroopa2), 5, 2),
     {},
 };
 
@@ -137,6 +238,8 @@ EvtScript EVS_Main = {
     // Call(DisablePlayerPhysics, TRUE)
     Exec(EVS_SetFoliage)
     Call(MakeNpcs, TRUE, Ref(DefaultNPCs))
+    ExecWait(EVS_MakeEntities)
+    Exec(EVS_SpawnChest)
     Return
     End
 };

@@ -4,7 +4,6 @@
 
 namespace battle::actor {
 
-extern ActorBlueprint Goomba;
-extern ActorBlueprint Paragoomba;
+extern ActorBlueprint MageJrTroopa;
 
 }; // namespace battle::actor

@@ -3,6 +3,10 @@
 
 #include "common_structs.h"
 
+#ifdef _LANGUAGE_C_PLUS_PLUS
+extern "C" {
+#endif
+
 // args: variation
 API_CALLABLE(action_command_whirlwind_init);
 
@@ -17,5 +21,9 @@ enum {
     ACV_WHIRLWIND_HUFF      = 0,
     ACV_WHIRLWIND_BUZZAR    = 1,
 };
+
+#ifdef _LANGUAGE_C_PLUS_PLUS
+}
+#endif
 
 #endif

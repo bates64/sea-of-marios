@@ -5,6 +5,36 @@ namespace trp_01 {
 
 EntryList Entrances = { GEN_ENTRY_LIST };
 
+// API_CALLABLE(IsLastEnemy) {
+//     EncounterStatus* encounterStatus = &gCurrentEncounter;
+//     s32 livingEncounters;
+//     s32 i, j;
+
+//     script->varTable[1] = FALSE;
+//     livingEncounters = 0;
+//     for (i = 0; i < encounterStatus->numEncounters; i++) {
+//         Encounter* encounter = encounterStatus->encounterList[i];
+//         if (encounter != NULL) {
+//             s32 hasEnemy = FALSE;
+//             for (j = 0; j < encounter->count; j++) {
+//                 if (encounter->enemy[j] != NULL) {
+//                     hasEnemy = TRUE;
+//                 }
+//             }
+//             if (hasEnemy) {
+//                 livingEncounters++;
+//             }
+//         }
+//     }
+
+//     if (livingEncounters != 1) {
+//         return ApiStatus_DONE2;
+//     } else {
+//         script->varTable[1] = TRUE;
+//         return ApiStatus_DONE2;
+//     }
+// }
+
 #include "world/common/atomic/TexturePan.inc.c"
 
 EvtScript EVS_TexPan = {
@@ -30,6 +60,44 @@ EvtScript EVS_TexPan = {
 
 #include "world/common/enemy/JungleFuzzy_Wander.inc.c"
 
+EvtScript EVS_NpcDefeat_JungleFuzzy1 = {
+    Call(GetBattleOutcome, LVar0)
+    Switch(LVar0)
+        CaseEq(OUTCOME_PLAYER_WON)
+            Add(MV_EnemiesDefeated, 1)
+            Call(DoNpcDefeat)
+        CaseEq(OUTCOME_PLAYER_LOST)
+        CaseEq(OUTCOME_PLAYER_FLED)
+    EndSwitch
+    Return
+    End
+};
+
+EvtScript EVS_NpcDefeat_JungleFuzzy2 = {
+    Call(GetBattleOutcome, LVar0)
+    Switch(LVar0)
+        CaseEq(OUTCOME_PLAYER_WON)
+            Add(MV_EnemiesDefeated, 1)
+            Call(DoNpcDefeat)
+        CaseEq(OUTCOME_PLAYER_LOST)
+        CaseEq(OUTCOME_PLAYER_FLED)
+    EndSwitch
+    Return
+    End
+};
+
+EvtScript EVS_NpcInit_JungleFuzzy1 = {
+    Call(BindNpcDefeat, NPC_SELF, Ref(EVS_NpcDefeat_JungleFuzzy1))
+    Return
+    End
+};
+
+EvtScript EVS_NpcInit_JungleFuzzy2 = {
+    Call(BindNpcDefeat, NPC_SELF, Ref(EVS_NpcDefeat_JungleFuzzy2))
+    Return
+    End
+};
+
 AnimID ExtraAnims_JungleFuzzy[] = {
     ANIM_Fuzzy_Blue_Idle,
     ANIM_Fuzzy_Blue_Walk,
@@ -43,6 +111,7 @@ NpcData NpcData_JungleFuzzy1 = {
     .settings = &N(NpcSettings_JungleFuzzy_Wander),
     .pos = { GEN_JUNGLE_FUZZY1_VEC },
     .flags = ENEMY_FLAG_IGNORE_ENTITY_COLLISION | ENEMY_FLAG_DO_NOT_AUTO_FACE_PLAYER,
+    .init = &EVS_NpcInit_JungleFuzzy1,
     .yaw = GEN_JUNGLE_FUZZY1_DIR,
     .drops = JUNGLE_FUZZY_DROPS,
     .territory = GEN_JUNGLE_FUZZY1_TERRITORY,
@@ -56,6 +125,7 @@ NpcData NpcData_JungleFuzzy2 = {
     .settings = &N(NpcSettings_JungleFuzzy_Wander),
     .pos = { GEN_JUNGLE_FUZZY2_VEC },
     .flags = ENEMY_FLAG_IGNORE_ENTITY_COLLISION | ENEMY_FLAG_DO_NOT_AUTO_FACE_PLAYER,
+    .init = &EVS_NpcInit_JungleFuzzy2,
     .yaw = GEN_JUNGLE_FUZZY2_DIR,
     .drops = JUNGLE_FUZZY_DROPS,
     .territory = GEN_JUNGLE_FUZZY2_TERRITORY,
@@ -70,7 +140,7 @@ EvtScript EVS_NpcDefeat_SpearGuy1 = {
     Call(GetBattleOutcome, LVar0)
     Switch(LVar0)
         CaseEq(OUTCOME_PLAYER_WON)
-            // Set(MapVar(0), TRUE)
+            Add(MV_EnemiesDefeated, 1)
             Call(DoNpcDefeat)
         CaseEq(OUTCOME_PLAYER_LOST)
         CaseEq(OUTCOME_PLAYER_FLED)
@@ -106,7 +176,7 @@ EvtScript EVS_NpcDefeat_SpearGuy2 = {
     Call(GetBattleOutcome, LVar0)
     Switch(LVar0)
         CaseEq(OUTCOME_PLAYER_WON)
-            // Set(MapVar(0), TRUE)
+            Add(MV_EnemiesDefeated, 1)
             Call(DoNpcDefeat)
         CaseEq(OUTCOME_PLAYER_LOST)
         CaseEq(OUTCOME_PLAYER_FLED)
@@ -142,7 +212,7 @@ EvtScript EVS_NpcDefeat_SpearGuy3 = {
     Call(GetBattleOutcome, LVar0)
     Switch(LVar0)
         CaseEq(OUTCOME_PLAYER_WON)
-            // Set(MapVar(0), TRUE)
+            Add(MV_EnemiesDefeated, 1)
             Call(DoNpcDefeat)
         CaseEq(OUTCOME_PLAYER_LOST)
         CaseEq(OUTCOME_PLAYER_FLED)
@@ -175,11 +245,11 @@ NpcData NpcData_SpearGuy3[] = {
 };
 
 NpcGroupList DefaultNPCs = {
-    NPC_GROUP((NpcData_SpearGuy1), BTL_KMR_1_FORMATION_02, BTL_KMR_1_STAGE_00),
-    NPC_GROUP((NpcData_SpearGuy2), BTL_KMR_1_FORMATION_02, BTL_KMR_1_STAGE_00),
-    NPC_GROUP((NpcData_SpearGuy3), BTL_KMR_1_FORMATION_02, BTL_KMR_1_STAGE_00),
-    NPC_GROUP((NpcData_JungleFuzzy1), BTL_KMR_1_FORMATION_03, BTL_KMR_1_STAGE_00),
-    NPC_GROUP((NpcData_JungleFuzzy2), BTL_KMR_1_FORMATION_03, BTL_KMR_1_STAGE_00),
+    NPC_GROUP((NpcData_SpearGuy1), 6, 4),
+    NPC_GROUP((NpcData_SpearGuy2), 6, 4),
+    NPC_GROUP((NpcData_SpearGuy3), 6, 4),
+    NPC_GROUP((NpcData_JungleFuzzy1), 7, 4),
+    NPC_GROUP((NpcData_JungleFuzzy2), 7, 4),
     {},
 };
 
@@ -193,6 +263,7 @@ EvtScript EVS_Main = {
     Exec(EVS_SetFoliage)
     Call(MakeNpcs, TRUE, Ref(DefaultNPCs))
     ExecWait(EVS_MakeEntities)
+    Exec(EVS_SpawnChests)
     Return
     End
 };

@@ -2367,14 +2367,36 @@
     stepDelay: [ 22, 30 ]
     tattleCamOffset: [ 0, 6, 10 ]
     shadowOffset: 0
-- MechaBlooper:
-    level: 65
-    nameMsg: MSG_EnemyName_MechaBlooper
-    tattleMsg: MSG_EnemyTattle_MechaBlooper
-    walkSound: [ SOUND_NONE, SOUND_NONE ]
+- Clubbeard:
+    level: 70
+    nameMsg: MSG_EnemyName_Clubbeard
+    tattleMsg: MSG_EnemyTattle_Clubbeard
+    walkSound: [ SOUND_HEAVY_NPC_STEP_C, SOUND_HEAVY_NPC_STEP_C ]
     flySound: [ SOUND_NONE, SOUND_NONE ]
     jumpSound: SOUND_NONE
     hurtSound: SOUND_NONE
-    stepDelay: [ 25, 25 ]
+    stepDelay: [ 30, 30 ]
     tattleCamOffset: [ 0, 0, 0 ]
     shadowOffset: 0
+- ClubbeardHeart:
+    level: 0
+    nameMsg: MSG_EnemyName_ClubbeardHeart
+    tattleMsg: MSG_EnemyTattle_ClubbeardHeart
+    walkSound: [ SOUND_NONE, SOUND_NONE ]
+    flySound: [ SOUND_NONE, SOUND_NONE ]
+    jumpSound: SOUND_TUBBA_HEART_JUMP
+    hurtSound: SOUND_NONE
+    stepDelay: [ 30, 30 ]
+    tattleCamOffset: [ 0, 0, 0 ]
+    shadowOffset: 0
+# - MechaBlooper:
+#     level: 65
+#     nameMsg: MSG_EnemyName_MechaBlooper
+#     tattleMsg: MSG_EnemyTattle_MechaBlooper
+#     walkSound: [ SOUND_NONE, SOUND_NONE ]
+#     flySound: [ SOUND_NONE, SOUND_NONE ]
+#     jumpSound: SOUND_NONE
+#     hurtSound: SOUND_NONE
+#     stepDelay: [ 25, 25 ]
+#     tattleCamOffset: [ 0, 0, 0 ]
+#     shadowOffset: 0

@@ -8,6 +8,10 @@
 #include "qsort.h"
 #include "gcc/string.h"
 
+#ifdef _LANGUAGE_C_PLUS_PLUS
+extern "C" {
+#endif
+
 // models are rendered in two stages by the RDP:
 // (1) main and aux textures are combined in the color combiner
 // (2) the combined texture is blended with either tint or fog by the blender
@@ -4644,3 +4648,7 @@ OPTIMIZE_OFAST void execute_render_tasks(void) {
     RenderTaskCount[RENDER_TASK_LIST_FAR] = 0;
     RenderTaskCount[RENDER_TASK_LIST_NEAR] = 0;
 }
+
+#ifdef _LANGUAGE_C_PLUS_PLUS
+}
+#endif

@@ -534,6 +534,14 @@
 	Captain Kuribo[End]
 }
 
+#message:29:(EnemyName_Clubbeard) {
+	Clubbeard[End]
+}
+
+#message:29:(EnemyName_ClubbeardHeart) {
+	Clubbeard's Heart[End]
+}
+
 #message:29:(EnemyName_MechaBlooper) {
 	Mecha Blooper[End]
 }

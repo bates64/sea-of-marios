@@ -6057,6 +6057,9 @@ segments:
     - [auto, cpp, area]
     - [auto, cpp, stage/kmr_bt04]
     - [auto, cpp, stage/net_bt00]
+    - [auto, cpp, stage/nok_bt01]
+    - [auto, cpp, stage/sbk_bt02]
+    - [auto, cpp, stage/jan_bt00]
   - dir: battle/area/kmr_part_2
     type: code
     start: 0x439A90

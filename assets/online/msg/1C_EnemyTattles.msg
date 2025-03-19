@@ -2992,6 +2992,24 @@
 	[Wait][End]
 }
 
+#message:1C:(EnemyTattle_Clubbeard) {
+	[Style right]
+	This is Clubbeard.[BR]
+	[Wait][Next]
+	Max HP: 10, Attack Power: 4,[BR]
+	Defense Power: 0[BR]
+	[Wait][End]
+}
+
+#message:1C:(EnemyTattle_ClubbeardHeart) {
+	[Style right]
+	This is Clubbeard's Heart.[BR]
+	[Wait][Next]
+	Max HP: 50, Attack Power: 6,[BR]
+	Defense Power: 0[BR]
+	[Wait][End]
+}
+
 #message:1C:(EnemyTattle_MechaBlooper) {
 	[Style right]
 	This is a Mecha Blooper.[BR]

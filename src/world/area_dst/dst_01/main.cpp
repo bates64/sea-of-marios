@@ -25,11 +25,31 @@ EvtScript EVS_TexPan = {
 
 #include "world/common/enemy/Pokey.inc.c"
 
+EvtScript EVS_NpcDefeat_Pokey1 = {
+    Call(GetBattleOutcome, LVar0)
+    Switch(LVar0)
+        CaseEq(OUTCOME_PLAYER_WON)
+            Add(MV_EnemiesDefeated, 1)
+            Call(DoNpcDefeat)
+        CaseEq(OUTCOME_PLAYER_LOST)
+        CaseEq(OUTCOME_PLAYER_FLED)
+    EndSwitch
+    Return
+    End
+};
+
+EvtScript EVS_NpcInit_Pokey1 = {
+    Call(BindNpcDefeat, NPC_SELF, Ref(EVS_NpcDefeat_Pokey1))
+    Return
+    End
+};
+
 NpcData NpcData_Pokey1 = {
     .id = NPC_Pokey1,
     .settings = &N(NpcSettings_Pokey),
     .pos = { GEN_POKEY1_VEC },
     .flags = ENEMY_FLAG_FLYING,
+    .init = &EVS_NpcInit_Pokey1,
     .yaw = GEN_POKEY1_DIR,
     .drops = POKEY_DROPS,
     .territory = GEN_POKEY1_TERRITORY,
@@ -37,11 +57,31 @@ NpcData NpcData_Pokey1 = {
     .aiDetectFlags = AI_DETECT_SIGHT,
 };
 
+EvtScript EVS_NpcDefeat_Pokey2 = {
+    Call(GetBattleOutcome, LVar0)
+    Switch(LVar0)
+        CaseEq(OUTCOME_PLAYER_WON)
+            Add(MV_EnemiesDefeated, 1)
+            Call(DoNpcDefeat)
+        CaseEq(OUTCOME_PLAYER_LOST)
+        CaseEq(OUTCOME_PLAYER_FLED)
+    EndSwitch
+    Return
+    End
+};
+
+EvtScript EVS_NpcInit_Pokey2 = {
+    Call(BindNpcDefeat, NPC_SELF, Ref(EVS_NpcDefeat_Pokey2))
+    Return
+    End
+};
+
 NpcData NpcData_Pokey2 = {
     .id = NPC_Pokey2,
     .settings = &N(NpcSettings_Pokey),
     .pos = { GEN_POKEY2_VEC },
     .flags = ENEMY_FLAG_FLYING,
+    .init = &EVS_NpcInit_Pokey2,
     .yaw = GEN_POKEY2_DIR,
     .drops = POKEY_DROPS,
     .territory = GEN_POKEY2_TERRITORY,
@@ -51,11 +91,31 @@ NpcData NpcData_Pokey2 = {
 
 #include "world/common/enemy/Bandit.inc.c"
 
+EvtScript EVS_NpcDefeat_Bandit1 = {
+    Call(GetBattleOutcome, LVar0)
+    Switch(LVar0)
+        CaseEq(OUTCOME_PLAYER_WON)
+            Add(MV_EnemiesDefeated, 1)
+            Call(DoNpcDefeat)
+        CaseEq(OUTCOME_PLAYER_LOST)
+        CaseEq(OUTCOME_PLAYER_FLED)
+    EndSwitch
+    Return
+    End
+};
+
+EvtScript EVS_NpcInit_Bandit1 = {
+    Call(BindNpcDefeat, NPC_SELF, Ref(EVS_NpcDefeat_Bandit1))
+    Return
+    End
+};
+
 NpcData NpcData_Bandit1 = {
     .id = NPC_Bandit1,
     .settings = &N(NpcSettings_Bandit),
     .pos = { GEN_BANDIT1_VEC },
     .flags = ENEMY_FLAG_IGNORE_ENTITY_COLLISION | ENEMY_FLAG_FLYING | ENEMY_FLAG_NO_SHADOW_RAYCAST,
+    .init = &EVS_NpcInit_Bandit1,
     .yaw = GEN_BANDIT1_DIR,
     .drops = BANDIT_DROPS,
     .territory = GEN_BANDIT1_TERRITORY,
@@ -63,11 +123,31 @@ NpcData NpcData_Bandit1 = {
     .aiDetectFlags = AI_DETECT_SIGHT,
 };
 
+EvtScript EVS_NpcDefeat_Bandit2 = {
+    Call(GetBattleOutcome, LVar0)
+    Switch(LVar0)
+        CaseEq(OUTCOME_PLAYER_WON)
+            Add(MV_EnemiesDefeated, 1)
+            Call(DoNpcDefeat)
+        CaseEq(OUTCOME_PLAYER_LOST)
+        CaseEq(OUTCOME_PLAYER_FLED)
+    EndSwitch
+    Return
+    End
+};
+
+EvtScript EVS_NpcInit_Bandit2 = {
+    Call(BindNpcDefeat, NPC_SELF, Ref(EVS_NpcDefeat_Bandit2))
+    Return
+    End
+};
+
 NpcData NpcData_Bandit2 = {
     .id = NPC_Bandit2,
     .settings = &N(NpcSettings_Bandit),
     .pos = { GEN_BANDIT2_VEC },
     .flags = ENEMY_FLAG_IGNORE_ENTITY_COLLISION | ENEMY_FLAG_FLYING | ENEMY_FLAG_NO_SHADOW_RAYCAST,
+    .init = &EVS_NpcInit_Bandit2,
     .yaw = GEN_BANDIT2_DIR,
     .drops = BANDIT_DROPS,
     .territory = GEN_BANDIT2_TERRITORY,
@@ -77,11 +157,31 @@ NpcData NpcData_Bandit2 = {
 
 #include "world/common/enemy/Cleft.inc.c"
 
+EvtScript EVS_NpcDefeat_Cleft = {
+    Call(GetBattleOutcome, LVar0)
+    Switch(LVar0)
+        CaseEq(OUTCOME_PLAYER_WON)
+            Add(MV_EnemiesDefeated, 1)
+            Call(DoNpcDefeat)
+        CaseEq(OUTCOME_PLAYER_LOST)
+        CaseEq(OUTCOME_PLAYER_FLED)
+    EndSwitch
+    Return
+    End
+};
+
+EvtScript EVS_NpcInit_Cleft = {
+    Call(BindNpcDefeat, NPC_SELF, Ref(EVS_NpcDefeat_Cleft))
+    Return
+    End
+};
+
 NpcData NpcData_Cleft = {
     .id = NPC_Cleft,
     .settings = &N(NpcSettings_Cleft),
     .pos = { GEN_CLEFT_VEC },
     .flags = ENEMY_FLAG_IGNORE_ENTITY_COLLISION | ENEMY_FLAG_FLYING,
+    .init = &EVS_NpcInit_Cleft,
     .yaw = GEN_CLEFT_DIR,
     .drops = CLEFT_DROPS,
     .territory = GEN_CLEFT_TERRITORY,
@@ -90,11 +190,11 @@ NpcData NpcData_Cleft = {
 };
 
 NpcGroupList DefaultNPCs = {
-    NPC_GROUP((NpcData_Pokey1), BTL_KMR_1_FORMATION_04, BTL_KMR_1_STAGE_00),
-    NPC_GROUP((NpcData_Pokey2), BTL_KMR_1_FORMATION_04, BTL_KMR_1_STAGE_00),
-    NPC_GROUP((NpcData_Bandit1), BTL_KMR_1_FORMATION_05, BTL_KMR_1_STAGE_00),
-    NPC_GROUP((NpcData_Bandit2), BTL_KMR_1_FORMATION_05, BTL_KMR_1_STAGE_00),
-    NPC_GROUP((NpcData_Cleft), BTL_KMR_1_FORMATION_06, BTL_KMR_1_STAGE_00),
+    NPC_GROUP((NpcData_Pokey1), 8, 3),
+    NPC_GROUP((NpcData_Pokey2), 8, 3),
+    NPC_GROUP((NpcData_Bandit1), 9, 3),
+    NPC_GROUP((NpcData_Bandit2), 9, 3),
+    NPC_GROUP((NpcData_Cleft), 10, 3),
     {},
 };
 
@@ -108,6 +208,7 @@ EvtScript EVS_Main = {
     Exec(EVS_SetFoliage)
     Call(MakeNpcs, TRUE, Ref(DefaultNPCs))
     ExecWait(EVS_MakeEntities)
+    Exec(EVS_SpawnChest)
     Return
     End
 };

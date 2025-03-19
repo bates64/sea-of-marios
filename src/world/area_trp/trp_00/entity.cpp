@@ -4,6 +4,19 @@
 
 namespace trp_00 {
 
+EvtScript EVS_FocusCam_OnChest = {
+    Call(UseSettingsFrom, CAM_DEFAULT, LVar0, LVar1, LVar2)
+    Call(SetCamSpeed, CAM_DEFAULT, LVarA)
+    Call(SetCamDistance, CAM_DEFAULT, Float(350.0))
+    Call(SetCamPitch, CAM_DEFAULT, Float(12.0), Float(-5.5))
+    Call(SetCamPosB, CAM_DEFAULT, Float(500.0), Float(20.0))
+    Call(SetPanTarget, CAM_DEFAULT, GEN_CHEST_VEC)
+    Call(PanToTarget, CAM_DEFAULT, 0, TRUE)
+    Call(WaitForCam, CAM_DEFAULT, Float(1.0))
+    Return
+    End
+};
+
 #include "world/common/entity/Chest.inc.c"
 
 EvtScript EVS_OpenChest = EVT_OPEN_CHEST(ITEM_PYRAMID_STONE, GF_TRP00_Chest_PyramidStone);
@@ -26,6 +39,7 @@ EvtScript EVS_SpawnTreasureChest = {
         EndIf
         Wait(1)
     EndLoop
+    Call(DisablePlayerInput, TRUE)
     Call(PlaySound, SOUND_CHIME_SOLVED_PUZZLE)
     Wait(30)
     Call((PlayBigSmokePuff), GEN_CHEST_VEC)
@@ -33,6 +47,10 @@ EvtScript EVS_SpawnTreasureChest = {
     Call(MakeEntity, Ref(Entity_Chest), GEN_CHEST_PARAMS, MAKE_ENTITY_END)
     Call(AssignChestFlag, GF_TRP00_Chest_PyramidStone)
     Call(AssignScript, Ref(EVS_OpenChest))
+    SetF(LVarA, Float(3.0))
+    ExecWait(EVS_FocusCam_OnChest)
+    Wait(45)
+    Call(DisablePlayerInput, FALSE)
     Return
     End
 };
